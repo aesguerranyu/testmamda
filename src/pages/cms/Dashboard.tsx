@@ -8,16 +8,41 @@ import {
   AlertTriangle,
   TrendingUp,
   Clock,
-  CheckCircle2,
-  XCircle
+  CheckCircle2
 } from 'lucide-react';
 
+interface StatsData {
+  totalPromises: number;
+  draftPromises: number;
+  publishedPromises: number;
+  totalIndicators: number;
+  draftIndicators: number;
+  publishedIndicators: number;
+  unresolvedReferences: number;
+  categoryCounts: Record<string, number>;
+  statusCounts: Record<string, number>;
+}
+
 const Dashboard = () => {
-  const [stats, setStats] = useState<ReturnType<typeof getStats> | null>(null);
+  const [stats, setStats] = useState<StatsData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setStats(getStats());
+    const loadStats = async () => {
+      const data = await getStats();
+      setStats(data);
+      setIsLoading(false);
+    };
+    loadStats();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!stats) return null;
 

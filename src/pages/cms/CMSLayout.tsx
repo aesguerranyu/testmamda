@@ -14,6 +14,18 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+interface StatsData {
+  totalPromises: number;
+  draftPromises: number;
+  publishedPromises: number;
+  totalIndicators: number;
+  draftIndicators: number;
+  publishedIndicators: number;
+  unresolvedReferences: number;
+  categoryCounts: Record<string, number>;
+  statusCounts: Record<string, number>;
+}
+
 const navItems = [
   { path: '/rat-control/cms/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/rat-control/cms/promises', label: 'Promises', icon: ClipboardCheck },
@@ -26,7 +38,7 @@ const CMSLayout = () => {
   const location = useLocation();
   const { user, isCmsUser, isLoading, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [stats, setStats] = useState<ReturnType<typeof getStats> | null>(null);
+  const [stats, setStats] = useState<StatsData | null>(null);
 
   useEffect(() => {
     // Redirect to login if not authenticated or not a CMS user
@@ -36,7 +48,11 @@ const CMSLayout = () => {
   }, [user, isCmsUser, isLoading, navigate]);
 
   useEffect(() => {
-    setStats(getStats());
+    const loadStats = async () => {
+      const data = await getStats();
+      setStats(data);
+    };
+    loadStats();
   }, [location.pathname]);
 
   const handleLogout = async () => {

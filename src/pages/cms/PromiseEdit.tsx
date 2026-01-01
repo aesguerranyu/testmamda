@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getPromise, savePromise, updatePromiseEditorialState } from '@/lib/cms-store';
-import { Promise, EditorialState, PROMISE_CSV_HEADERS } from '@/types/cms';
+import { Promise as CMSPromise, EditorialState } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,7 +15,7 @@ const PromiseEdit = () => {
   const navigate = useNavigate();
   const isNew = id === 'new';
   
-  const [formData, setFormData] = useState<Partial<Promise>>({
+  const [formData, setFormData] = useState<Partial<CMSPromise>>({
     Category: '',
     Headline: '',
     'Owner agency': '',
@@ -35,17 +35,22 @@ const PromiseEdit = () => {
   });
   
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(!isNew);
 
   useEffect(() => {
-    if (!isNew && id) {
-      const promise = getPromise(id);
-      if (promise) {
-        setFormData(promise);
-      } else {
-        toast.error('Promise not found');
-        navigate('/rat-control/cms/promises');
+    const loadPromise = async () => {
+      if (!isNew && id) {
+        const promise = await getPromise(id);
+        if (promise) {
+          setFormData(promise);
+        } else {
+          toast.error('Promise not found');
+          navigate('/rat-control/cms/promises');
+        }
+        setIsLoading(false);
       }
-    }
+    };
+    loadPromise();
   }, [id, isNew, navigate]);
 
   const handleChange = (field: string, value: string) => {
@@ -61,10 +66,10 @@ const PromiseEdit = () => {
     setIsSaving(true);
     
     try {
-      const saved = savePromise(isNew ? formData : { ...formData, id });
+      const saved = await savePromise(isNew ? formData : { ...formData, id });
       toast.success(isNew ? 'Promise created' : 'Promise saved');
       
-      if (isNew) {
+      if (isNew && saved) {
         navigate(`/rat-control/cms/promises/${saved.id}`);
       }
     } catch (err) {
@@ -74,16 +79,24 @@ const PromiseEdit = () => {
     }
   };
 
-  const handleToggleState = () => {
+  const handleToggleState = async () => {
     if (!id || isNew) return;
     
     const newState: EditorialState = formData.editorialState === 'draft' ? 'published' : 'draft';
-    updatePromiseEditorialState(id, newState);
+    await updatePromiseEditorialState(id, newState);
     setFormData(prev => ({ ...prev, editorialState: newState }));
     toast.success(`Promise ${newState === 'published' ? 'published' : 'reverted to draft'}`);
   };
 
   const statusOptions = ['Not started', 'In progress', 'Completed', 'Stalled', 'Broken'];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

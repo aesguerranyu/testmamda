@@ -28,20 +28,26 @@ const IndicatorEdit = () => {
   });
   
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(!isNew);
   const [promiseHeadlines, setPromiseHeadlines] = useState<string[]>([]);
 
   useEffect(() => {
-    setPromiseHeadlines(getPromises().map(p => p.Headline));
-    
-    if (!isNew && id) {
-      const indicator = getIndicator(id);
-      if (indicator) {
-        setFormData(indicator);
-      } else {
-        toast.error('Indicator not found');
-        navigate('/rat-control/cms/indicators');
+    const loadData = async () => {
+      const promises = await getPromises();
+      setPromiseHeadlines(promises.map(p => p.Headline));
+      
+      if (!isNew && id) {
+        const indicator = await getIndicator(id);
+        if (indicator) {
+          setFormData(indicator);
+        } else {
+          toast.error('Indicator not found');
+          navigate('/rat-control/cms/indicators');
+        }
       }
-    }
+      setIsLoading(false);
+    };
+    loadData();
   }, [id, isNew, navigate]);
 
   const handleChange = (field: string, value: string) => {
@@ -57,15 +63,14 @@ const IndicatorEdit = () => {
     setIsSaving(true);
     
     try {
-      const saved = saveIndicator(isNew ? formData : { ...formData, id });
+      const saved = await saveIndicator(isNew ? formData : { ...formData, id });
       toast.success(isNew ? 'Indicator created' : 'Indicator saved');
       
-      if (isNew) {
+      if (isNew && saved) {
         navigate(`/rat-control/cms/indicators/${saved.id}`);
-      } else {
+      } else if (saved) {
         // Reload to get updated promiseReferenceUnresolved status
-        const updated = getIndicator(id!);
-        if (updated) setFormData(updated);
+        setFormData(saved);
       }
     } catch (err) {
       toast.error('Failed to save');
@@ -74,11 +79,11 @@ const IndicatorEdit = () => {
     }
   };
 
-  const handleToggleState = () => {
+  const handleToggleState = async () => {
     if (!id || isNew) return;
     
     const newState: EditorialState = formData.editorialState === 'draft' ? 'published' : 'draft';
-    updateIndicatorEditorialState(id, newState);
+    await updateIndicatorEditorialState(id, newState);
     setFormData(prev => ({ ...prev, editorialState: newState }));
     toast.success(`Indicator ${newState === 'published' ? 'published' : 'reverted to draft'}`);
   };
@@ -86,6 +91,14 @@ const IndicatorEdit = () => {
   const isPromiseResolved = formData.Promise 
     ? promiseHeadlines.includes(formData.Promise)
     : true;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
