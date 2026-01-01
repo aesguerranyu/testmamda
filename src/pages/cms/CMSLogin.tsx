@@ -14,7 +14,7 @@ const authSchema = z.object({
 
 const CMSLogin = () => {
   const navigate = useNavigate();
-  const { user, isCmsUser, isLoading, signIn, signUp } = useAuth();
+  const { user, isCmsUser, isLoading, signIn, signUp, signOut } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -97,15 +97,13 @@ const CMSLogin = () => {
             Your account does not have permission to access the CMS. 
             Please contact an administrator to request access.
           </p>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              const { signOut } = useAuth();
-              await signOut();
-              navigate('/rat-control/cms/admin');
-            }}
-          >
-            Sign out
+        <Button
+          variant="outline"
+          onClick={async () => {
+            await signOut();
+          }}
+        >
+          Sign out
           </Button>
         </div>
       </div>
