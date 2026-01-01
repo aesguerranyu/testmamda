@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["IBM Plex Sans", "system-ui", "sans-serif"],
+        sans: ["Helvetica Neue", "Helvetica", "Arial", "system-ui", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
       },
       colors: {
@@ -67,16 +67,29 @@ export default {
           "sidebar-accent": "hsl(var(--cms-sidebar-accent))",
           "sidebar-muted": "hsl(var(--cms-sidebar-muted))",
         },
+        // NYC Subway MTA colors
+        subway: {
+          blue: "#0039A6",
+          red: "#EE352E",
+          green: "#00933C",
+          orange: "#FF6319",
+          yellow: "#FCCC0A",
+          lime: "#6CBE45",
+          purple: "#B933AD",
+          gray: "#A7A9AC",
+          brown: "#996633",
+          dark: "#1A1A1A",
+        },
         status: {
           draft: "hsl(var(--status-draft))",
           "draft-foreground": "hsl(var(--status-draft-foreground))",
           published: "hsl(var(--status-published))",
           "published-foreground": "hsl(var(--status-published-foreground))",
-          "not-started": "hsl(var(--status-not-started))",
-          "in-progress": "hsl(var(--status-in-progress))",
-          completed: "hsl(var(--status-completed))",
-          stalled: "hsl(var(--status-stalled))",
-          broken: "hsl(var(--status-broken))",
+          "not-started": "#A7A9AC",
+          "in-progress": "#0039A6",
+          completed: "#00933C",
+          stalled: "#EE352E",
+          broken: "#EE352E",
         },
       },
       borderRadius: {

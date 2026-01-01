@@ -4,8 +4,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/use-auth";
-import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+
+// Public Pages
+import { PublicLayout } from "./components/public/PublicLayout";
+import PublicHome from "./pages/public/Home";
+import PromisesList from "./pages/public/PromisesList";
+import PromiseDetail from "./pages/public/PromiseDetail";
+import Membership from "./pages/public/Membership";
+import Methodology from "./pages/public/Methodology";
+import First100Days from "./pages/public/First100Days";
+import PublicIndicators from "./pages/public/Indicators";
 
 // CMS Pages
 import CMSLogin from "./pages/cms/CMSLogin";
@@ -27,7 +36,16 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            {/* Public Routes */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<PublicHome />} />
+              <Route path="/promises" element={<PromisesList />} />
+              <Route path="/promises/:id" element={<PromiseDetail />} />
+              <Route path="/membership" element={<Membership />} />
+              <Route path="/methodology" element={<Methodology />} />
+              <Route path="/first100days" element={<First100Days />} />
+              <Route path="/indicators" element={<PublicIndicators />} />
+            </Route>
             
             {/* CMS Routes */}
             <Route path="/rat-control/cms/admin" element={<CMSLogin />} />
