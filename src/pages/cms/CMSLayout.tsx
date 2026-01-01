@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
-import { isAuthenticated, logout, getStats } from '@/lib/cms-store';
+import { useAuth } from '@/hooks/use-auth';
+import { getStats } from '@/lib/cms-store';
 import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, 
@@ -12,7 +13,6 @@ import {
   X,
   ChevronRight
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const navItems = [
   { path: '/rat-control/cms/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -24,20 +24,39 @@ const navItems = [
 const CMSLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isCmsUser, isLoading, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState<ReturnType<typeof getStats> | null>(null);
 
   useEffect(() => {
-    if (!isAuthenticated()) {
+    // Redirect to login if not authenticated or not a CMS user
+    if (!isLoading && (!user || !isCmsUser)) {
       navigate('/rat-control/cms/admin');
     }
-    setStats(getStats());
-  }, [navigate, location.pathname]);
+  }, [user, isCmsUser, isLoading, navigate]);
 
-  const handleLogout = () => {
-    logout();
+  useEffect(() => {
+    setStats(getStats());
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
+    await signOut();
     navigate('/rat-control/cms/admin');
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!user || !isCmsUser) {
+    return null;
+  }
 
   // Generate breadcrumbs
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -120,6 +139,9 @@ const CMSLayout = () => {
 
         {/* User/Logout */}
         <div className="p-3 border-t border-sidebar-border">
+          <div className="px-3 py-2 mb-2">
+            <p className="text-xs text-cms-sidebar-muted truncate">{user.email}</p>
+          </div>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm text-cms-sidebar-muted hover:text-cms-sidebar-foreground hover:bg-cms-sidebar-accent/50 transition-colors"

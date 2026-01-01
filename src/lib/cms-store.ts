@@ -4,7 +4,6 @@ const STORAGE_KEYS = {
   PROMISES: 'cms_promises',
   INDICATORS: 'cms_indicators',
   IMPORT_REPORTS: 'cms_import_reports',
-  AUTH: 'cms_auth',
 };
 
 // Generate unique ID
@@ -372,24 +371,7 @@ export const saveImportReport = (report: ImportReport): void => {
   localStorage.setItem(STORAGE_KEYS.IMPORT_REPORTS, JSON.stringify(reports.slice(0, 50)));
 };
 
-// Auth functions
-export const isAuthenticated = (): boolean => {
-  const data = localStorage.getItem(STORAGE_KEYS.AUTH);
-  return data === 'true';
-};
-
-export const login = (username: string, password: string): boolean => {
-  // Simple auth - in production, this would be server-side
-  if (username === 'admin' && password === 'mamdani2025') {
-    localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
-    return true;
-  }
-  return false;
-};
-
-export const logout = (): void => {
-  localStorage.removeItem(STORAGE_KEYS.AUTH);
-};
+// Auth is now handled by Supabase - see src/hooks/use-auth.tsx
 
 // Stats
 export const getStats = () => {
