@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { importPromisesCSV, importIndicatorsCSV, getImportReports, resolvePromiseReferences } from '@/lib/cms-store';
 import { ImportReport } from '@/types/cms';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,6 @@ import {
   FileText, 
   ClipboardCheck, 
   BarChart3, 
-  CheckCircle2, 
   XCircle,
   AlertTriangle,
   Clock,
@@ -23,13 +22,14 @@ const Import = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importType, setImportType] = useState<'promises' | 'indicators'>('promises');
 
-  const loadHistory = () => {
-    setImportHistory(getImportReports());
+  const loadHistory = async () => {
+    const reports = await getImportReports();
+    setImportHistory(reports);
   };
 
-  useState(() => {
+  useEffect(() => {
     loadHistory();
-  });
+  }, []);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,9 +47,9 @@ const Import = () => {
       
       let report: ImportReport;
       if (importType === 'promises') {
-        report = importPromisesCSV(content);
+        report = await importPromisesCSV(content);
       } else {
-        report = importIndicatorsCSV(content);
+        report = await importIndicatorsCSV(content);
       }
 
       setLastReport(report);
@@ -71,8 +71,8 @@ const Import = () => {
     }
   };
 
-  const handleResolveReferences = () => {
-    const resolved = resolvePromiseReferences();
+  const handleResolveReferences = async () => {
+    const resolved = await resolvePromiseReferences();
     if (resolved > 0) {
       toast.success(`Resolved ${resolved} indicator reference${resolved !== 1 ? 's' : ''}`);
     } else {

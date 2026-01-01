@@ -14,6 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
+      import_reports: {
+        Row: {
+          created_at: string
+          errors: Json
+          id: string
+          records_created: number
+          records_updated: number
+          rows_processed: number
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          errors?: Json
+          id?: string
+          records_created?: number
+          records_updated?: number
+          rows_processed?: number
+          type: string
+        }
+        Update: {
+          created_at?: string
+          errors?: Json
+          id?: string
+          records_created?: number
+          records_updated?: number
+          rows_processed?: number
+          type?: string
+        }
+        Relationships: []
+      }
+      indicators: {
+        Row: {
+          category: string
+          created_at: string
+          current: string
+          current_description: string
+          description_paragraph: string
+          editorial_state: string
+          headline: string
+          id: string
+          promise_reference: string
+          promise_reference_unresolved: boolean
+          source: string
+          target: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          current?: string
+          current_description?: string
+          description_paragraph?: string
+          editorial_state?: string
+          headline?: string
+          id?: string
+          promise_reference?: string
+          promise_reference_unresolved?: boolean
+          source?: string
+          target?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current?: string
+          current_description?: string
+          description_paragraph?: string
+          editorial_state?: string
+          headline?: string
+          id?: string
+          promise_reference?: string
+          promise_reference_unresolved?: boolean
+          source?: string
+          target?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      promises: {
+        Row: {
+          category: string
+          created_at: string
+          date_promised: string
+          description: string
+          editorial_state: string
+          headline: string
+          id: string
+          last_updated: string
+          owner_agency: string
+          requires_state_action: string
+          seo_tags: string
+          short_description: string
+          source_text: string
+          source_url: string
+          status: string
+          targets: string
+          updated_at: string
+          updates: string
+          url_slugs: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          date_promised?: string
+          description?: string
+          editorial_state?: string
+          headline?: string
+          id?: string
+          last_updated?: string
+          owner_agency?: string
+          requires_state_action?: string
+          seo_tags?: string
+          short_description?: string
+          source_text?: string
+          source_url?: string
+          status?: string
+          targets?: string
+          updated_at?: string
+          updates?: string
+          url_slugs?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date_promised?: string
+          description?: string
+          editorial_state?: string
+          headline?: string
+          id?: string
+          last_updated?: string
+          owner_agency?: string
+          requires_state_action?: string
+          seo_tags?: string
+          short_description?: string
+          source_text?: string
+          source_url?: string
+          status?: string
+          targets?: string
+          updated_at?: string
+          updates?: string
+          url_slugs?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

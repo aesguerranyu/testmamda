@@ -1,159 +1,313 @@
-import { Promise, Indicator, ImportReport, EditorialState, PROMISE_CSV_HEADERS, INDICATOR_CSV_HEADERS, ImportError } from '@/types/cms';
+import { supabase } from '@/integrations/supabase/client';
+import { Promise as CMSPromise, Indicator, ImportReport, EditorialState, PROMISE_CSV_HEADERS, INDICATOR_CSV_HEADERS, ImportError } from '@/types/cms';
 
-const STORAGE_KEYS = {
-  PROMISES: 'cms_promises',
-  INDICATORS: 'cms_indicators',
-  IMPORT_REPORTS: 'cms_import_reports',
-};
+// Type definitions for database rows
+interface DbPromise {
+  id: string;
+  category: string;
+  headline: string;
+  owner_agency: string;
+  date_promised: string;
+  status: string;
+  requires_state_action: string;
+  targets: string;
+  short_description: string;
+  description: string;
+  seo_tags: string;
+  updates: string;
+  source_text: string;
+  source_url: string;
+  last_updated: string;
+  url_slugs: string;
+  editorial_state: string;
+  created_at: string;
+  updated_at: string;
+}
 
-// Generate unique ID
-const generateId = (): string => {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-};
+interface DbIndicator {
+  id: string;
+  category: string;
+  promise_reference: string;
+  headline: string;
+  description_paragraph: string;
+  target: string;
+  current: string;
+  current_description: string;
+  source: string;
+  editorial_state: string;
+  promise_reference_unresolved: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Map database row to CMSPromise type
+const mapDbToPromise = (row: DbPromise): CMSPromise => ({
+  id: row.id,
+  Category: row.category,
+  Headline: row.headline,
+  'Owner agency': row.owner_agency,
+  'Date Promised': row.date_promised,
+  Status: row.status,
+  'Requires state action or cooperation': row.requires_state_action,
+  Targets: row.targets,
+  'Short description': row.short_description,
+  Description: row.description,
+  'SEO tags': row.seo_tags,
+  Updates: row.updates,
+  'Source Text': row.source_text,
+  'Source URL': row.source_url,
+  'Last updated': row.last_updated,
+  'URL Slugs': row.url_slugs,
+  editorialState: row.editorial_state as EditorialState,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+// Map CMSPromise type to database insert/update
+const mapPromiseToDb = (promise: Partial<CMSPromise>) => ({
+  category: promise.Category ?? '',
+  headline: promise.Headline ?? '',
+  owner_agency: promise['Owner agency'] ?? '',
+  date_promised: promise['Date Promised'] ?? '',
+  status: promise.Status ?? 'Not started',
+  requires_state_action: promise['Requires state action or cooperation'] ?? '',
+  targets: promise.Targets ?? '',
+  short_description: promise['Short description'] ?? '',
+  description: promise.Description ?? '',
+  seo_tags: promise['SEO tags'] ?? '',
+  updates: promise.Updates ?? '',
+  source_text: promise['Source Text'] ?? '',
+  source_url: promise['Source URL'] ?? '',
+  last_updated: promise['Last updated'] ?? '',
+  url_slugs: promise['URL Slugs'] ?? '',
+  editorial_state: promise.editorialState ?? 'draft',
+});
+
+// Map database row to Indicator type
+const mapDbToIndicator = (row: DbIndicator): Indicator => ({
+  id: row.id,
+  Category: row.category,
+  Promise: row.promise_reference,
+  Headline: row.headline,
+  'Description Paragraph': row.description_paragraph,
+  Target: row.target,
+  Current: row.current,
+  'Current Description': row.current_description,
+  Source: row.source,
+  editorialState: row.editorial_state as EditorialState,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+  promiseReferenceUnresolved: row.promise_reference_unresolved,
+});
+
+// Map Indicator type to database insert/update
+const mapIndicatorToDb = (indicator: Partial<Indicator>, promiseReferenceUnresolved = false) => ({
+  category: indicator.Category ?? '',
+  promise_reference: indicator.Promise ?? '',
+  headline: indicator.Headline ?? '',
+  description_paragraph: indicator['Description Paragraph'] ?? '',
+  target: indicator.Target ?? '',
+  current: indicator.Current ?? '',
+  current_description: indicator['Current Description'] ?? '',
+  source: indicator.Source ?? '',
+  editorial_state: indicator.editorialState ?? 'draft',
+  promise_reference_unresolved: promiseReferenceUnresolved,
+});
 
 // Promise CRUD operations
-export const getPromises = (): Promise[] => {
-  const data = localStorage.getItem(STORAGE_KEYS.PROMISES);
-  return data ? JSON.parse(data) : [];
+export const getPromises = async (): Promise<CMSPromise[]> => {
+  const { data, error } = await supabase
+    .from('promises')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching promises:', error);
+    return [];
+  }
+  
+  return (data as DbPromise[]).map(mapDbToPromise);
 };
 
-export const getPromise = (id: string): Promise | undefined => {
-  return getPromises().find(p => p.id === id);
+export const getPromise = async (id: string): Promise<CMSPromise | undefined> => {
+  const { data, error } = await supabase
+    .from('promises')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  
+  if (error || !data) {
+    console.error('Error fetching promise:', error);
+    return undefined;
+  }
+  
+  return mapDbToPromise(data as DbPromise);
 };
 
-export const savePromise = (promise: Partial<Promise> & { id?: string }): Promise => {
-  const promises = getPromises();
-  const now = new Date().toISOString();
+export const savePromise = async (promise: Partial<CMSPromise> & { id?: string }): Promise<CMSPromise | undefined> => {
+  const dbData = mapPromiseToDb(promise);
   
   if (promise.id) {
     // Update existing
-    const index = promises.findIndex(p => p.id === promise.id);
-    if (index !== -1) {
-      promises[index] = { ...promises[index], ...promise, updatedAt: now };
-      localStorage.setItem(STORAGE_KEYS.PROMISES, JSON.stringify(promises));
-      return promises[index];
+    const { data, error } = await supabase
+      .from('promises')
+      .update(dbData)
+      .eq('id', promise.id)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error updating promise:', error);
+      return undefined;
     }
+    
+    return mapDbToPromise(data as DbPromise);
   }
   
   // Create new
-  const newPromise: Promise = {
-    id: generateId(),
-    Category: '',
-    Headline: '',
-    'Owner agency': '',
-    'Date Promised': '',
-    Status: 'Not started',
-    'Requires state action or cooperation': '',
-    Targets: '',
-    'Short description': '',
-    Description: '',
-    'SEO tags': '',
-    Updates: '',
-    'Source Text': '',
-    'Source URL': '',
-    'Last updated': '',
-    'URL Slugs': '',
-    editorialState: 'draft',
-    createdAt: now,
-    updatedAt: now,
-    ...promise,
-  } as Promise;
+  const { data, error } = await supabase
+    .from('promises')
+    .insert(dbData)
+    .select()
+    .single();
   
-  promises.push(newPromise);
-  localStorage.setItem(STORAGE_KEYS.PROMISES, JSON.stringify(promises));
-  return newPromise;
-};
-
-export const deletePromise = (id: string): void => {
-  const promises = getPromises().filter(p => p.id !== id);
-  localStorage.setItem(STORAGE_KEYS.PROMISES, JSON.stringify(promises));
-};
-
-export const updatePromiseEditorialState = (id: string, state: EditorialState): Promise | undefined => {
-  const promises = getPromises();
-  const index = promises.findIndex(p => p.id === id);
-  if (index !== -1) {
-    promises[index].editorialState = state;
-    promises[index].updatedAt = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEYS.PROMISES, JSON.stringify(promises));
-    return promises[index];
+  if (error) {
+    console.error('Error creating promise:', error);
+    return undefined;
   }
-  return undefined;
+  
+  return mapDbToPromise(data as DbPromise);
+};
+
+export const deletePromise = async (id: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('promises')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Error deleting promise:', error);
+    return false;
+  }
+  
+  return true;
+};
+
+export const updatePromiseEditorialState = async (id: string, state: EditorialState): Promise<CMSPromise | undefined> => {
+  const { data, error } = await supabase
+    .from('promises')
+    .update({ editorial_state: state })
+    .eq('id', id)
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error updating promise state:', error);
+    return undefined;
+  }
+  
+  return mapDbToPromise(data as DbPromise);
 };
 
 // Indicator CRUD operations
-export const getIndicators = (): Indicator[] => {
-  const data = localStorage.getItem(STORAGE_KEYS.INDICATORS);
-  return data ? JSON.parse(data) : [];
-};
-
-export const getIndicator = (id: string): Indicator | undefined => {
-  return getIndicators().find(i => i.id === id);
-};
-
-export const saveIndicator = (indicator: Partial<Indicator> & { id?: string }): Indicator => {
-  const indicators = getIndicators();
-  const now = new Date().toISOString();
+export const getIndicators = async (): Promise<Indicator[]> => {
+  const { data, error } = await supabase
+    .from('indicators')
+    .select('*')
+    .order('created_at', { ascending: false });
   
+  if (error) {
+    console.error('Error fetching indicators:', error);
+    return [];
+  }
+  
+  return (data as DbIndicator[]).map(mapDbToIndicator);
+};
+
+export const getIndicator = async (id: string): Promise<Indicator | undefined> => {
+  const { data, error } = await supabase
+    .from('indicators')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  
+  if (error || !data) {
+    console.error('Error fetching indicator:', error);
+    return undefined;
+  }
+  
+  return mapDbToIndicator(data as DbIndicator);
+};
+
+export const saveIndicator = async (indicator: Partial<Indicator> & { id?: string }): Promise<Indicator | undefined> => {
   // Check if Promise reference exists
-  const promises = getPromises();
+  const promises = await getPromises();
   const promiseReferenceUnresolved = indicator.Promise 
     ? !promises.some(p => p.Headline === indicator.Promise)
     : false;
   
+  const dbData = mapIndicatorToDb(indicator, promiseReferenceUnresolved);
+  
   if (indicator.id) {
     // Update existing
-    const index = indicators.findIndex(i => i.id === indicator.id);
-    if (index !== -1) {
-      indicators[index] = { 
-        ...indicators[index], 
-        ...indicator, 
-        promiseReferenceUnresolved,
-        updatedAt: now 
-      };
-      localStorage.setItem(STORAGE_KEYS.INDICATORS, JSON.stringify(indicators));
-      return indicators[index];
+    const { data, error } = await supabase
+      .from('indicators')
+      .update(dbData)
+      .eq('id', indicator.id)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error updating indicator:', error);
+      return undefined;
     }
+    
+    return mapDbToIndicator(data as DbIndicator);
   }
   
   // Create new
-  const newIndicator: Indicator = {
-    id: generateId(),
-    Category: '',
-    Promise: '',
-    Headline: '',
-    'Description Paragraph': '',
-    Target: '',
-    Current: '',
-    'Current Description': '',
-    Source: '',
-    editorialState: 'draft',
-    createdAt: now,
-    updatedAt: now,
-    promiseReferenceUnresolved,
-    ...indicator,
-  } as Indicator;
+  const { data, error } = await supabase
+    .from('indicators')
+    .insert(dbData)
+    .select()
+    .single();
   
-  indicators.push(newIndicator);
-  localStorage.setItem(STORAGE_KEYS.INDICATORS, JSON.stringify(indicators));
-  return newIndicator;
-};
-
-export const deleteIndicator = (id: string): void => {
-  const indicators = getIndicators().filter(i => i.id !== id);
-  localStorage.setItem(STORAGE_KEYS.INDICATORS, JSON.stringify(indicators));
-};
-
-export const updateIndicatorEditorialState = (id: string, state: EditorialState): Indicator | undefined => {
-  const indicators = getIndicators();
-  const index = indicators.findIndex(i => i.id === id);
-  if (index !== -1) {
-    indicators[index].editorialState = state;
-    indicators[index].updatedAt = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEYS.INDICATORS, JSON.stringify(indicators));
-    return indicators[index];
+  if (error) {
+    console.error('Error creating indicator:', error);
+    return undefined;
   }
-  return undefined;
+  
+  return mapDbToIndicator(data as DbIndicator);
+};
+
+export const deleteIndicator = async (id: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('indicators')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Error deleting indicator:', error);
+    return false;
+  }
+  
+  return true;
+};
+
+export const updateIndicatorEditorialState = async (id: string, state: EditorialState): Promise<Indicator | undefined> => {
+  const { data, error } = await supabase
+    .from('indicators')
+    .update({ editorial_state: state })
+    .eq('id', id)
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error updating indicator state:', error);
+    return undefined;
+  }
+  
+  return mapDbToIndicator(data as DbIndicator);
 };
 
 // CSV Import functions
@@ -185,7 +339,6 @@ const parseCSVLine = (line: string): string[] => {
 };
 
 const parseCSV = (content: string): { headers: string[]; rows: string[][] } => {
-  // Split by newlines but handle multi-line quoted fields
   const lines: string[] = [];
   let currentLine = '';
   let inQuotes = false;
@@ -223,13 +376,13 @@ const parseCSV = (content: string): { headers: string[]; rows: string[][] } => {
   return { headers, rows };
 };
 
-export const importPromisesCSV = (content: string): ImportReport => {
+export const importPromisesCSV = async (content: string): Promise<ImportReport> => {
   const { headers, rows } = parseCSV(content);
   const errors: ImportError[] = [];
   let recordsCreated = 0;
   let recordsUpdated = 0;
   
-  // Validate headers - check required headers exist
+  // Validate headers
   const requiredHeaders = PROMISE_CSV_HEADERS;
   const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
   
@@ -240,9 +393,10 @@ export const importPromisesCSV = (content: string): ImportReport => {
     });
   }
   
-  const existingPromises = getPromises();
+  const existingPromises = await getPromises();
   
-  rows.forEach((row, index) => {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     try {
       const rowData: Record<string, string> = {};
       headers.forEach((header, i) => {
@@ -251,7 +405,7 @@ export const importPromisesCSV = (content: string): ImportReport => {
       
       // Skip empty rows
       if (!rowData['Headline']?.trim()) {
-        return;
+        continue;
       }
       
       // Check if promise already exists by headline
@@ -259,26 +413,26 @@ export const importPromisesCSV = (content: string): ImportReport => {
       
       if (existing) {
         // Update existing
-        savePromise({
+        await savePromise({
           id: existing.id,
           ...rowData,
-        } as Partial<Promise>);
+        } as Partial<CMSPromise>);
         recordsUpdated++;
       } else {
         // Create new
-        savePromise(rowData as unknown as Partial<Promise>);
+        await savePromise(rowData as unknown as Partial<CMSPromise>);
         recordsCreated++;
       }
     } catch (err) {
       errors.push({
-        row: index + 2, // +2 for 1-indexed and header row
+        row: index + 2,
         reason: err instanceof Error ? err.message : 'Unknown error',
       });
     }
-  });
+  }
   
   const report: ImportReport = {
-    id: generateId(),
+    id: crypto.randomUUID(),
     type: 'promises',
     timestamp: new Date().toISOString(),
     rowsProcessed: rows.length,
@@ -287,11 +441,11 @@ export const importPromisesCSV = (content: string): ImportReport => {
     errors,
   };
   
-  saveImportReport(report);
+  await saveImportReport(report);
   return report;
 };
 
-export const importIndicatorsCSV = (content: string): ImportReport => {
+export const importIndicatorsCSV = async (content: string): Promise<ImportReport> => {
   const { headers, rows } = parseCSV(content);
   const errors: ImportError[] = [];
   let recordsCreated = 0;
@@ -308,9 +462,10 @@ export const importIndicatorsCSV = (content: string): ImportReport => {
     });
   }
   
-  const existingIndicators = getIndicators();
+  const existingIndicators = await getIndicators();
   
-  rows.forEach((row, index) => {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     try {
       const rowData: Record<string, string> = {};
       headers.forEach((header, i) => {
@@ -319,7 +474,7 @@ export const importIndicatorsCSV = (content: string): ImportReport => {
       
       // Skip empty rows
       if (!rowData['Headline']?.trim()) {
-        return;
+        continue;
       }
       
       // Check if indicator already exists by headline
@@ -327,14 +482,14 @@ export const importIndicatorsCSV = (content: string): ImportReport => {
       
       if (existing) {
         // Update existing
-        saveIndicator({
+        await saveIndicator({
           id: existing.id,
           ...rowData,
         } as Partial<Indicator>);
         recordsUpdated++;
       } else {
         // Create new
-        saveIndicator(rowData as unknown as Partial<Indicator>);
+        await saveIndicator(rowData as unknown as Partial<Indicator>);
         recordsCreated++;
       }
     } catch (err) {
@@ -343,10 +498,10 @@ export const importIndicatorsCSV = (content: string): ImportReport => {
         reason: err instanceof Error ? err.message : 'Unknown error',
       });
     }
-  });
+  }
   
   const report: ImportReport = {
-    id: generateId(),
+    id: crypto.randomUUID(),
     type: 'indicators',
     timestamp: new Date().toISOString(),
     rowsProcessed: rows.length,
@@ -355,28 +510,54 @@ export const importIndicatorsCSV = (content: string): ImportReport => {
     errors,
   };
   
-  saveImportReport(report);
+  await saveImportReport(report);
   return report;
 };
 
 // Import reports
-export const getImportReports = (): ImportReport[] => {
-  const data = localStorage.getItem(STORAGE_KEYS.IMPORT_REPORTS);
-  return data ? JSON.parse(data) : [];
+export const getImportReports = async (): Promise<ImportReport[]> => {
+  const { data, error } = await supabase
+    .from('import_reports')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50);
+  
+  if (error) {
+    console.error('Error fetching import reports:', error);
+    return [];
+  }
+  
+  return (data || []).map(row => ({
+    id: row.id,
+    type: row.type as 'promises' | 'indicators',
+    timestamp: row.created_at,
+    rowsProcessed: row.rows_processed,
+    recordsCreated: row.records_created,
+    recordsUpdated: row.records_updated,
+    errors: Array.isArray(row.errors) ? (row.errors as unknown as ImportError[]) : [],
+  }));
 };
 
-export const saveImportReport = (report: ImportReport): void => {
-  const reports = getImportReports();
-  reports.unshift(report);
-  localStorage.setItem(STORAGE_KEYS.IMPORT_REPORTS, JSON.stringify(reports.slice(0, 50)));
+export const saveImportReport = async (report: ImportReport): Promise<void> => {
+  const { error } = await supabase
+    .from('import_reports')
+    .insert([{
+      type: report.type,
+      rows_processed: report.rowsProcessed,
+      records_created: report.recordsCreated,
+      records_updated: report.recordsUpdated,
+      errors: JSON.parse(JSON.stringify(report.errors)),
+    }]);
+  
+  if (error) {
+    console.error('Error saving import report:', error);
+  }
 };
-
-// Auth is now handled by Supabase - see src/hooks/use-auth.tsx
 
 // Stats
-export const getStats = () => {
-  const promises = getPromises();
-  const indicators = getIndicators();
+export const getStats = async () => {
+  const promises = await getPromises();
+  const indicators = await getIndicators();
   
   return {
     totalPromises: promises.length,
@@ -398,20 +579,23 @@ export const getStats = () => {
 };
 
 // Resolve indicator promise references
-export const resolvePromiseReferences = (): number => {
-  const promises = getPromises();
-  const indicators = getIndicators();
+export const resolvePromiseReferences = async (): Promise<number> => {
+  const promises = await getPromises();
+  const indicators = await getIndicators();
   let resolved = 0;
   
-  indicators.forEach(indicator => {
+  for (const indicator of indicators) {
     if (indicator.promiseReferenceUnresolved && indicator.Promise) {
       const found = promises.some(p => p.Headline === indicator.Promise);
       if (found) {
-        saveIndicator({ ...indicator, promiseReferenceUnresolved: false });
+        await supabase
+          .from('indicators')
+          .update({ promise_reference_unresolved: false })
+          .eq('id', indicator.id);
         resolved++;
       }
     }
-  });
+  }
   
   return resolved;
 };

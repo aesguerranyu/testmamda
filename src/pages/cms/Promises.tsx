@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getPromises, deletePromise, updatePromiseEditorialState } from '@/lib/cms-store';
-import { Promise, EditorialState } from '@/types/cms';
+import { Promise as CMSPromise, EditorialState } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -12,7 +12,6 @@ import {
   Trash2, 
   Eye, 
   EyeOff,
-  Filter,
   X
 } from 'lucide-react';
 import {
@@ -27,13 +26,16 @@ import { toast } from 'sonner';
 
 const Promises = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [promises, setPromises] = useState<Promise[]>([]);
+  const [promises, setPromises] = useState<CMSPromise[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<EditorialState | ''>('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const loadPromises = () => {
-    setPromises(getPromises());
+  const loadPromises = async () => {
+    const data = await getPromises();
+    setPromises(data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -45,17 +47,17 @@ const Promises = () => {
     if (filter === 'published') setStatusFilter('published');
   }, [searchParams]);
 
-  const handleDelete = (id: string, headline: string) => {
+  const handleDelete = async (id: string, headline: string) => {
     if (confirm(`Delete "${headline}"? This cannot be undone.`)) {
-      deletePromise(id);
+      await deletePromise(id);
       loadPromises();
       toast.success('Promise deleted');
     }
   };
 
-  const handleToggleState = (id: string, currentState: EditorialState) => {
+  const handleToggleState = async (id: string, currentState: EditorialState) => {
     const newState = currentState === 'draft' ? 'published' : 'draft';
-    updatePromiseEditorialState(id, newState);
+    await updatePromiseEditorialState(id, newState);
     loadPromises();
     toast.success(`Promise ${newState === 'published' ? 'published' : 'reverted to draft'}`);
   };
@@ -89,6 +91,14 @@ const Promises = () => {
     'Stalled': 'bg-status-stalled text-white',
     'Broken': 'bg-status-broken text-white',
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

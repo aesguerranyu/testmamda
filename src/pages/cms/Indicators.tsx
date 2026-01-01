@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getIndicators, deleteIndicator, updateIndicatorEditorialState, getPromises } from '@/lib/cms-store';
-import { Indicator, EditorialState } from '@/types/cms';
+import { Indicator, EditorialState, Promise as CMSPromise } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -32,10 +32,16 @@ const Indicators = () => {
   const [statusFilter, setStatusFilter] = useState<EditorialState | ''>('');
   const [unresolvedFilter, setUnresolvedFilter] = useState(false);
   const [promiseHeadlines, setPromiseHeadlines] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const loadIndicators = () => {
-    setIndicators(getIndicators());
-    setPromiseHeadlines(getPromises().map(p => p.Headline));
+  const loadIndicators = async () => {
+    const [indicatorData, promiseData] = await Promise.all([
+      getIndicators(),
+      getPromises()
+    ]);
+    setIndicators(indicatorData);
+    setPromiseHeadlines(promiseData.map(p => p.Headline));
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -47,17 +53,17 @@ const Indicators = () => {
     if (filter === 'unresolved') setUnresolvedFilter(true);
   }, [searchParams]);
 
-  const handleDelete = (id: string, headline: string) => {
+  const handleDelete = async (id: string, headline: string) => {
     if (confirm(`Delete "${headline}"? This cannot be undone.`)) {
-      deleteIndicator(id);
+      await deleteIndicator(id);
       loadIndicators();
       toast.success('Indicator deleted');
     }
   };
 
-  const handleToggleState = (id: string, currentState: EditorialState) => {
+  const handleToggleState = async (id: string, currentState: EditorialState) => {
     const newState = currentState === 'draft' ? 'published' : 'draft';
-    updateIndicatorEditorialState(id, newState);
+    await updateIndicatorEditorialState(id, newState);
     loadIndicators();
     toast.success(`Indicator ${newState === 'published' ? 'published' : 'reverted to draft'}`);
   };
@@ -79,6 +85,14 @@ const Indicators = () => {
   });
 
   const hasFilters = search || statusFilter || unresolvedFilter;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
