@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { getPromises, deletePromise, updatePromiseEditorialState } from '@/lib/cms-store';
+import { getPromises, deletePromise, updatePromiseEditorialState, batchUpdatePromiseEditorialState, batchDeletePromises } from '@/lib/cms-store';
 import { Promise as CMSPromise, EditorialState } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Plus, 
   Search, 
@@ -12,7 +13,8 @@ import {
   Trash2, 
   Eye, 
   EyeOff,
-  X
+  X,
+  CheckSquare
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -31,6 +33,8 @@ const Promises = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<EditorialState | ''>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const loadPromises = async () => {
     const data = await getPromises();
@@ -83,6 +87,65 @@ const Promises = () => {
   });
 
   const hasFilters = search || categoryFilter || statusFilter;
+
+  // Selection handlers
+  const filteredIds = filteredPromises.map(p => p.id);
+  const allSelected = filteredIds.length > 0 && filteredIds.every(id => selectedIds.has(id));
+  const someSelected = filteredIds.some(id => selectedIds.has(id));
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredIds));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+  };
+
+  // Batch actions
+  const handleBatchPublish = async () => {
+    if (selectedIds.size === 0) return;
+    setIsProcessing(true);
+    const count = await batchUpdatePromiseEditorialState([...selectedIds], 'published');
+    await loadPromises();
+    clearSelection();
+    setIsProcessing(false);
+    toast.success(`${count} promise${count !== 1 ? 's' : ''} published`);
+  };
+
+  const handleBatchDraft = async () => {
+    if (selectedIds.size === 0) return;
+    setIsProcessing(true);
+    const count = await batchUpdatePromiseEditorialState([...selectedIds], 'draft');
+    await loadPromises();
+    clearSelection();
+    setIsProcessing(false);
+    toast.success(`${count} promise${count !== 1 ? 's' : ''} reverted to draft`);
+  };
+
+  const handleBatchDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`Delete ${selectedIds.size} promise${selectedIds.size !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+    setIsProcessing(true);
+    const count = await batchDeletePromises([...selectedIds]);
+    await loadPromises();
+    clearSelection();
+    setIsProcessing(false);
+    toast.success(`${count} promise${count !== 1 ? 's' : ''} deleted`);
+  };
 
   const statusColors: Record<string, string> = {
     'Not started': 'bg-status-not-started text-white',
@@ -156,12 +219,67 @@ const Promises = () => {
         </div>
       </div>
 
+      {/* Batch Actions Bar */}
+      {selectedIds.size > 0 && (
+        <div className="cms-card p-3 flex items-center justify-between gap-4 bg-primary/5 border-primary/20">
+          <div className="flex items-center gap-3">
+            <CheckSquare className="w-5 h-5 text-primary" />
+            <span className="text-sm font-medium">
+              {selectedIds.size} selected
+            </span>
+            <Button variant="ghost" size="sm" onClick={clearSelection} className="text-muted-foreground">
+              Clear
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleBatchPublish}
+              disabled={isProcessing}
+              className="gap-1.5"
+            >
+              <Eye className="w-4 h-4" />
+              Publish
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleBatchDraft}
+              disabled={isProcessing}
+              className="gap-1.5"
+            >
+              <EyeOff className="w-4 h-4" />
+              Draft
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleBatchDelete}
+              disabled={isProcessing}
+              className="gap-1.5 text-destructive hover:text-destructive"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="cms-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="cms-table-header border-b">
+                <th className="p-4 w-12">
+                  <Checkbox
+                    checked={allSelected}
+                    onCheckedChange={toggleSelectAll}
+                    aria-label="Select all"
+                    className={someSelected && !allSelected ? 'data-[state=checked]:bg-primary/50' : ''}
+                  />
+                </th>
                 <th className="text-left p-4">Headline</th>
                 <th className="text-left p-4 hidden md:table-cell">Category</th>
                 <th className="text-left p-4 hidden lg:table-cell">Status</th>
@@ -173,7 +291,7 @@ const Promises = () => {
             <tbody>
               {filteredPromises.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     {promises.length === 0 
                       ? 'No promises yet. Create one or import from CSV.'
                       : 'No promises match your filters.'}
@@ -181,7 +299,20 @@ const Promises = () => {
                 </tr>
               ) : (
                 filteredPromises.map((promise) => (
-                  <tr key={promise.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                  <tr 
+                    key={promise.id} 
+                    className={cn(
+                      "border-b last:border-0 hover:bg-muted/30 transition-colors",
+                      selectedIds.has(promise.id) && "bg-primary/5"
+                    )}
+                  >
+                    <td className="p-4">
+                      <Checkbox
+                        checked={selectedIds.has(promise.id)}
+                        onCheckedChange={() => toggleSelect(promise.id)}
+                        aria-label={`Select ${promise.Headline}`}
+                      />
+                    </td>
                     <td className="p-4">
                       <Link 
                         to={`/rat-control/cms/promises/${promise.id}`}

@@ -209,6 +209,35 @@ export const updatePromiseEditorialState = async (id: string, state: EditorialSt
   return mapDbToPromise(data as DbPromise);
 };
 
+// Batch operations for promises
+export const batchUpdatePromiseEditorialState = async (ids: string[], state: EditorialState): Promise<number> => {
+  const { error } = await supabase
+    .from('promises')
+    .update({ editorial_state: state })
+    .in('id', ids);
+  
+  if (error) {
+    console.error('Error batch updating promise states:', error);
+    return 0;
+  }
+  
+  return ids.length;
+};
+
+export const batchDeletePromises = async (ids: string[]): Promise<number> => {
+  const { error } = await supabase
+    .from('promises')
+    .delete()
+    .in('id', ids);
+  
+  if (error) {
+    console.error('Error batch deleting promises:', error);
+    return 0;
+  }
+  
+  return ids.length;
+};
+
 // Indicator CRUD operations
 export const getIndicators = async (): Promise<Indicator[]> => {
   const { data, error } = await supabase
