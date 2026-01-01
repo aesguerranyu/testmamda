@@ -43,7 +43,7 @@ const CMSLayout = () => {
   useEffect(() => {
     // Redirect to login if not authenticated or not a CMS user
     if (!isLoading && (!user || !isCmsUser)) {
-      navigate('/rat-control/cms/admin');
+      navigate('/rat-control/cms/admin', { replace: true });
     }
   }, [user, isCmsUser, isLoading, navigate]);
 
