@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { PromiseCard } from "@/components/public/PromiseCard";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -14,12 +11,27 @@ interface PublicPromise {
   updated_at: string;
 }
 
+type PromiseStatus = "All" | "Not started" | "In progress" | "Completed" | "Stalled" | "Broken";
+type PromiseCategory = "All" | "Housing" | "Transportation" | "Education" | "Healthcare" | "Environment" | "Economic Justice" | "Public Safety" | "Government Reform";
+
 export default function PromisesList() {
   const [promises, setPromises] = useState<PublicPromise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<PromiseStatus>("All");
+  const [selectedCategory, setSelectedCategory] = useState<PromiseCategory>("All");
+
+  const statuses: PromiseStatus[] = ["All", "Not started", "In progress", "Completed", "Stalled"];
+  const categories: PromiseCategory[] = [
+    "All",
+    "Housing",
+    "Transportation",
+    "Education",
+    "Healthcare",
+    "Environment",
+    "Economic Justice",
+    "Public Safety",
+    "Government Reform"
+  ];
 
   useEffect(() => {
     const fetchPromises = async () => {
@@ -38,86 +50,78 @@ export default function PromisesList() {
     fetchPromises();
   }, []);
 
-  // Get unique categories and statuses
-  const categories = [...new Set(promises.map((p) => p.category).filter(Boolean))];
-  const statuses = [...new Set(promises.map((p) => p.status).filter(Boolean))];
-
-  // Filter promises
   const filteredPromises = promises.filter((p) => {
-    const matchesSearch =
-      !search ||
-      p.headline.toLowerCase().includes(search.toLowerCase()) ||
-      p.short_description.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = !categoryFilter || p.category === categoryFilter;
-    const matchesStatus = !statusFilter || p.status === statusFilter;
-    return matchesSearch && matchesCategory && matchesStatus;
+    const matchesStatus = selectedStatus === "All" || p.status === selectedStatus;
+    const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+    return matchesStatus && matchesCategory;
   });
 
-  const hasFilters = search || categoryFilter || statusFilter;
-
-  const clearFilters = () => {
-    setSearch("");
-    setCategoryFilter("");
-    setStatusFilter("");
-  };
-
   return (
-    <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-subway-blue mb-4">
-            Promises & Agenda
+    <div className="bg-background min-h-screen">
+      {/* Header */}
+      <div className="bg-subway-blue text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 tracking-tight">
+            Promise Tracker
           </h1>
-          <p className="text-gray-600 text-lg">
-            {filteredPromises.length} promise{filteredPromises.length !== 1 ? "s" : ""} tracked
+          <p className="text-lg text-white/90 font-medium">
+            Every commitment. Every detail. Every source. No spin.
           </p>
         </div>
+      </div>
 
-        {/* Filters */}
-        <div className="bg-white border-2 border-gray-200 p-4 mb-8">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                placeholder="Search promises..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 h-12 border-2 border-gray-300"
-              />
-            </div>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="h-12 px-4 border-2 border-gray-300 bg-white text-sm min-w-[160px]"
-            >
-              <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-12 px-4 border-2 border-gray-300 bg-white text-sm min-w-[140px]"
-            >
-              <option value="">All Statuses</option>
+      {/* Filters */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-card border-2 border-border p-6 mb-8">
+          {/* Status Filter */}
+          <div className="mb-6">
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
+              Filter by Status
+            </label>
+            <div className="flex flex-wrap gap-2">
               {statuses.map((status) => (
-                <option key={status} value={status}>
+                <button
+                  key={status}
+                  onClick={() => setSelectedStatus(status)}
+                  className={`px-3 py-2 text-xs font-bold uppercase tracking-wide transition-all ${
+                    selectedStatus === status
+                      ? "bg-subway-blue text-white"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+                >
                   {status}
-                </option>
+                </button>
               ))}
-            </select>
-            {hasFilters && (
-              <button
-                onClick={clearFilters}
-                className="h-12 px-4 border-2 border-gray-300 bg-white hover:bg-gray-50 transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            )}
+            </div>
+          </div>
+
+          {/* Category Filter */}
+          <div className="mb-4">
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
+              Filter by Category
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-3 py-2 text-xs font-bold uppercase tracking-wide transition-all ${
+                    selectedCategory === category
+                      ? "bg-subway-blue text-white"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Results count */}
+          <div className="pt-4 border-t border-border">
+            <p className="text-sm text-muted-foreground font-medium">
+              Showing {filteredPromises.length} of {promises.length} promises
+            </p>
           </div>
         </div>
 
@@ -127,12 +131,19 @@ export default function PromisesList() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-subway-blue"></div>
           </div>
         ) : filteredPromises.length === 0 ? (
-          <div className="text-center py-12 bg-white border-2 border-gray-200">
-            <p className="text-gray-500">
-              {promises.length === 0
-                ? "No published promises yet."
-                : "No promises match your filters."}
+          <div className="text-center py-12 bg-card border-2 border-border">
+            <p className="text-lg font-bold text-foreground mb-4">
+              No promises match your filters.
             </p>
+            <button
+              onClick={() => {
+                setSelectedStatus("All");
+                setSelectedCategory("All");
+              }}
+              className="px-4 py-2 bg-subway-blue text-white hover:bg-subway-blue/90 transition-all font-bold uppercase tracking-wide text-sm"
+            >
+              Clear Filters
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
