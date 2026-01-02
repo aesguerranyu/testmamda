@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 interface IndicatorCardProps {
   indicator: {
@@ -213,15 +214,13 @@ export function IndicatorCard({ indicator }: IndicatorCardProps) {
                 {Math.round(progress)}%
               </span>
             </div>
-            <div className="w-full h-3 bg-gray-200 border border-gray-300">
-              <div 
-                className="h-full transition-all duration-500"
-                style={{ 
-                  width: `${progress}%`,
-                  backgroundColor: progressColor
-                }}
-              />
-            </div>
+            <Progress 
+              value={progress} 
+              className="bg-gray-200"
+              style={{ 
+                '--progress-color': progressColor 
+              } as React.CSSProperties}
+            />
           </div>
         )}
 
