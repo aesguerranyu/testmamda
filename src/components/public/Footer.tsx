@@ -14,7 +14,7 @@ export function Footer() {
           <div>
             <h2 className="font-bold mb-3 text-white" style={{ fontSize: '28px' }}>Mamdani Tracker</h2>
             <p className="text-white mb-3 leading-relaxed text-sm">
-              Tracking NYC Mayor Zohran Mamdani's promises and actions
+              Tracking Mayor Zohran Mamdani's promises and actions in New York City.
             </p>
             <a 
               href="mailto:hello@mamdanitracker.nyc" 
@@ -35,23 +35,23 @@ export function Footer() {
                     to="/promises" 
                     className="text-white no-underline text-sm block hover:opacity-70 transition-opacity"
                   >
-                    Promises & Agenda
+                    Promises and Agenda
                   </Link>
                 </li>
                 <li className="mb-2">
                   <Link 
-                    to="/actions" 
+                    to="/first100days" 
                     className="text-white no-underline text-sm block hover:opacity-70 transition-opacity"
                   >
-                    Actions Tracker
+                    First 100 Days
                   </Link>
                 </li>
                 <li className="mb-2">
                   <Link 
-                    to="/appointments" 
+                    to="/indicators" 
                     className="text-white no-underline text-sm block hover:opacity-70 transition-opacity"
                   >
-                    Appointments
+                    NYC Performance Indicators
                   </Link>
                 </li>
                 <li className="mb-2">
@@ -59,7 +59,7 @@ export function Footer() {
                     to="/methodology" 
                     className="text-white no-underline text-sm block hover:opacity-70 transition-opacity"
                   >
-                    About & Methodology
+                    About
                   </Link>
                 </li>
                 <li className="mb-2">
@@ -70,14 +70,6 @@ export function Footer() {
                     Become a Member
                   </Link>
                 </li>
-                <li className="mb-2">
-                  <Link 
-                    to="/brandassets" 
-                    className="text-white no-underline text-sm block hover:opacity-70 transition-opacity"
-                  >
-                    Brand Assets
-                  </Link>
-                </li>
               </ul>
             </nav>
           </div>
@@ -86,10 +78,10 @@ export function Footer() {
           <div>
             <h3 className="font-bold mb-3 text-lg text-white">About This Project</h3>
             <p className="text-white leading-relaxed m-0 text-sm mb-3">
-              Mamdani Tracker is an independent, non-partisan public-interest website that helps New Yorkers hold Mayor Zohran Mamdani accountable by tracking his campaign promises, policy positions, and mayoral actions.
+              Mamdani Tracker is an independent, nonpartisan public-interest journalism project built to help New Yorkers follow how the city is governed.
             </p>
             <p className="text-white leading-relaxed m-0 text-sm">
-              Not affiliated with any campaign, political party, or government office. All information is sourced from publicly available records.
+              We are not affiliated with any campaign, political party, or government office. All information is sourced from publicly available records and documents.
             </p>
           </div>
         </div>
@@ -193,7 +185,7 @@ export function Footer() {
               © {new Date().getFullYear()} Mamdani Tracker. All rights reserved.
             </p>
             <p className="m-0">
-              Made for New Yorkers, by New Yorkers
+              Made for New Yorkers, by and with New Yorkers
             </p>
           </div>
         </div>
