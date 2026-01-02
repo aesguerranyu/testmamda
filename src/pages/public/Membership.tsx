@@ -23,7 +23,6 @@ export default function Membership() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send data to a backend
     console.log("Form submitted:", formData);
     setSubmitted(true);
   };
@@ -33,54 +32,49 @@ export default function Membership() {
     setFormData(prev => ({
       ...prev,
       [name]: value,
-      // Clear city field if borough changes to a NYC borough
       ...(name === "borough" && value !== "Outside New York" && value !== "Outside USA" ? { city: "" } : {})
     }));
   };
 
   if (submitted) {
     return (
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-8 col-lg-6">
-            <div className="text-center p-5 bg-white border border-2 border-dark">
-              <div 
-                className="d-flex align-items-center justify-content-center rounded-circle mx-auto mb-4"
-                style={{ width: '64px', height: '64px', backgroundColor: '#22C55E' }}
-              >
-                <Check className="text-white" style={{ width: '32px', height: '32px' }} />
-              </div>
-              <h2 className="fw-bold mb-3" style={{ color: '#1E3A8A' }}>
-                Welcome to Mamdani Tracker!
-              </h2>
-              <p className="text-secondary mb-4">
-                Thank you for joining. We'll keep you informed about updates and new developments.
-              </p>
-              <button
-                onClick={() => setSubmitted(false)}
-                className="px-4 py-3 text-white transition-colors fw-bold text-uppercase tracking-wide text-sm-custom btn"
-                style={{ backgroundColor: '#1E3A8A', letterSpacing: '0.15em' }}
-              >
-                Submit Another Response
-              </button>
-            </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4">
+        <div className="max-w-lg w-full bg-white border-2 border-gray-900 p-8 text-center">
+          <div 
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ backgroundColor: '#22C55E' }}
+          >
+            <Check className="w-8 h-8 text-white" />
           </div>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: '#1E3A8A' }}>
+            Welcome to Mamdani Tracker!
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Thank you for joining. We'll keep you informed about updates and new developments.
+          </p>
+          <button
+            onClick={() => setSubmitted(false)}
+            className="px-6 py-3 text-white font-bold uppercase tracking-widest text-sm transition-colors hover:opacity-90"
+            style={{ backgroundColor: '#1E3A8A' }}
+          >
+            Submit Another Response
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-vh-100" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <div 
-        className="text-white py-5 px-3 px-md-4 text-center"
+        className="text-white py-12 px-4 sm:px-6 lg:px-8 text-center"
         style={{ backgroundColor: '#1E3A8A' }}
       >
-        <h1 className="fw-bold mb-3" style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)' }}>
+        <h1 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight">
           Become a Member
         </h1>
-        <p className="mb-4 mx-auto" style={{ maxWidth: '600px', opacity: 0.9, fontSize: '1.125rem' }}>
+        <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">
           Be part of the exciting public interest project tracking changes in NYC.
         </p>
         <button
@@ -90,55 +84,48 @@ export default function Membership() {
               formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
           }}
-          className="px-4 py-2 bg-brand-primary hover-brand-primary text-white fw-bold text-uppercase tracking-wide text-xs transition-all btn"
-          style={{ letterSpacing: '0.1em' }}
+          className="px-6 py-2 bg-white text-[#1E3A8A] hover:bg-white/90 font-bold uppercase tracking-widest text-xs transition-all"
         >
           JOIN NOW
         </button>
       </div>
 
       {/* Why Join Section */}
-      <div className="container py-5">
-        <h2 className="fw-bold text-center mb-4" style={{ color: '#1E293B' }}>Why Join?</h2>
-        <div className="row g-4 mb-5">
-          <div className="col-12 col-md-4">
-            <div className="d-flex align-items-start gap-3 p-3 bg-white border border-2" style={{ borderColor: '#E2E8F0' }}>
-              <div 
-                className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
-                style={{ width: '24px', height: '24px', backgroundColor: '#22C55E', marginTop: '2px' }}
-              >
-                <Check className="text-white" style={{ width: '14px', height: '14px' }} />
-              </div>
-              <span className="text-secondary" style={{ fontSize: '0.875rem' }}>
-                Track the mayor's commitments and agenda items in one place
-              </span>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Why Join?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
+            <div 
+              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ backgroundColor: '#22C55E' }}
+            >
+              <Check className="w-4 h-4 text-white" />
             </div>
+            <span className="text-gray-600 text-sm">
+              Track the mayor's commitments and agenda items in one place
+            </span>
           </div>
-          <div className="col-12 col-md-4">
-            <div className="d-flex align-items-start gap-3 p-3 bg-white border border-2" style={{ borderColor: '#E2E8F0' }}>
-              <div 
-                className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
-                style={{ width: '24px', height: '24px', backgroundColor: '#22C55E', marginTop: '2px' }}
-              >
-                <Check className="text-white" style={{ width: '14px', height: '14px' }} />
-              </div>
-              <span className="text-secondary" style={{ fontSize: '0.875rem' }}>
-                See what has changed and what evidence supports it
-              </span>
+          <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
+            <div 
+              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ backgroundColor: '#22C55E' }}
+            >
+              <Check className="w-4 h-4 text-white" />
             </div>
+            <span className="text-gray-600 text-sm">
+              See what has changed and what evidence supports it
+            </span>
           </div>
-          <div className="col-12 col-md-4">
-            <div className="d-flex align-items-start gap-3 p-3 bg-white border border-2" style={{ borderColor: '#E2E8F0' }}>
-              <div 
-                className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
-                style={{ width: '24px', height: '24px', backgroundColor: '#22C55E', marginTop: '2px' }}
-              >
-                <Check className="text-white" style={{ width: '14px', height: '14px' }} />
-              </div>
-              <span className="text-secondary" style={{ fontSize: '0.875rem' }}>
-                Membership is free and focused on transparency
-              </span>
+          <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
+            <div 
+              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ backgroundColor: '#22C55E' }}
+            >
+              <Check className="w-4 h-4 text-white" />
             </div>
+            <span className="text-gray-600 text-sm">
+              Membership is free and focused on transparency
+            </span>
           </div>
         </div>
 
@@ -146,12 +133,11 @@ export default function Membership() {
         <form 
           id="membership-form" 
           onSubmit={handleSubmit} 
-          className="bg-white border border-2 p-4 p-md-5"
-          style={{ borderColor: '#E2E8F0' }}
+          className="bg-white border-2 border-gray-200 p-6 sm:p-8"
         >
-          <div className="row g-3 mb-3">
-            <div className="col-12 col-sm-6">
-              <label className="form-label fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                 Name *
               </label>
               <input
@@ -160,12 +146,11 @@ export default function Membership() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="form-control py-3"
-                style={{ borderColor: '#D1D5DB' }}
+                className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
               />
             </div>
-            <div className="col-12 col-sm-6">
-              <label className="form-label fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                 Last Name (optional)
               </label>
               <input
@@ -173,14 +158,13 @@ export default function Membership() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="form-control py-3"
-                style={{ borderColor: '#D1D5DB' }}
+                className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
               />
             </div>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+          <div className="mb-4">
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
               Email Address *
             </label>
             <input
@@ -190,13 +174,12 @@ export default function Membership() {
               onChange={handleChange}
               required
               placeholder="you@example.com"
-              className="form-control py-3"
-              style={{ borderColor: '#D1D5DB' }}
+              className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+          <div className="mb-4">
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
               Where do you live? *
             </label>
             <select
@@ -204,8 +187,7 @@ export default function Membership() {
               value={formData.borough}
               onChange={handleChange}
               required
-              className="form-select py-3"
-              style={{ borderColor: '#D1D5DB' }}
+              className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
             >
               <option value="">Select a borough</option>
               {boroughs.map((borough) => (
@@ -217,8 +199,8 @@ export default function Membership() {
           </div>
 
           {(formData.borough === "Outside New York" || formData.borough === "Outside USA") && (
-            <div className="mb-3">
-              <label className="form-label fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                 {formData.borough === "Outside USA" ? "City/Country" : "City, State"} *
               </label>
               <input
@@ -227,28 +209,21 @@ export default function Membership() {
                 value={formData.city}
                 onChange={handleChange}
                 required
-                className="form-control py-3"
-                style={{ borderColor: '#D1D5DB' }}
+                className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
               />
             </div>
           )}
 
-          <div className="mt-4">
+          <div className="mt-6">
             <button
               type="submit"
-              className="btn w-100 py-3 text-white fw-bold text-uppercase"
-              style={{ 
-                backgroundColor: '#1E3A8A', 
-                letterSpacing: '0.1em',
-                transition: 'all 0.2s'
-              }}
+              className="w-full px-6 py-4 text-white font-bold uppercase tracking-widest text-sm transition-all hover:scale-[1.02]"
+              style={{ backgroundColor: '#1E3A8A' }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#1E40AF';
-                e.currentTarget.style.transform = 'scale(1.05)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = '#1E3A8A';
-                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               Join Now
@@ -257,7 +232,7 @@ export default function Membership() {
         </form>
       </div>
 
-      <p className="text-center text-secondary pb-4 px-3" style={{ fontSize: '0.75rem' }}>
+      <p className="text-center text-xs text-gray-500 pb-8 px-4">
         We respect your privacy. Your information will never be shared or sold.
       </p>
     </div>
