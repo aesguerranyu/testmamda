@@ -8,12 +8,14 @@ interface PromiseCardProps {
     shortDescription: string;
     category: string;
     status: string;
+    slug?: string; // URL slug for canonical URLs
   };
   id?: string;
   headline?: string;
   shortDescription?: string;
   category?: string;
   status?: string;
+  slug?: string;
 }
 
 // Map categories to subway line colors
@@ -36,7 +38,7 @@ const getCategoryColor = (category: string): string => {
 export function PromiseCard({ promise }: PromiseCardProps) {
   return (
     <Link
-      to={`/promises/${promise.id}`}
+      to={`/promises/${promise.slug || promise.id}`}
       className="group block bg-white border-2 border-black hover:border-[#0C2788] transition-all no-underline p-4 md:p-5 flex flex-col h-full"
       aria-label={`View details for promise: ${promise.headline}`}
       onClick={() => window.scrollTo(0, 0)}

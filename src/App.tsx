@@ -43,7 +43,7 @@ const App = () => (
             <Route element={<PublicLayout />}>
               <Route path="/" element={<PublicHome />} />
               <Route path="/promises" element={<PromiseTracker />} />
-              <Route path="/promises/:id" element={<PromiseDetail />} />
+              <Route path="/promises/:slug" element={<PromiseDetail />} />
               <Route path="/membership" element={<Membership />} />
               <Route path="/methodology" element={<Methodology />} />
               <Route path="/first100days" element={<First100Days />} />
