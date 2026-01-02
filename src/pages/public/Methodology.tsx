@@ -6,7 +6,7 @@ export function Methodology() {
   return (
     <div className="min-h-screen">
       <SEO 
-        title="About & Methodology - Mamdani Tracker | How We Track NYC Mayor"
+        title="About - Mamdani Tracker | How We Track NYC Mayor"
         description="Learn about Mamdani Tracker's methodology for tracking campaign promises and mayoral actions. Independent, non-partisan research with transparent sourcing and verification processes."
         keywords="political accountability methodology, fact checking process, independent research, NYC political tracking, promise verification, source transparency, non-partisan tracker"
       />
