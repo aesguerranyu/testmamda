@@ -53,32 +53,20 @@ export function Methodology() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
             <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Sarah Mitchell</h3>
+              <h3 className="font-bold text-black text-lg mb-2">Anthony Esguerra</h3>
               <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Founder and Executive Editor</p>
-              <p className="text-gray-600 text-base leading-relaxed">
-                Sarah is a former investigative journalist with 12 years covering NYC politics and municipal government. She founded Mamdani Tracker to make political accountability more accessible to everyday New Yorkers.
-              </p>
             </div>
             <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Marcus Chen</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder</p>
-              <p className="text-gray-600 text-base leading-relaxed">
-                Marcus brings expertise in data journalism and policy analysis from his work at civic tech nonprofits. He specializes in translating complex legislative actions into clear, actionable information.
-              </p>
+              <h3 className="font-bold text-black text-lg mb-2">Angeli Juani</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Research Editor</p>
             </div>
             <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Rebecca Torres</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder</p>
-              <p className="text-gray-600 text-base leading-relaxed">
-                Rebecca has a background in grassroots organizing and community advocacy across all five boroughs. She ensures the tracker serves the information needs of diverse NYC communities.
-              </p>
+              <h3 className="font-bold text-black text-lg mb-2">Cha Crisostomo</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Data Lead</p>
             </div>
             <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">David Park</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Head of Technology</p>
-              <p className="text-gray-600 text-base leading-relaxed">
-                David is a full-stack developer with experience building civic engagement platforms. He designs and maintains the technical infrastructure that keeps this tracker running and accessible.
-              </p>
+              <h3 className="font-bold text-black text-lg mb-2">Erwin Daez</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Technology Lead</p>
             </div>
           </div>
         </section>
