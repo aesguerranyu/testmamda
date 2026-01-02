@@ -97,46 +97,42 @@ export function Methodology() {
           </div>
         </section>
 
-        <div className="flex flex-col gap-4">
-
-          {/* Status Labels */}
-          <section className="bg-white border-2 border-gray-300">
-            <div className="bg-[#0C2788] px-4 md:px-5 py-4 flex items-center gap-3">
-              <ArrowPathIcon style={{ width: '2rem', height: '2rem' }} className="text-white shrink-0" />
-              <h2 className="font-bold text-white m-0" style={{ fontSize: '20px' }}>
-                <span className="hidden md:inline" style={{ fontSize: '24px' }}>Status System</span>
-                <span className="md:hidden">Status System</span>
-              </h2>
-            </div>
-            <div className="p-4 md:p-5">
-              <p className="text-lg text-gray-600 mb-4">
-                Every promise gets one of four statuses based on <strong className="font-bold">publicly available evidence:</strong>
-              </p>
-              
-              <div className="flex flex-col gap-3">
-                {[
-                  { status: "Not started", color: "#6B7280", desc: "No public action taken toward implementation" },
-                  { status: "In progress", color: "#0039A6", desc: "Active steps underway (committee review, pilot programs, etc.)" },
-                  { status: "Completed", color: "#00933C", desc: "Policy enacted through legislation, regulation, or program launch" },
-                  { status: "Stalled", color: "#EE352E", desc: "Progress halted due to obstacles or lack of support" }
-                ].map((item) => (
-                  <div key={item.status} className="bg-white border-2 border-gray-300 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span 
-                        className="px-4 py-2 text-white font-bold uppercase tracking-wide text-sm shrink-0"
-                        style={{ backgroundColor: item.color }}
-                      >
-                        {item.status}
-                      </span>
-                    </div>
-                    <p className="text-base text-gray-600 m-0">{item.desc}</p>
+        {/* Promise Status System */}
+        <section className="mb-8">
+          <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+              <span className="hidden md:inline" style={{ fontSize: '32px' }}>Promise Status System</span>
+              <span className="md:hidden">Promise Status System</span>
+            </h2>
+          </div>
+          <div className="max-w-4xl pl-4 md:pl-6">
+            <p className="text-lg text-gray-600 leading-relaxed mb-6">
+              Each promise is assigned one status based on publicly available evidence.
+            </p>
+            
+            <div className="flex flex-col gap-4">
+              {[
+                { status: "Not started", color: "#6B7280", desc: "No public action has been taken toward implementation." },
+                { status: "In progress", color: "#0039A6", desc: "Public steps are underway, such as hearings, public consultations, pilot programs, or administrative action." },
+                { status: "Completed", color: "#00933C", desc: "The policy has been carried out through legislation, regulation, or a program launch." },
+                { status: "Stalled", color: "#FCCC0A", desc: "Progress has paused because of legal, political, or practical obstacles." },
+                { status: "Not delivered", color: "#EE352E", desc: "The promise has not been fulfilled or appears to have been abandoned." }
+              ].map((item) => (
+                <div key={item.status}>
+                  <div className="flex items-start gap-4">
+                    <span 
+                      className="px-4 py-2 text-white font-bold uppercase tracking-wide text-sm shrink-0"
+                      style={{ backgroundColor: item.color, color: item.status === "Stalled" ? "#000" : "#fff" }}
+                    >
+                      {item.status}
+                    </span>
+                    <p className="text-lg text-gray-600 m-0 pt-1">{item.desc}</p>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </section>
-
-        </div>
+          </div>
+        </section>
       </div>
     </div>
   );
