@@ -71,44 +71,40 @@ export function Methodology() {
           </div>
         </section>
 
+        {/* What Is a Promise */}
+        <section className="mb-5">
+          <div className="border-t-4 border-[#0C2788] pt-4 mb-4">
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+              <span className="hidden md:inline" style={{ fontSize: '32px' }}>What Is a Promise?</span>
+              <span className="md:hidden">What Is a Promise?</span>
+            </h2>
+          </div>
+          <div className="max-w-4xl">
+            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+              We define a promise as something Mayor Zohran Mamdani or his team said they would do.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+              More specifically, a promise is an observable and trackable policy commitment or goal that has been publicly stated through official and verifiable channels, including:
+            </p>
+            <ul className="list-disc pl-6 mb-3 space-y-2">
+              <li className="text-lg text-gray-600">Campaign platforms and written policy documents</li>
+              <li className="text-lg text-gray-600">Legislative proposals or formal co-sponsorships</li>
+              <li className="text-lg text-gray-600">Public statements during the campaign, at official events, or in media interviews</li>
+              <li className="text-lg text-gray-600">Written positions in official publications or verified social media accounts</li>
+            </ul>
+            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+              Some promises tracked on this site are broad goals. Others are more granular actions needed to carry out a larger commitment. In some cases, smaller actions support or build toward a bigger promise.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+              Over time, we plan to improve the design to better show these relationships.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              We do not track vague aspirations without a clear commitment.
+            </p>
+          </div>
+        </section>
+
         <div className="flex flex-col gap-4">
-          {/* Definition Section */}
-          <section className="bg-white border-2 border-gray-300">
-            <div className="bg-[#0C2788] px-4 md:px-5 py-4 flex items-center gap-3">
-              <MagnifyingGlassIcon style={{ width: '2rem', height: '2rem' }} className="text-white shrink-0" />
-              <h2 className="font-bold text-white m-0" style={{ fontSize: '20px' }}>
-                <span className="hidden md:inline" style={{ fontSize: '24px' }}>What Is a Promise?</span>
-                <span className="md:hidden">What Is a Promise?</span>
-              </h2>
-            </div>
-            <div className="p-4 md:p-5">
-              <div className="bg-[#E9EDFB] border-l-[6px] border-[#0C2788] p-4 mb-4">
-                <p className="text-lg leading-relaxed text-black m-0">
-                  <strong className="font-bold">We define a promise as something Mayor Zohran Mamdani or his team said they would do.</strong>
-                </p>
-              </div>
-              <p className="text-lg leading-relaxed text-gray-600 mb-4">
-                More specifically, a promise is an observable and trackable policy commitment or goal that has been publicly stated through official and verifiable channels, including:
-              </p>
-              <ul className="list-disc pl-6 mb-4 space-y-2">
-                <li className="text-base text-gray-600">Campaign platforms and written policy documents</li>
-                <li className="text-base text-gray-600">Legislative proposals or formal co-sponsorships</li>
-                <li className="text-base text-gray-600">Public statements during the campaign, at official events, or in media interviews</li>
-                <li className="text-base text-gray-600">Written positions in official publications or verified social media accounts</li>
-              </ul>
-              <p className="text-lg leading-relaxed text-gray-600 mb-4">
-                Some promises tracked on this site are broad goals. Others are more granular actions needed to carry out a larger commitment. In some cases, smaller actions support or build toward a bigger promise.
-              </p>
-              <p className="text-lg leading-relaxed text-gray-600 mb-4">
-                Over time, we plan to improve the design to better show these relationships.
-              </p>
-              <div className="bg-[#E9EDFB] border-l-[6px] border-[#0C2788] p-4">
-                <p className="text-lg leading-relaxed text-black m-0">
-                  <strong className="font-bold">We do not track vague aspirations without a clear commitment.</strong>
-                </p>
-              </div>
-            </div>
-          </section>
 
           {/* Status Labels */}
           <section className="bg-white border-2 border-gray-300">
