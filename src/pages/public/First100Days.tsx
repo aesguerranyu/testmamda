@@ -65,95 +65,133 @@ export default function First100Days() {
   });
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="min-vh-100" style={{ backgroundColor: '#F8FAFC' }}>
       {/* Hero Section */}
-      <div className="bg-subway-blue text-white py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Calendar className="w-8 h-8 sm:w-10 sm:h-10" />
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-wider">
+      <div 
+        className="text-white py-4 py-md-5 px-3 px-md-4"
+        style={{ backgroundColor: '#1E3A8A' }}
+      >
+        <div className="container">
+          <div className="d-flex align-items-center justify-content-center gap-3 mb-3">
+            <Calendar style={{ width: '32px', height: '32px' }} className="d-none d-sm-block" />
+            <Calendar style={{ width: '24px', height: '24px' }} className="d-sm-none" />
+            <h1 
+              className="fw-bold text-uppercase mb-0"
+              style={{ 
+                letterSpacing: '0.1em',
+                fontSize: 'clamp(1.5rem, 4vw, 2.25rem)'
+              }}
+            >
               First 100 Days
             </h1>
           </div>
-          <p className="text-lg sm:text-xl font-medium opacity-90">
+          <p className="text-center mb-0" style={{ fontSize: 'clamp(1rem, 3vw, 1.25rem)', opacity: 0.9 }}>
             January 1 – April 10, 2026
           </p>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="container py-4 py-md-5">
         {/* Sort Controls */}
-        <div className="flex justify-end mb-6">
+        <div className="d-flex justify-content-end mb-4">
           <button
             onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-card border-2 border-foreground text-foreground font-bold uppercase tracking-wide text-xs sm:text-sm transition-all hover:bg-subway-blue hover:text-white hover:border-subway-blue"
+            className="d-inline-flex align-items-center gap-2 px-3 px-sm-4 py-2 bg-white border border-2 border-dark text-dark fw-bold text-uppercase tracking-wide transition-all btn"
+            style={{ letterSpacing: '0.05em', fontSize: 'clamp(10px, 2.5vw, 12px)' }}
             aria-label={sortOrder === "desc" ? "Sort to show oldest first" : "Sort to show most recent first"}
           >
             {sortOrder === "desc" ? (
               <>
-                <ArrowDown className="w-4 h-4" />
-                <span className="hidden sm:inline">Most Recent First</span>
-                <span className="sm:hidden">Newest</span>
+                <ArrowDown style={{ width: '16px', height: '16px' }} />
+                <span className="d-none d-sm-inline">Most Recent First</span>
+                <span className="d-sm-none">Newest</span>
               </>
             ) : (
               <>
-                <ArrowUp className="w-4 h-4" />
-                <span className="hidden sm:inline">Oldest First</span>
-                <span className="sm:hidden">Oldest</span>
+                <ArrowUp style={{ width: '16px', height: '16px' }} />
+                <span className="d-none d-sm-inline">Oldest First</span>
+                <span className="d-sm-none">Oldest</span>
               </>
             )}
           </button>
         </div>
 
         {/* Timeline */}
-        <div className="space-y-6">
+        <div className="d-flex flex-column gap-4">
           {sortedData.map((entry) => (
-            <div key={entry.day} className="border-2 border-border bg-card">
+            <div key={entry.day} className="bg-white border border-2" style={{ borderColor: '#E2E8F0' }}>
               {/* Day Header - Blue Line Style */}
-              <div className="bg-subway-blue px-4 sm:px-6 py-3">
-                <h2 className="text-white font-bold uppercase tracking-wide text-sm sm:text-base">
+              <div 
+                className="px-3 px-md-4 py-3"
+                style={{ backgroundColor: '#1E3A8A' }}
+              >
+                <h2 
+                  className="text-white fw-bold text-uppercase mb-0"
+                  style={{ letterSpacing: '0.05em', fontSize: 'clamp(0.875rem, 2.5vw, 1rem)' }}
+                >
                   Day {entry.day} — {entry.date}
                 </h2>
               </div>
 
               {/* Activities */}
-              <div className="p-4 sm:p-6 space-y-4">
+              <div className="p-3 p-md-4 d-flex flex-column gap-4">
                 {entry.activities.map((activity, index) => (
                   <div 
                     key={index} 
-                    className="border-l-4 border-subway-blue pl-4 py-2"
+                    className="ps-3 py-2"
+                    style={{ borderLeft: '4px solid #1E3A8A' }}
                   >
                     {/* Activity Title with Pill */}
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <h3 className="font-bold text-foreground text-base sm:text-lg">
+                    <div className="d-flex flex-wrap align-items-center gap-2 mb-2">
+                      <h3 
+                        className="fw-bold mb-0"
+                        style={{ color: '#1E293B', fontSize: 'clamp(1rem, 3vw, 1.125rem)' }}
+                      >
                         {activity.title}
                       </h3>
                       {activity.type && (
-                        <span className="px-2 py-1 bg-subway-yellow text-subway-dark text-xs font-bold uppercase tracking-wide">
+                        <span 
+                          className="px-2 py-1 fw-bold text-uppercase"
+                          style={{ 
+                            backgroundColor: '#FBBF24', 
+                            color: '#1E293B',
+                            fontSize: '0.75rem',
+                            letterSpacing: '0.05em'
+                          }}
+                        >
                           {activity.type}
                         </span>
                       )}
                     </div>
                     
                     {/* Activity Description */}
-                    <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-2">
+                    <p 
+                      className="text-secondary mb-2"
+                      style={{ fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', lineHeight: 1.6 }}
+                    >
                       {activity.description}
                     </p>
                     
                     {/* Sources */}
                     {activity.sources && activity.sources.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="d-flex flex-wrap gap-2 mt-2">
                         {activity.sources.map((source, idx) => (
                           <a
                             key={idx}
                             href={source.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-subway-blue hover:text-subway-red text-xs sm:text-sm font-medium transition-colors"
+                            className="d-inline-flex align-items-center gap-1 text-decoration-none fw-medium"
+                            style={{ 
+                              color: '#1E3A8A',
+                              fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
+                              transition: 'color 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#DC2626'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#1E3A8A'}
                           >
-                            <ExternalLink className="w-3 h-3" />
-                            {source.title}
+                            <span>→</span> {source.title}
                           </a>
                         ))}
                       </div>
@@ -166,11 +204,13 @@ export default function First100Days() {
         </div>
 
         {first100Days.length === 0 && (
-          <div className="bg-card border-2 border-border p-8 text-center">
-            <p className="text-muted-foreground text-lg">
+          <div className="bg-white border border-2 p-5 text-center" style={{ borderColor: '#E2E8F0' }}>
+            <p className="text-secondary mb-2" style={{ fontSize: '1.125rem' }}>
               First 100 Days tracking will begin once Mayor Mamdani takes office.
             </p>
-            <p className="text-muted-foreground/70 mt-2">Check back soon for updates.</p>
+            <p className="text-secondary mb-0" style={{ opacity: 0.7 }}>
+              Check back soon for updates.
+            </p>
           </div>
         )}
       </div>
