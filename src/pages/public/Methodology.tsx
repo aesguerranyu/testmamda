@@ -21,16 +21,16 @@ export function Methodology() {
             </h1>
           </div>
           <div className="max-w-4xl pl-4 md:pl-6">
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               Mayor Zohran Mamdani made big promises to New Yorkers. His message on affordability and governance resonated not only across New York City, but around the world. Now, as he takes office, it is time for him and his team to deliver, in a complex political environment with real-world constraints and consequences.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               Mamdani Tracker is a public-interest record that brings those promises together in one place and tracks what happens next. We document what was said, what actions follow, and how those commitments move forward over time, using publicly available sources.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               We aim to help New Yorkers understand what's happening around them and to hold the Mamdani administration accountable to its stated promises.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed">
               Our goal is to build a definitive public record of changes in New York City. We invite New Yorkers from all backgrounds to take part in building this public good.
             </p>
           </div>
@@ -73,25 +73,25 @@ export function Methodology() {
             </h2>
           </div>
           <div className="max-w-4xl pl-4 md:pl-6">
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               We define a promise as something Mayor Zohran Mamdani or his team said they would do.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               More specifically, a promise is an observable and trackable policy commitment or goal that has been publicly stated through official and verifiable channels, including:
             </p>
-            <ul className="list-disc pl-12 mb-4 space-y-2">
+            <ul className="list-disc pl-6 mb-4 space-y-2">
               <li className="text-lg text-gray-600">Campaign platforms and written policy documents</li>
               <li className="text-lg text-gray-600">Legislative proposals or formal co-sponsorships</li>
               <li className="text-lg text-gray-600">Public statements during the campaign, at official events, or in media interviews</li>
               <li className="text-lg text-gray-600">Written positions in official publications or verified social media accounts</li>
             </ul>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               Some promises tracked on this site are broad goals. Others are more granular actions needed to carry out a larger commitment. In some cases, smaller actions support or build toward a bigger promise.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4">
               Over time, we plan to improve the design to better show these relationships.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed indent-8">
+            <p className="text-lg text-gray-600 leading-relaxed">
               We do not track vague aspirations without a clear commitment.
             </p>
           </div>
