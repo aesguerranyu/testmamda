@@ -269,9 +269,9 @@ export const getIndicator = async (id: string): Promise<Indicator | undefined> =
 };
 
 export const saveIndicator = async (indicator: Partial<Indicator> & { id?: string }): Promise<Indicator | undefined> => {
-  // Check if Promise reference exists
+  // Check if Promise reference exists (only mark unresolved if a value is provided but doesn't match)
   const promises = await getPromises();
-  const promiseReferenceUnresolved = indicator.Promise 
+  const promiseReferenceUnresolved = indicator.Promise && indicator.Promise.trim() !== ''
     ? !promises.some(p => p.Headline === indicator.Promise)
     : false;
   

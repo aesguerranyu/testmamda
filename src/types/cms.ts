@@ -97,7 +97,6 @@ export const PROMISE_CSV_HEADERS = [
 
 export const INDICATOR_CSV_HEADERS = [
   'Category',
-  'Promise',
   'Headline',
   'Description Paragraph',
   'Target',
@@ -105,6 +104,9 @@ export const INDICATOR_CSV_HEADERS = [
   'Current Description',
   'Source',
 ] as const;
+
+// Optional CSV headers for indicators (can be filled in via CMS)
+export const INDICATOR_CSV_OPTIONAL_HEADERS = ['Promise'] as const;
 
 // Auth types
 export interface CMSUser {

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getIndicator, saveIndicator, updateIndicatorEditorialState, getPromises } from '@/lib/cms-store';
-import { Indicator, EditorialState } from '@/types/cms';
+import { Indicator, EditorialState, Promise as CMSPromise } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Save, Eye, EyeOff, Clock, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -29,12 +30,12 @@ const IndicatorEdit = () => {
   
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(!isNew);
-  const [promiseHeadlines, setPromiseHeadlines] = useState<string[]>([]);
+  const [promises, setPromises] = useState<CMSPromise[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
-      const promises = await getPromises();
-      setPromiseHeadlines(promises.map(p => p.Headline));
+      const allPromises = await getPromises();
+      setPromises(allPromises);
       
       if (!isNew && id) {
         const indicator = await getIndicator(id);
@@ -49,6 +50,8 @@ const IndicatorEdit = () => {
     };
     loadData();
   }, [id, isNew, navigate]);
+
+  const publishedPromises = promises.filter(p => p.editorialState === 'published');
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -89,7 +92,7 @@ const IndicatorEdit = () => {
   };
 
   const isPromiseResolved = formData.Promise 
-    ? promiseHeadlines.includes(formData.Promise)
+    ? promises.some(p => p.Headline === formData.Promise)
     : true;
 
   if (isLoading) {
@@ -197,27 +200,31 @@ const IndicatorEdit = () => {
 
           {/* Promise reference */}
           <div className="space-y-2">
-            <Label className="cms-input-label">Promise</Label>
-            <div className="relative">
-              <Input
-                value={formData.Promise || ''}
-                onChange={(e) => handleChange('Promise', e.target.value)}
-                placeholder="Reference to promise headline"
-                list="promise-options"
-                className={cn(
-                  !isPromiseResolved && formData.Promise && "border-status-stalled"
-                )}
-              />
-              <datalist id="promise-options">
-                {promiseHeadlines.map(headline => (
-                  <option key={headline} value={headline} />
+            <Label className="cms-input-label">Linked Promise</Label>
+            <Select
+              value={formData.Promise || ''}
+              onValueChange={(value) => handleChange('Promise', value === '__none__' ? '' : value)}
+            >
+              <SelectTrigger className={cn(
+                !isPromiseResolved && formData.Promise && "border-status-stalled"
+              )}>
+                <SelectValue placeholder="Select a promise (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">
+                  <span className="text-muted-foreground">No linked promise</span>
+                </SelectItem>
+                {publishedPromises.map(promise => (
+                  <SelectItem key={promise.id} value={promise.Headline}>
+                    {promise.Headline}
+                  </SelectItem>
                 ))}
-              </datalist>
-            </div>
+              </SelectContent>
+            </Select>
             <p className="cms-field-hint">
               {!isPromiseResolved && formData.Promise 
-                ? 'This promise does not exist in the system'
-                : 'Type to search existing promises'}
+                ? 'This promise reference does not match any published promise'
+                : 'Link this indicator to a published promise'}
             </p>
           </div>
 
