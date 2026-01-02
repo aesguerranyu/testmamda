@@ -42,28 +42,23 @@ export default function Home() {
   const exploreCards = [{
     to: "/promises",
     icon: FlagIcon,
-    title: "Promises",
-    description: "Track every commitment with verified sources and status updates"
+    title: "Promise Tracker",
+    description: "Track every commitment with clear status updates and verified sources."
   }, {
     to: "/first100days",
     icon: ClockIcon,
     title: "First 100 Days",
-    description: "Monitor progress and priorities in the critical early period"
+    description: "Follow early priorities and actions as Mayor Mamdani reshapes New York City."
   }, {
     to: "/indicators",
     icon: ChartBarIcon,
-    title: "Key Performance Indicators",
-    description: "NYC data and metrics that show real impact on New Yorkers"
+    title: "NYC Performance Indicators",
+    description: "Data and metrics that show how policies affect New Yorkers."
   }, {
     to: "/methodology",
     icon: DocumentTextIcon,
-    title: "About",
-    description: "How we verify, source, and maintain independence"
-  }, {
-    to: "/membership",
-    icon: UserGroupIcon,
-    title: "Membership",
-    description: "Join our community and support independent civic tracking"
+    title: "Methodology",
+    description: "How we track the administration and maintain independence."
   }];
 
   // Map database fields to PromiseCard expected format
