@@ -121,7 +121,7 @@ export default function Home() {
               Tracking big promises <br /> to New Yorkers
             </h1>
             <p className="text-black mx-auto leading-relaxed mb-5 font-medium py-3 px-4" style={{ maxWidth: '48rem', fontSize: 'clamp(18px, 2.2vw, 22px)' }}>
-              An independent, public interest record tracking Mayor Zohran Mamdani's promises and agenda
+              An independent, public-interest record tracking Mayor Zohran Mamdani's promises, actions, and progress, built with and for the people of New York City.
             </p>
             
             <div className="flex items-center justify-center gap-3">
