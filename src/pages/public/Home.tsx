@@ -1,222 +1,250 @@
 import { Link } from "react-router-dom";
+import {
+  ArrowRightIcon,
+  ChartBarIcon,
+  ClockIcon,
+  DocumentTextIcon,
+  FlagIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/solid";
 import { getLatestUpdates, promises } from "../../data/mockData";
-import { ArrowRightIcon, FlagIcon, ClockIcon, ChartBarIcon, DocumentTextIcon, UserGroupIcon } from "@heroicons/react/24/solid";
-import { StatusBadge } from "../../components/public/StatusBadge";
-import { MembershipForm } from "../../components/public/MembershipForm";
+import { MembershipForm } from "../../components/MembershipForm";
+import { PromiseCard } from "../../components/PromiseCard";
 import { SEO } from "../../components/SEO";
 import { StructuredData } from "../../components/StructuredData";
-import { PromiseCard } from "../../components/public/PromiseCard";
+
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function scrollToId(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function PageContainer({ children }: { children: React.ReactNode }) {
+  // Use a single consistent container everywhere. Adjust max width and padding to match Figma.
+  return (
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      {children}
+    </div>
+  );
+}
+
+function SectionTitle({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-10 text-center">
+      <div className="mb-2">
+        <h2
+          className="inline text-3xl font-black uppercase tracking-wide sm:text-4xl"
+          style={{ color: "#071B5E" }}
+        >
+          {title}
+        </h2>
+      </div>
+      {subtitle ? (
+        <p className="text-base text-gray-600 sm:text-lg">{subtitle}</p>
+      ) : null}
+    </div>
+  );
+}
+
+const exploreCards = [
+  {
+    to: "/promises",
+    icon: FlagIcon,
+    title: "Promises",
+    description: "Track every commitment with verified sources and status updates",
+  },
+  {
+    to: "/first100days",
+    icon: ClockIcon,
+    title: "First 100 Days",
+    description: "Monitor progress and priorities in the critical early period",
+  },
+  {
+    to: "/indicators",
+    icon: ChartBarIcon,
+    title: "Key Performance Indicators",
+    description: "NYC data and metrics that show real impact on New Yorkers",
+  },
+  {
+    to: "/methodology",
+    icon: DocumentTextIcon,
+    title: "About",
+    description: "How we verify, source, and maintain independence",
+  },
+  {
+    to: "/membership",
+    icon: UserGroupIcon,
+    title: "Membership",
+    description: "Join our community and support independent civic tracking",
+  },
+];
 
 export default function Home() {
   const latestUpdates = getLatestUpdates(5);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-  };
-
-  const scrollToPromises = () => {
-    const element = document.getElementById('promises-section');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // Map categories to subway line colors
-  const getCategoryColor = (category: string): string => {
-    const colorMap: { [key: string]: string } = {
-      "Housing": "#EE352E",        // Red line (1,2,3)
-      "Transportation": "#0039A6",  // Blue line (A,C,E)
-      "Education": "#00933C",       // Green line (4,5,6)
-      "Healthcare": "#FF6319",      // Orange line (B,D,F,M)
-      "Economy": "#FCCC0A",         // Yellow line (N,Q,R,W)
-      "Environment": "#6CBE45",     // Lime (G line)
-      "Safety": "#B933AD",          // Purple (7 line)
-      "Economic Justice": "#FCCC0A", // Yellow
-      "Public Safety": "#B933AD",    // Purple
-      "Government Reform": "#A7A9AC" // Gray
-    };
-    return colorMap[category] || "#A7A9AC";
-  };
-
-  const exploreCards = [
-    {
-      to: "/promises",
-      icon: FlagIcon,
-      title: "Promises",
-      description: "Track every commitment with verified sources and status updates"
-    },
-    {
-      to: "/first100days",
-      icon: ClockIcon,
-      title: "First 100 Days",
-      description: "Monitor progress and priorities in the critical early period"
-    },
-    {
-      to: "/indicators",
-      icon: ChartBarIcon,
-      title: "Key Performance Indicators",
-      description: "NYC data and metrics that show real impact on New Yorkers"
-    },
-    {
-      to: "/methodology",
-      icon: DocumentTextIcon,
-      title: "About",
-      description: "How we verify, source, and maintain independence"
-    },
-    {
-      to: "/membership",
-      icon: UserGroupIcon,
-      title: "Membership",
-      description: "Join our community and support independent civic tracking"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-white">
-      <SEO 
+    <div className="bg-white">
+      <SEO
         title="Mamdani Tracker | Tracking Promises to New Yorkers"
         description="An independent, public interest record tracking Mayor Zohran Mamdani's promises and agenda"
       />
       <StructuredData type="WebSite" data={{ name: "Mamdani Tracker" }} />
-      
-      {/* Hero Section - Full screen */}
-      <section className="min-h-[80vh] flex items-center justify-center bg-white border-b-4 border-black">
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6 leading-tight tracking-tight">
-              Tracking big promises <br /> to New Yorkers
+
+      {/* Hero */}
+      <section
+        className="flex min-h-screen items-center justify-center bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(7,27,94,0.85), rgba(7,27,94,0.95)), url('https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=1920&q=80')`,
+        }}
+      >
+        <PageContainer>
+          <div className="py-20 text-center">
+            <h1
+              className="mb-6 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+              style={{ lineHeight: 1.1 }}
+            >
+              Tracking big promises <br />to New Yorkers
             </h1>
-            <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
-              An independent, public interest record tracking Mayor Zohran Mamdani's promises and agenda
+
+            <p className="mx-auto mb-10 max-w-2xl text-lg text-white/80 sm:text-xl">
+              An independent, public interest record tracking Mayor Zohran
+              Mamdani's promises and agenda
             </p>
-            
-            <div className="flex justify-center">
+
+            <div>
               <button
-                onClick={scrollToPromises}
-                className="inline-flex items-center gap-2 bg-black text-white px-8 py-4 font-bold text-lg uppercase tracking-wide hover:bg-gray-800 transition-colors"
+                onClick={() => scrollToId("promises-section")}
+                className="cursor-pointer border-0 bg-[#0C2788] px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#1436B3]"
               >
                 Start Tracking
               </button>
             </div>
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      {/* Promises Section */}
-      <section id="promises-section" className="py-16 bg-gray-50 border-b-4 border-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4 uppercase tracking-wide">
-              Promises and Agenda
-            </h2>
-            <p className="text-lg text-gray-600">
-              Every promise tracked and verified with sources
-            </p>
-          </div>
-        
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      {/* Promises */}
+      <section id="promises-section" className="bg-gray-50 py-16 sm:py-20">
+        <PageContainer>
+          <SectionTitle
+            title="Promises and Agenda"
+            subtitle="Every promise tracked and verified with sources"
+          />
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {promises.map((promise) => (
-              <div key={promise.id}>
-                <PromiseCard {...promise} />
-              </div>
+              <PromiseCard key={promise.id} promise={promise} />
             ))}
           </div>
-        
-          <div className="text-center mt-12">
+
+          <div className="mt-12 text-center">
             <Link
               to="/promises"
               onClick={() => window.scrollTo(0, 0)}
-              className="inline-flex items-center gap-2 text-black hover:text-blue-600 transition-colors font-bold text-lg no-underline group uppercase tracking-wide"
+              className="group inline-flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-black no-underline transition-colors hover:text-blue-600"
             >
-              View All Promises 
-              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              View All Promises
+              <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      {/* Explore the Tracker Section */}
-      <section className="py-16 bg-white border-b-4 border-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4 uppercase tracking-wide">
-              Explore the Tracker
-            </h2>
-          </div>
-        
-          {/* Grid - same for all screen sizes */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      {/* Explore */}
+      <section className="bg-white py-16 sm:py-20">
+        <PageContainer>
+          <SectionTitle title="Explore the Tracker" />
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {exploreCards.map((card, index) => (
               <Link
                 key={index}
                 to={card.to}
                 onClick={() => window.scrollTo(0, 0)}
+                className="group block h-full bg-white p-5 no-underline transition-all hover:border-blue-600"
+                style={{
+                  borderWidth: 2,
+                  borderStyle: "solid",
+                  borderColor: "#7F97E6",
+                  color: "rgba(7,27,94,0.85)",
+                }}
               >
-                <div className="bg-white border-2 border-black p-6 hover:bg-gray-50 transition-colors h-full">
-                  <card.icon className="w-8 h-8 text-black mb-4" />
-                  <h3 className="text-xl font-bold text-black mb-2 uppercase">
+                <div className="flex h-full flex-col">
+                  <card.icon className="mb-4 h-10 w-10 text-[#1E3A8A]" />
+                  <h3 className="mb-2 text-lg font-bold uppercase tracking-wide transition-colors group-hover:text-blue-600">
                     {card.title}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm leading-relaxed text-gray-600">
                     {card.description}
                   </p>
                 </div>
               </Link>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      {/* Latest Updates - Subway style */}
-      <section className="py-16 bg-gray-50 border-b-4 border-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4 uppercase tracking-wide">
-              Latest Updates
-            </h2>
-          </div>
-        
-          <div className="max-w-3xl mx-auto space-y-4">
+      {/* Latest Updates */}
+      <section className="bg-gray-50 py-16 sm:py-20">
+        <PageContainer>
+          <SectionTitle title="Latest Updates" />
+
+          <div className="mx-auto max-w-3xl space-y-4">
             {latestUpdates.map((item) => (
-              <div key={item.id} className="bg-white border-2 border-black p-6">
-                <div className="flex items-center gap-4 mb-3">
-                  <span className="bg-black text-white px-3 py-1 text-sm font-bold uppercase">
+              <div
+                key={item.id}
+                className="border-l-4 border-[#1E3A8A] bg-white p-4 shadow-sm"
+              >
+                <div className="mb-2 flex items-center gap-3">
+                  <span
+                    className="px-2 py-1 text-xs font-bold uppercase tracking-wide text-white"
+                    style={{
+                      backgroundColor:
+                        item.type === "promise" ? "#1E3A8A" : "#22C55E",
+                    }}
+                  >
                     {item.type === "promise" ? "Promise" : "Action"}
                   </span>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-sm text-gray-500">
                     {formatDate(item.date)}
                   </span>
                 </div>
+
                 {item.type === "promise" ? (
-                  <h3 className="text-lg font-bold text-black">
-                    {item.headline}
-                  </h3>
+                  <p className="font-bold text-gray-900">{item.headline}</p>
                 ) : (
-                  <p className="text-gray-700">
-                    {item.description}
-                  </p>
+                  <p className="text-gray-700">{item.description}</p>
                 )}
               </div>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      {/* Be a Member Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4 uppercase tracking-wide">
-              Become a Member. It's free!
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Be part of the exciting public interest project tracking changes in NYC.
-            </p>
-          </div>
-
+      {/* Membership */}
+      <section className="bg-white py-16 sm:py-20">
+        <PageContainer>
+          <SectionTitle
+            title="Become a Member. It's free!"
+            subtitle="Be part of the exciting public interest project tracking changes in NYC."
+          />
           <MembershipForm />
-        </div>
+        </PageContainer>
       </section>
     </div>
   );
