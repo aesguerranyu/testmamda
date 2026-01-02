@@ -201,11 +201,7 @@ export default function Home() {
         }}>
             Be part of a public-interest project tracking changes in New York City.
           </p>
-          <p className="text-sm max-w-3xl" style={{
-          color: '#374151'
-        }}>
-            You'll hear from us every now and then. No spam. No information selling. We promise.
-          </p>
+          
         </div>
 
         <MembershipForm />
