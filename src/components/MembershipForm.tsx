@@ -165,7 +165,7 @@ export function MembershipForm() {
       </div>
 
       <p className="pt-2 text-center text-xs text-gray-500">
-        We respect your privacy. Your information will never be shared or sold.
+        You'll hear from us every now and then. No spam. No information selling. We promise.
       </p>
     </form>
   );

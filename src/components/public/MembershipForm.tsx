@@ -189,7 +189,7 @@ export function MembershipForm() {
       </form>
 
       <p className="text-sm text-gray-600 text-center mt-4 mb-0">
-        We respect your privacy. Your information will never be shared or sold.
+        You'll hear from us every now and then. No spam. No information selling. We promise.
       </p>
     </div>
   );
