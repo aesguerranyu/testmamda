@@ -82,9 +82,11 @@ export function Methodology() {
               </h2>
             </div>
             <div className="p-4 md:p-5">
-              <p className="text-lg leading-relaxed text-gray-600 mb-4">
-                We define a promise as something Mayor Zohran Mamdani or his team said they would do.
-              </p>
+              <div className="bg-[#E9EDFB] border-l-[6px] border-[#0C2788] p-4 mb-4">
+                <p className="text-lg leading-relaxed text-black m-0">
+                  <strong className="font-bold">We define a promise as something Mayor Zohran Mamdani or his team said they would do.</strong>
+                </p>
+              </div>
               <p className="text-lg leading-relaxed text-gray-600 mb-4">
                 More specifically, a promise is an observable and trackable policy commitment or goal that has been publicly stated through official and verifiable channels, including:
               </p>
@@ -100,9 +102,11 @@ export function Methodology() {
               <p className="text-lg leading-relaxed text-gray-600 mb-4">
                 Over time, we plan to improve the design to better show these relationships.
               </p>
-              <p className="text-lg leading-relaxed text-gray-600">
-                We do not track vague aspirations without a clear commitment.
-              </p>
+              <div className="bg-[#E9EDFB] border-l-[6px] border-[#0C2788] p-4">
+                <p className="text-lg leading-relaxed text-black m-0">
+                  <strong className="font-bold">We do not track vague aspirations without a clear commitment.</strong>
+                </p>
+              </div>
             </div>
           </section>
 
