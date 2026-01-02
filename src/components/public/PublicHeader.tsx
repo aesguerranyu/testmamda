@@ -6,7 +6,7 @@ const navItems = [
   { path: "/promises", label: "Promises" },
   { path: "/first100days", label: "First 100 Days" },
   { path: "/indicators", label: "Key Performance Indicators" },
-  { path: "/methodology", label: "About" },
+  { path: "/about", label: "About" },
   { path: "/membership", label: "Membership" },
 ];
 
