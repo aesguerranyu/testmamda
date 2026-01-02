@@ -44,9 +44,17 @@ const getCategoryColor = (category: string): string => {
   };
   return colorMap[category] || "#A7A9AC";
 };
-export function PromiseCard({
-  promise
-}: PromiseCardProps) {
+export function PromiseCard(props: PromiseCardProps) {
+  // Support both passing a promise object or individual props
+  const promise = props.promise || {
+    id: props.id || "",
+    headline: props.headline || "",
+    shortDescription: props.shortDescription || "",
+    category: props.category || "",
+    status: props.status || "",
+    slug: props.slug,
+  };
+  
   return <Link to={`/promises/${promise.slug || promise.id}`} aria-label={`View details for promise: ${promise.headline}`} onClick={() => window.scrollTo(0, 0)} className="group block bg-white transition-all no-underline p-5 flex flex-col border border-[#071c5f]/[0.42] aspect-square">
       {/* Top row: Circle + Category left, Status badge right */}
       <div className="flex items-start justify-between mb-4">
