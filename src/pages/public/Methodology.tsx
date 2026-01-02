@@ -35,10 +35,16 @@ export function Methodology() {
           </div>
           <div className="max-w-4xl">
             <p className="text-lg text-gray-600 leading-relaxed mb-3">
-              Mayor Zohran Mamdani made bold promises to New Yorkers during his campaign. This independent public interest website tracks those promises in one accessible place.
+              Mayor Zohran Mamdani made big promises to New Yorkers. His message on affordability and governance resonated not only across New York City, but around the world. Now, as he takes office, it is time for him and his team to deliver, in a complex political environment with real-world constraints and consequences.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+              Mamdani Tracker is a public-interest record that brings those promises together in one place and tracks what happens next. We document what was said, what actions follow, and how those commitments move forward over time, using publicly available sources.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+              We aim to help New Yorkers understand what's happening around them and to hold the Mamdani administration accountable to its stated promises.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
-              The site promotes civic transparency and accountability by documenting what was promised and what has happened since. It's designed to make civic information clearer and support informed public engagement with city government.
+              Our goal is to build a definitive public record of changes in New York City. We invite New Yorkers from all backgrounds to take part in building this public good.
             </p>
           </div>
         </section>
