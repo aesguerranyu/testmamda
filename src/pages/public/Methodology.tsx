@@ -77,36 +77,32 @@ export function Methodology() {
             <div className="bg-[#0C2788] px-4 md:px-5 py-4 flex items-center gap-3">
               <MagnifyingGlassIcon style={{ width: '2rem', height: '2rem' }} className="text-white shrink-0" />
               <h2 className="font-bold text-white m-0" style={{ fontSize: '20px' }}>
-                <span className="hidden md:inline" style={{ fontSize: '24px' }}>What's a "Promise"?</span>
-                <span className="md:hidden">What's a "Promise"?</span>
+                <span className="hidden md:inline" style={{ fontSize: '24px' }}>What Is a Promise?</span>
+                <span className="md:hidden">What Is a Promise?</span>
               </h2>
             </div>
             <div className="p-4 md:p-5">
               <p className="text-lg leading-relaxed text-gray-600 mb-4">
-                A promise is a <strong className="font-bold">specific policy commitment or goal</strong> publicly 
-                stated by Zohran Mamdani through official channels:
+                We define a promise as something Mayor Zohran Mamdani or his team said they would do.
               </p>
-              <ul className="list-none p-0 m-0 mb-4">
-                {[
-                  "Campaign policy platforms and manifestos",
-                  "Legislative proposals or co-sponsorships",
-                  "Public statements at hearings, press conferences, or official events",
-                  "Written positions in official publications or verified social media"
-                ].map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3 mb-3">
-                    <span className="shrink-0 flex items-center justify-center text-white font-bold bg-[#EE352E]" style={{ width: '2rem', height: '2rem' }}>
-                      {idx + 1}
-                    </span>
-                    <span className="text-base text-gray-600 pt-1">{item}</span>
-                  </li>
-                ))}
+              <p className="text-lg leading-relaxed text-gray-600 mb-4">
+                More specifically, a promise is an observable and trackable policy commitment or goal that has been publicly stated through official and verifiable channels, including:
+              </p>
+              <ul className="list-disc pl-6 mb-4 space-y-2">
+                <li className="text-base text-gray-600">Campaign platforms and written policy documents</li>
+                <li className="text-base text-gray-600">Legislative proposals or formal co-sponsorships</li>
+                <li className="text-base text-gray-600">Public statements during the campaign, at official events, or in media interviews</li>
+                <li className="text-base text-gray-600">Written positions in official publications or verified social media accounts</li>
               </ul>
-              <div className="bg-[#E9EDFB] border-l-[6px] border-[#0C2788] p-4">
-                <p className="text-base text-black m-0 leading-relaxed">
-                  <strong className="font-bold">✓ Must be verifiable</strong> through multiple credible sources<br />
-                  <strong className="font-bold">✗ General aspirations</strong> without specifics are NOT tracked
-                </p>
-              </div>
+              <p className="text-lg leading-relaxed text-gray-600 mb-4">
+                Some promises tracked on this site are broad goals. Others are more granular actions needed to carry out a larger commitment. In some cases, smaller actions support or build toward a bigger promise.
+              </p>
+              <p className="text-lg leading-relaxed text-gray-600 mb-4">
+                Over time, we plan to improve the design to better show these relationships.
+              </p>
+              <p className="text-lg leading-relaxed text-gray-600">
+                We do not track vague aspirations without a clear commitment.
+              </p>
             </div>
           </section>
 
