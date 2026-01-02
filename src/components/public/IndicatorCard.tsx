@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 interface IndicatorCardProps {
   indicator: {
@@ -35,20 +36,86 @@ const getCategoryColor = (category: string): string => {
   return colorMap[category] || "#A7A9AC";
 };
 
+// Determine trend direction from target
+const getTrendInfo = (target: string, current: string): { direction: 'up' | 'down' | null; isPositive: boolean } => {
+  const targetLower = target.toLowerCase();
+  
+  // Check if target indicates increase or decrease
+  if (targetLower.includes('increase') || targetLower.includes('higher') || targetLower === '100%') {
+    return { direction: 'up', isPositive: true };
+  }
+  if (targetLower.includes('decrease') || targetLower.includes('lower') || targetLower.includes('reduce')) {
+    return { direction: 'down', isPositive: true };
+  }
+  
+  // Try to parse numeric targets
+  const currentNum = parseFloat(current.replace(/[^0-9.-]/g, ''));
+  const targetNum = parseFloat(target.replace(/[^0-9.-]/g, ''));
+  
+  if (!isNaN(currentNum) && !isNaN(targetNum)) {
+    if (targetNum > currentNum) {
+      return { direction: 'up', isPositive: true };
+    } else if (targetNum < currentNum) {
+      return { direction: 'down', isPositive: true };
+    }
+  }
+  
+  return { direction: null, isPositive: true };
+};
+
+// Calculate progress percentage
+const calculateProgress = (current: string, target: string): number | null => {
+  const currentNum = parseFloat(current.replace(/[^0-9.-]/g, ''));
+  const targetNum = parseFloat(target.replace(/[^0-9.-]/g, ''));
+  
+  if (isNaN(currentNum) || isNaN(targetNum) || targetNum === 0) {
+    return null;
+  }
+  
+  // For percentage targets like "100%"
+  if (target.includes('%') && targetNum > 0) {
+    return Math.min(100, Math.max(0, (currentNum / targetNum) * 100));
+  }
+  
+  // For decrease targets
+  const targetLower = target.toLowerCase();
+  if (targetLower.includes('decrease') || targetLower.includes('lower') || targetLower.includes('reduce')) {
+    // Progress is inverse - lower is better
+    return Math.min(100, Math.max(0, 100 - ((currentNum / 10) * 100)));
+  }
+  
+  return Math.min(100, Math.max(0, (currentNum / targetNum) * 100));
+};
+
+// Get value color based on category and trend
+const getValueColor = (category: string, target: string): string => {
+  const targetLower = target.toLowerCase();
+  
+  // Yellow for affordability/decrease targets
+  if (category === "Affordability" || targetLower.includes('decrease') || targetLower.includes('lower')) {
+    return "#FCCC0A";
+  }
+  
+  // Green for increase/positive targets
+  return "#00933C";
+};
+
 export function IndicatorCard({ indicator }: IndicatorCardProps) {
-  // Get related promise by headline reference if exists
-  const relatedPromise = indicator.promise 
-    ? indicator.promise 
-    : null;
-
+  const relatedPromise = indicator.promise || null;
   const categoryColor = getCategoryColor(indicator.category);
-  const textColor = indicator.category === "Economic Justice" ? "#000000" : "#FFFFFF";
+  const textColor = indicator.category === "Affordability" ? "#000000" : "#FFFFFF";
+  
+  const trendInfo = getTrendInfo(indicator.target, indicator.current);
+  const progress = calculateProgress(indicator.current, indicator.target);
+  const valueColor = getValueColor(indicator.category, indicator.target);
+  const progressColor = indicator.category === "Affordability" ? "#FCCC0A" : "#00933C";
 
-  // Parse source to extract URL if present (format: "Source Name - https://url.com")
+  // Parse source to extract URL if present
   const parseSource = (source: string): { name: string; url?: string } => {
-    const parts = source.split(' - ');
-    if (parts.length === 2) {
-      return { name: parts[0], url: parts[1] };
+    const urlMatch = source.match(/(https?:\/\/[^\s]+)/);
+    if (urlMatch) {
+      const name = source.replace(urlMatch[0], '').replace(' - ', '').trim() || urlMatch[0];
+      return { name, url: urlMatch[0] };
     }
     return { name: source };
   };
@@ -56,140 +123,176 @@ export function IndicatorCard({ indicator }: IndicatorCardProps) {
   const parsedSource = parseSource(indicator.source);
 
   return (
-    <article className="bg-white border border-gray-300 h-full flex flex-col">
+    <article className="bg-white border border-gray-200 h-full flex flex-col">
       {/* Category Header */}
-      <div className="p-3 md:p-4 border-b border-gray-300">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <div className="p-4 md:p-5 border-b border-gray-200">
+        <div className="flex items-center gap-3">
           <div 
             className="flex items-center justify-center rounded-full shrink-0"
             style={{ 
-              width: 'clamp(2.5rem, 8vw, 3rem)', 
-              height: 'clamp(2.5rem, 8vw, 3rem)', 
+              width: '3rem', 
+              height: '3rem', 
               backgroundColor: categoryColor 
             }}
           >
-            <span className="font-bold" style={{ color: textColor, lineHeight: 1, fontSize: 'clamp(16px, 4vw, 20px)' }}>
+            <span className="font-bold text-xl" style={{ color: textColor, lineHeight: 1 }}>
               {indicator.category.charAt(0)}
             </span>
           </div>
-          <span className="text-gray-600 font-bold uppercase tracking-wide" style={{ letterSpacing: '0.1em', fontSize: 'clamp(10px, 2.5vw, 12px)' }}>
+          <span 
+            className="font-bold uppercase tracking-wider"
+            style={{ 
+              letterSpacing: '0.15em', 
+              fontSize: '12px',
+              color: categoryColor
+            }}
+          >
             {indicator.category}
           </span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="p-3 md:p-4 flex-grow flex flex-col">
-        {/* Current Value - Left Aligned */}
-        <div className="mb-2">
+      <div className="p-4 md:p-5 flex-grow flex flex-col">
+        {/* Current Value with Trend Arrow */}
+        <div className="flex items-start gap-2 mb-3">
           <div 
-            className="font-bold break-words"
+            className="font-bold"
             style={{ 
-              fontSize: 'clamp(48px, 10vw, 72px)',
-              color: categoryColor,
-              lineHeight: 1.1,
-              letterSpacing: '-0.02em',
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word'
+              fontSize: 'clamp(48px, 10vw, 64px)',
+              color: valueColor,
+              lineHeight: 1,
+              letterSpacing: '-0.02em'
             }}
           >
             {indicator.current}
           </div>
+          {trendInfo.direction && (
+            <div className="mt-3">
+              {trendInfo.direction === 'up' ? (
+                <ArrowUp className="w-8 h-8 text-black" strokeWidth={3} />
+              ) : (
+                <ArrowDown className="w-8 h-8 text-black" strokeWidth={3} />
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Current Description - 60% black */}
-        {indicator.currentDescription && (
-          <div className="mb-3">
-            <span 
-              className="font-medium"
-              style={{ 
-                color: 'rgba(0, 0, 0, 0.6)',
-                fontSize: 'clamp(12px, 2.5vw, 14px)'
-              }}
-            >
-              {indicator.currentDescription}
-            </span>
-          </div>
-        )}
-
         {/* Headline */}
-        <h3 className="font-bold text-black mb-2 tracking-tight" style={{ fontSize: 'clamp(16px, 3.5vw, 20px)' }}>
+        <h3 
+          className="font-bold text-black mb-3 tracking-tight" 
+          style={{ fontSize: 'clamp(18px, 4vw, 22px)', lineHeight: 1.2 }}
+        >
           {indicator.headline}
         </h3>
 
-        {/* Target - Now below headline */}
-        <div className="mb-3">
-          <span className="uppercase font-bold" style={{ letterSpacing: '0.05em', color: '#6B7280', fontSize: 'clamp(9px, 2vw, 11px)' }}>
-            Target: {indicator.target}
+        {/* Target */}
+        <div className="mb-4">
+          <span 
+            className="uppercase font-bold text-gray-500"
+            style={{ letterSpacing: '0.1em', fontSize: '11px' }}
+          >
+            TARGET: {indicator.target}
           </span>
         </div>
 
+        {/* Progress Bar */}
+        {progress !== null && (
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span 
+                className="uppercase font-bold text-gray-500"
+                style={{ letterSpacing: '0.1em', fontSize: '11px' }}
+              >
+                PROGRESS
+              </span>
+              <span 
+                className="font-bold"
+                style={{ fontSize: '14px', color: progressColor }}
+              >
+                {Math.round(progress)}%
+              </span>
+            </div>
+            <div className="w-full h-3 bg-gray-200 border border-gray-300">
+              <div 
+                className="h-full transition-all duration-500"
+                style={{ 
+                  width: `${progress}%`,
+                  backgroundColor: progressColor
+                }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Description Paragraph */}
-        <p className="mb-3 leading-relaxed" style={{ color: '#374151', fontSize: 'clamp(14px, 3vw, 14px)', lineHeight: '1.6' }}>
+        <p 
+          className="mb-4 leading-relaxed flex-grow" 
+          style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}
+        >
           {indicator.descriptionParagraph}
         </p>
 
-        {/* Meta Info */}
-        <div className="border-t border-gray-300 pt-4 mt-4">
-          <div className="grid grid-cols-1 gap-3">
-            <div>
-              <div className="text-xs uppercase font-bold mb-2" style={{ letterSpacing: '0.1em', color: '#6B7280' }}>
-                Source
-              </div>
-              <div className="text-sm">
-                {parsedSource.url ? (
-                  <a 
-                    href={parsedSource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline font-medium"
-                  >
-                    {parsedSource.name}
-                  </a>
-                ) : (
-                  <span className="text-black">{parsedSource.name}</span>
-                )}
-              </div>
+        {/* Data Source */}
+        <div className="border-t border-gray-200 pt-4 mt-auto">
+          <div className="mb-3">
+            <div 
+              className="uppercase font-bold mb-1 text-gray-500"
+              style={{ letterSpacing: '0.1em', fontSize: '11px' }}
+            >
+              DATA SOURCE
+            </div>
+            <div className="text-sm">
+              {parsedSource.url ? (
+                <a 
+                  href={parsedSource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-black hover:text-[#0039A6] underline"
+                >
+                  {parsedSource.name}
+                </a>
+              ) : (
+                <span className="text-black">{parsedSource.name}</span>
+              )}
             </div>
           </div>
         </div>
 
         {/* Related Promises */}
         {relatedPromise && (
-          <div className="mt-4">
-            <div className="border-t border-gray-300 pt-4">
-              <h4 className="text-xs uppercase font-bold mb-3" style={{ letterSpacing: '0.1em', color: '#6B7280' }}>
-                Related Promise
-              </h4>
-              <div className="flex flex-col gap-3">
-                <Link
-                  key={relatedPromise.id}
-                  to={`/promises/${relatedPromise.id}`}
-                  className="text-black hover:text-blue-600 transition-colors no-underline flex items-start gap-3 p-3 border border-gray-300 hover:border-blue-600"
-                  onClick={() => window.scrollTo(0, 0)}
+          <div className="border-t border-gray-200 pt-4 mt-4">
+            <h4 
+              className="uppercase font-bold mb-3 text-gray-500"
+              style={{ letterSpacing: '0.1em', fontSize: '11px' }}
+            >
+              RELATED PROMISES
+            </h4>
+            <Link
+              to={`/promises/${relatedPromise.id}`}
+              className="text-black hover:text-[#0039A6] transition-colors no-underline flex items-center gap-3 p-3 border border-gray-200 hover:border-[#0039A6]"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              <div 
+                className="flex items-center justify-center rounded-full shrink-0"
+                style={{ 
+                  width: '2rem', 
+                  height: '2rem', 
+                  backgroundColor: getCategoryColor(relatedPromise.category)
+                }}
+              >
+                <span 
+                  className="font-bold text-xs" 
+                  style={{ 
+                    color: relatedPromise.category === "Affordability" ? "#000000" : "#FFFFFF",
+                    lineHeight: 1 
+                  }}
                 >
-                  <div 
-                    className="flex items-center justify-center rounded-full shrink-0"
-                    style={{ 
-                      width: '2rem', 
-                      height: '2rem', 
-                      backgroundColor: getCategoryColor(relatedPromise.category)
-                    }}
-                  >
-                    <span 
-                      className="font-bold text-xs" 
-                      style={{ 
-                        color: relatedPromise.category === "Economic Justice" ? "#000000" : "#FFFFFF",
-                        lineHeight: 1 
-                      }}
-                    >
-                      {relatedPromise.category.charAt(0)}
-                    </span>
-                  </div>
-                  <span className="font-medium flex-grow">{relatedPromise.headline}</span>
-                </Link>
+                  {relatedPromise.category.charAt(0)}
+                </span>
               </div>
-            </div>
+              <span className="font-medium text-sm">{relatedPromise.headline}</span>
+            </Link>
           </div>
         )}
       </div>
