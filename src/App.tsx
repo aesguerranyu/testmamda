@@ -11,6 +11,7 @@ import { PublicLayout } from "./components/public/PublicLayout";
 import PublicHome from "./pages/public/Home";
 import PromiseTracker from "./pages/public/PromiseTracker";
 import PromiseDetail from "./pages/public/PromiseDetail";
+import PromisesByTag from "./pages/public/PromisesByTag";
 import Membership from "./pages/public/Membership";
 import Methodology from "./pages/public/Methodology";
 import First100Days from "./pages/public/First100Days";
@@ -44,6 +45,7 @@ const App = () => (
               <Route path="/" element={<PublicHome />} />
               <Route path="/promises" element={<PromiseTracker />} />
               <Route path="/promises/:slug" element={<PromiseDetail />} />
+              <Route path="/promises/tag/:tag" element={<PromisesByTag />} />
               <Route path="/membership" element={<Membership />} />
               <Route path="/methodology" element={<Methodology />} />
               <Route path="/first100days" element={<First100Days />} />

@@ -301,13 +301,14 @@ export default function PromiseDetail() {
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
             {tags.map((tag, index) => (
-              <span
+              <Link
                 key={index}
-                className="px-3 py-2 font-bold uppercase tracking-wide text-xs"
+                to={`/promises/tag/${encodeURIComponent(tag)}`}
+                className="px-3 py-2 font-bold uppercase tracking-wide text-xs hover:opacity-80 transition-opacity"
                 style={{ backgroundColor: "#EBF5FF", color: "#0039A6" }}
               >
                 {tag}
-              </span>
+              </Link>
             ))}
           </div>
         )}
