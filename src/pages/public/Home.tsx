@@ -153,11 +153,9 @@ export default function Home() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0C2788]"></div>
           </div>
         ) : mappedPromises.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
             {mappedPromises.map((promise) => (
-              <div key={promise.id} className="mb-4">
-                <PromiseCard promise={promise} />
-              </div>
+              <PromiseCard key={promise.id} promise={promise} />
             ))}
           </div>
         ) : (
