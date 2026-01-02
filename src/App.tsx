@@ -9,12 +9,15 @@ import NotFound from "./pages/NotFound";
 // Public Pages
 import { PublicLayout } from "./components/public/PublicLayout";
 import PublicHome from "./pages/public/Home";
-import PromisesList from "./pages/public/PromisesList";
+import PromiseTracker from "./pages/public/PromiseTracker";
 import PromiseDetail from "./pages/public/PromiseDetail";
 import Membership from "./pages/public/Membership";
 import Methodology from "./pages/public/Methodology";
 import First100Days from "./pages/public/First100Days";
 import PublicIndicators from "./pages/public/Indicators";
+import Actions from "./pages/public/Actions";
+import { Appointments } from "./pages/public/Appointments";
+import { BrandAssets } from "./pages/public/BrandAssets";
 
 // CMS Pages
 import CMSLogin from "./pages/cms/CMSLogin";
@@ -39,12 +42,15 @@ const App = () => (
             {/* Public Routes */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<PublicHome />} />
-              <Route path="/promises" element={<PromisesList />} />
+              <Route path="/promises" element={<PromiseTracker />} />
               <Route path="/promises/:id" element={<PromiseDetail />} />
               <Route path="/membership" element={<Membership />} />
               <Route path="/methodology" element={<Methodology />} />
               <Route path="/first100days" element={<First100Days />} />
               <Route path="/indicators" element={<PublicIndicators />} />
+              <Route path="/actions" element={<Actions />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/brand-assets" element={<BrandAssets />} />
             </Route>
             
             {/* CMS Routes */}
