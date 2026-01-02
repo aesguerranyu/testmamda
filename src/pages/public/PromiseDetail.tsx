@@ -54,19 +54,19 @@ const formatDate = (dateString: string) => {
 };
 
 export default function PromiseDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [promise, setPromise] = useState<PromiseDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [updatesExpanded, setUpdatesExpanded] = useState(false);
 
   useEffect(() => {
     const fetchPromise = async () => {
-      if (!id) return;
+      if (!slug) return;
 
       const { data, error } = await supabase
         .from("promises")
         .select("*")
-        .eq("id", id)
+        .eq("url_slugs", slug)
         .eq("editorial_state", "published")
         .maybeSingle();
 
@@ -77,7 +77,7 @@ export default function PromiseDetail() {
     };
 
     fetchPromise();
-  }, [id]);
+  }, [slug]);
 
   if (isLoading) {
     return (
