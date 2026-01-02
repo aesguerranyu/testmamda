@@ -105,7 +105,7 @@ export default function Home() {
     const triggerTrain = () => {
       setTrainFromLeft(Math.random() > 0.5);
       setTrainVisible(true);
-      setTimeout(() => setTrainVisible(false), 4000);
+      setTimeout(() => setTrainVisible(false), 8000);
     };
 
     // Initial delay before first train
@@ -196,8 +196,8 @@ export default function Home() {
                 className={`absolute ${
                   trainVisible 
                     ? trainFromLeft 
-                      ? 'animate-[train-left-to-right_4s_linear_forwards]' 
-                      : 'animate-[train-right-to-left_4s_linear_forwards]'
+                      ? 'animate-[train-left-to-right_8s_linear_forwards]' 
+                      : 'animate-[train-right-to-left_8s_linear_forwards]'
                     : 'opacity-0'
                 }`}
                 style={{
