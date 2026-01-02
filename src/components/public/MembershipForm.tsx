@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function MembershipForm() {
   const [formData, setFormData] = useState({
@@ -10,6 +12,7 @@ export function MembershipForm() {
     city: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const boroughs = [
     "Manhattan",
@@ -21,11 +24,29 @@ export function MembershipForm() {
     "Outside USA"
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send data to a backend
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.from("memberships").insert({
+        name: formData.name,
+        last_name: formData.lastName || null,
+        email: formData.email,
+        borough: formData.borough,
+        city: formData.city || null
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast.success("Welcome to Mamdani Tracker!");
+    } catch (error: any) {
+      console.error("Membership error:", error);
+      toast.error("Failed to submit. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -158,10 +179,11 @@ export function MembershipForm() {
         <div className="pt-3">
           <button
             type="submit"
-            className="px-4 py-2 bg-[#0C2788] text-white hover:bg-[#1436B3] hover:scale-105 transition-all font-bold uppercase tracking-wide text-xs border-0 cursor-pointer"
+            disabled={isSubmitting}
+            className="px-4 py-2 bg-[#0C2788] text-white hover:bg-[#1436B3] hover:scale-105 transition-all font-bold uppercase tracking-wide text-xs border-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ letterSpacing: '0.15em' }}
           >
-            Join Now
+            {isSubmitting ? "Submitting..." : "Join Now"}
           </button>
         </div>
       </form>
