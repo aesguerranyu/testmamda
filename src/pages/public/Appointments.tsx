@@ -1,6 +1,6 @@
 import { SEO } from "../../components/SEO";
 
-// Placeholder - no appointments data in mockData yet
+// Data will be populated via CMS in the future
 const appointments: Array<{
   id: string;
   name: string;

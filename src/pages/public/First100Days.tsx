@@ -2,71 +2,27 @@ import { SEO } from "../../components/SEO";
 import { CalendarIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 
-// Mock data for First 100 Days
-const first100Days = [
-  {
-    day: 1,
-    date: "January 1, 2026",
-    activities: [
-      {
-        id: "a1",
-        title: "Inauguration Ceremony",
-        type: "Event",
-        description: "Zohran Mamdani is sworn in as the 111th Mayor of New York City at City Hall.",
-        sources: [
-          { title: "NYC Official Announcement", url: "#" }
-        ]
-      }
-    ]
-  },
-  {
-    day: 2,
-    date: "January 2, 2026",
-    activities: [
-      {
-        id: "a2",
-        title: "Executive Order on Housing",
-        type: "Executive Order",
-        description: "Signs first executive order declaring a housing emergency and directing agencies to expedite affordable housing projects.",
-        sources: [
-          { title: "Mayor's Office Press Release", url: "#" }
-        ]
-      },
-      {
-        id: "a3",
-        title: "Cabinet Appointments",
-        type: "Appointment",
-        description: "Announces first wave of cabinet appointments including Deputy Mayor for Housing.",
-        sources: []
-      }
-    ]
-  },
-  {
-    day: 5,
-    date: "January 5, 2026",
-    activities: [
-      {
-        id: "a4",
-        title: "MTA Coordination Meeting",
-        type: "Meeting",
-        description: "First meeting with MTA leadership to discuss transit improvements and fare policy.",
-        sources: [
-          { title: "NY1 Coverage", url: "#" }
-        ]
-      }
-    ]
-  }
-];
+// Data will be populated via CMS in the future
+const first100Days: Array<{
+  day: number;
+  date: string;
+  activities: Array<{
+    id: string;
+    title: string;
+    type: string;
+    description: string;
+    sources: Array<{ title: string; url: string }>;
+  }>;
+}> = [];
 
 export default function First100Days() {
-  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc"); // desc = newest first (Day 100 -> 1)
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
 
-  // Sort the data based on current sort order
   const sortedData = [...first100Days].sort((a, b) => {
     if (sortOrder === "desc") {
-      return b.day - a.day; // Day 100 first
+      return b.day - a.day;
     } else {
-      return a.day - b.day; // Day 1 first
+      return a.day - b.day;
     }
   });
 
