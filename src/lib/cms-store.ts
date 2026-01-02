@@ -339,6 +339,35 @@ export const updateIndicatorEditorialState = async (id: string, state: Editorial
   return mapDbToIndicator(data as DbIndicator);
 };
 
+// Batch operations for indicators
+export const batchUpdateIndicatorEditorialState = async (ids: string[], state: EditorialState): Promise<number> => {
+  const { error } = await supabase
+    .from('indicators')
+    .update({ editorial_state: state })
+    .in('id', ids);
+  
+  if (error) {
+    console.error('Error batch updating indicator states:', error);
+    return 0;
+  }
+  
+  return ids.length;
+};
+
+export const batchDeleteIndicators = async (ids: string[]): Promise<number> => {
+  const { error } = await supabase
+    .from('indicators')
+    .delete()
+    .in('id', ids);
+  
+  if (error) {
+    console.error('Error batch deleting indicators:', error);
+    return 0;
+  }
+  
+  return ids.length;
+};
+
 // CSV Import functions
 const parseCSVLine = (line: string): string[] => {
   const result: string[] = [];
