@@ -149,41 +149,6 @@ export function Methodology() {
             </div>
           </section>
 
-          {/* Evidence Standards */}
-          <section className="bg-white border-2 border-gray-300">
-            <div className="bg-[#0C2788] px-4 md:px-5 py-4 flex items-center gap-3">
-              <ShieldCheckIcon style={{ width: '2rem', height: '2rem' }} className="text-white shrink-0" />
-              <h2 className="font-bold text-white m-0" style={{ fontSize: '20px' }}>
-                <span className="hidden md:inline" style={{ fontSize: '24px' }}>Our Sources</span>
-                <span className="md:hidden">Our Sources</span>
-              </h2>
-            </div>
-            <div className="p-4 md:p-5">
-              <p className="text-lg text-gray-600 mb-4">
-                <strong className="font-bold">Everything is sourced.</strong> No exceptions. We only use:
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                {[
-                  "Official government documents",
-                  "Verified official statements",
-                  "Credible news reporting",
-                  "Public records & agency data"
-                ].map((source, idx) => (
-                  <div key={idx}>
-                    <div className="bg-[#0C2788] p-4">
-                      <p className="text-white font-bold m-0 text-base">✓ {source}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-[#E9EDFB] border-l-[6px] border-[#0C2788] p-4">
-                <p className="text-base text-black m-0 leading-relaxed">
-                  When sources conflict, we present multiple perspectives with clear attribution. 
-                  Every claim links directly to its source.
-                </p>
-              </div>
-            </div>
-          </section>
         </div>
       </div>
     </div>
