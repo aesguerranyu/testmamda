@@ -10,54 +10,41 @@ export function Methodology() {
         description="Learn about Mamdani Tracker's methodology for tracking campaign promises and mayoral actions. Independent, non-partisan research with transparent sourcing and verification processes."
         keywords="political accountability methodology, fact checking process, independent research, NYC political tracking, promise verification, source transparency, non-partisan tracker"
       />
-      
-      {/* Hero Section */}
-      <div className="bg-[#0C2788] py-5 mb-5">
-        <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5">
-          <h1 className="font-bold text-white tracking-tight mb-3" style={{ fontSize: '40px' }}>
-            <span className="hidden md:inline" style={{ fontSize: '52px' }}>About & Methodology</span>
-            <span className="md:hidden">About & Methodology</span>
-          </h1>
-          <p className="text-white text-lg max-w-3xl opacity-90">
-            How we track promises and maintain accountability
-          </p>
-        </div>
-      </div>
 
-      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 pb-5">
+      <div className="container mx-auto max-w-5xl px-6 sm:px-8 lg:px-12 py-8">
         {/* What is Mamdani Tracker */}
-        <section className="mb-5">
-          <div className="border-t-4 border-[#0C2788] pt-4 mb-4">
-            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+        <section className="mb-8">
+          <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
+            <h1 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
               <span className="hidden md:inline" style={{ fontSize: '32px' }}>What is Mamdani Tracker?</span>
               <span className="md:hidden">What is Mamdani Tracker?</span>
-            </h2>
+            </h1>
           </div>
-          <div className="max-w-4xl">
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+          <div className="max-w-4xl pl-4 md:pl-6">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               Mayor Zohran Mamdani made big promises to New Yorkers. His message on affordability and governance resonated not only across New York City, but around the world. Now, as he takes office, it is time for him and his team to deliver, in a complex political environment with real-world constraints and consequences.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               Mamdani Tracker is a public-interest record that brings those promises together in one place and tracks what happens next. We document what was said, what actions follow, and how those commitments move forward over time, using publicly available sources.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               We aim to help New Yorkers understand what's happening around them and to hold the Mamdani administration accountable to its stated promises.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed indent-8">
               Our goal is to build a definitive public record of changes in New York City. We invite New Yorkers from all backgrounds to take part in building this public good.
             </p>
           </div>
         </section>
 
         {/* The Team */}
-        <section className="mb-5">
-          <div className="border-t-4 border-[#0C2788] pt-4 mb-4">
+        <section className="mb-8">
+          <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
             <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
               <span className="hidden md:inline" style={{ fontSize: '32px' }}>The Team</span>
               <span className="md:hidden">The Team</span>
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl pl-4 md:pl-6">
             <div className="p-4">
               <h3 className="font-bold text-black text-lg mb-2">Anthony Esguerra</h3>
               <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Founder and Executive Editor</p>
@@ -78,33 +65,33 @@ export function Methodology() {
         </section>
 
         {/* What Is a Promise */}
-        <section className="mb-5">
-          <div className="border-t-4 border-[#0C2788] pt-4 mb-4">
+        <section className="mb-8">
+          <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
             <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
               <span className="hidden md:inline" style={{ fontSize: '32px' }}>What Is a Promise?</span>
               <span className="md:hidden">What Is a Promise?</span>
             </h2>
           </div>
-          <div className="max-w-4xl">
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+          <div className="max-w-4xl pl-4 md:pl-6">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               We define a promise as something Mayor Zohran Mamdani or his team said they would do.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               More specifically, a promise is an observable and trackable policy commitment or goal that has been publicly stated through official and verifiable channels, including:
             </p>
-            <ul className="list-disc pl-6 mb-3 space-y-2">
+            <ul className="list-disc pl-12 mb-4 space-y-2">
               <li className="text-lg text-gray-600">Campaign platforms and written policy documents</li>
               <li className="text-lg text-gray-600">Legislative proposals or formal co-sponsorships</li>
               <li className="text-lg text-gray-600">Public statements during the campaign, at official events, or in media interviews</li>
               <li className="text-lg text-gray-600">Written positions in official publications or verified social media accounts</li>
             </ul>
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               Some promises tracked on this site are broad goals. Others are more granular actions needed to carry out a larger commitment. In some cases, smaller actions support or build toward a bigger promise.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-3">
+            <p className="text-lg text-gray-600 leading-relaxed mb-4 indent-8">
               Over time, we plan to improve the design to better show these relationships.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed indent-8">
               We do not track vague aspirations without a clear commitment.
             </p>
           </div>
