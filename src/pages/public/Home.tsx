@@ -1,251 +1,221 @@
 import { Link } from "react-router-dom";
-import {
-  ArrowRightIcon,
-  ChartBarIcon,
-  ClockIcon,
-  DocumentTextIcon,
-  FlagIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/solid";
 import { getLatestUpdates, promises } from "../../data/mockData";
-import { MembershipForm } from "../../components/MembershipForm";
-import { PromiseCard } from "../../components/PromiseCard";
+import { ArrowRightIcon, FlagIcon, ClockIcon, ChartBarIcon, DocumentTextIcon, UserGroupIcon } from "@heroicons/react/24/solid";
+import { MembershipForm } from "../../components/public/MembershipForm";
 import { SEO } from "../../components/SEO";
 import { StructuredData } from "../../components/StructuredData";
-
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function scrollToId(id: string) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function PageContainer({ children }: { children: React.ReactNode }) {
-  // Use a single consistent container everywhere. Adjust max width and padding to match Figma.
-  return (
-    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-      {children}
-    </div>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-}: {
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <div className="mb-10 text-center">
-      <div className="mb-2">
-        <h2
-          className="inline text-3xl font-black uppercase tracking-wide sm:text-4xl"
-          style={{ color: "#071B5E" }}
-        >
-          {title}
-        </h2>
-      </div>
-      {subtitle ? (
-        <p className="text-base text-gray-600 sm:text-lg">{subtitle}</p>
-      ) : null}
-    </div>
-  );
-}
-
-const exploreCards = [
-  {
-    to: "/promises",
-    icon: FlagIcon,
-    title: "Promises",
-    description: "Track every commitment with verified sources and status updates",
-  },
-  {
-    to: "/first100days",
-    icon: ClockIcon,
-    title: "First 100 Days",
-    description: "Monitor progress and priorities in the critical early period",
-  },
-  {
-    to: "/indicators",
-    icon: ChartBarIcon,
-    title: "Key Performance Indicators",
-    description: "NYC data and metrics that show real impact on New Yorkers",
-  },
-  {
-    to: "/methodology",
-    icon: DocumentTextIcon,
-    title: "About",
-    description: "How we verify, source, and maintain independence",
-  },
-  {
-    to: "/membership",
-    icon: UserGroupIcon,
-    title: "Membership",
-    description: "Join our community and support independent civic tracking",
-  },
-];
+import { PromiseCard } from "../../components/public/PromiseCard";
 
 export default function Home() {
   const latestUpdates = getLatestUpdates(5);
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  };
+
+  const scrollToPromises = () => {
+    const element = document.getElementById('promises-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const exploreCards = [
+    {
+      to: "/promises",
+      icon: FlagIcon,
+      title: "Promises",
+      description: "Track every commitment with verified sources and status updates"
+    },
+    {
+      to: "/first100days",
+      icon: ClockIcon,
+      title: "First 100 Days",
+      description: "Monitor progress and priorities in the critical early period"
+    },
+    {
+      to: "/indicators",
+      icon: ChartBarIcon,
+      title: "Key Performance Indicators",
+      description: "NYC data and metrics that show real impact on New Yorkers"
+    },
+    {
+      to: "/methodology",
+      icon: DocumentTextIcon,
+      title: "About",
+      description: "How we verify, source, and maintain independence"
+    },
+    {
+      to: "/membership",
+      icon: UserGroupIcon,
+      title: "Membership",
+      description: "Join our community and support independent civic tracking"
+    }
+  ];
+
   return (
-    <div className="bg-white">
-      <SEO
-        title="Mamdani Tracker | Tracking Promises to New Yorkers"
-        description="An independent, public interest record tracking Mayor Zohran Mamdani's promises and agenda"
+    <div className="min-h-screen" style={{ margin: 0, padding: 0 }}>
+      <SEO 
+        title="Mamdani Tracker - Tracking NYC Mayor Zohran Mamdani's Promises & Actions"
+        description="An independent public-interest website tracking New York City Mayor Zohran Mamdani's campaign promises, policy positions, mayoral actions, and appointments with verified sources."
+        keywords="Zohran Mamdani, NYC Mayor, New York City, campaign promises, accountability, political tracker, mayoral actions, NYC politics, policy tracker, government transparency"
       />
-      <StructuredData type="WebSite" data={{ name: "Mamdani Tracker" }} />
-
-      {/* Hero */}
-      <section
-        className="flex min-h-screen items-center justify-center bg-cover bg-center"
+      <StructuredData type="website" />
+      
+      {/* Hero Section - Full screen */}
+      <section 
+        className="relative flex items-center justify-center overflow-hidden" 
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(7,27,94,0.85), rgba(7,27,94,0.95)), url('https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=1920&q=80')`,
+          backgroundColor: '#ffffff',
+          backgroundImage: `
+            linear-gradient(0deg, rgba(12,39,136,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(12,39,136,0.06) 1px, transparent 1px)
+          `,
+          backgroundSize: '120px 60px',
+          animation: 'grid-flow 20s linear infinite',
+          minHeight: '100vh',
+          paddingBottom: '10vh',
+          margin: 0,
+          padding: 0,
+          paddingTop: '0 !important'
         }}
+        aria-label="Hero section"
       >
-        <PageContainer>
-          <div className="py-20 text-center">
-            <h1
-              className="mb-6 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
-              style={{ lineHeight: 1.1 }}
-            >
-              Tracking big promises <br />to New Yorkers
+        <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 relative" style={{ zIndex: 10 }}>
+          <div className="text-center">
+            <h1 className="font-bold text-[#0C2788] mb-4 leading-tight tracking-tight" style={{ fontSize: 'clamp(40px, 6vw, 68px)', lineHeight: 1.2 }}>
+              Tracking big promises <br /> to New Yorkers
             </h1>
-
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-white/80 sm:text-xl">
-              An independent, public interest record tracking Mayor Zohran
-              Mamdani's promises and agenda
+            <p className="text-black mx-auto leading-relaxed mb-5 font-medium py-3 px-4" style={{ maxWidth: '48rem', fontSize: 'clamp(18px, 2.2vw, 22px)' }}>
+              An independent, public interest record tracking Mayor Zohran Mamdani's promises and agenda
             </p>
-
-            <div>
+            
+            <div className="flex items-center justify-center gap-3">
               <button
-                onClick={() => scrollToId("promises-section")}
-                className="cursor-pointer border-0 bg-[#0C2788] px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#1436B3]"
+                onClick={scrollToPromises}
+                className="px-4 md:px-5 py-3 bg-[#0C2788] text-white font-bold uppercase tracking-wide text-sm transition-all hover:bg-[#1436B3] hover:scale-105 border-0 cursor-pointer"
+                style={{ letterSpacing: '0.15em' }}
               >
                 Start Tracking
               </button>
             </div>
           </div>
-        </PageContainer>
+        </div>
       </section>
 
-      {/* Promises */}
-      <section id="promises-section" className="bg-gray-50 py-16 sm:py-20">
-        <PageContainer>
-          <SectionTitle
-            title="Promises and Agenda"
-            subtitle="Every promise tracked and verified with sources"
-          />
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {promises.map((promise) => (
-              <PromiseCard key={promise.id} promise={promise} />
-            ))}
+      {/* Promises Section */}
+      <div id="promises-section" className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 mb-5" style={{ scrollMarginTop: '2rem' }}>
+        <div className="mb-5">
+          <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: 'clamp(32px, 4vw, 36px)' }}>Promises and Agenda</h2>
           </div>
+          <p className="text-base max-w-3xl" style={{ color: '#374151' }}>
+            Every promise tracked and verified with sources
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-5">
+          {promises.map((promise) => (
+            <div key={promise.id} className="mb-4">
+              <PromiseCard promise={promise} />
+            </div>
+          ))}
+        </div>
+        
+        <div className="text-center">
+          <Link 
+            to="/promises" 
+            onClick={() => window.scrollTo(0, 0)}
+            className="inline-flex items-center gap-2 text-black hover:text-blue-600 transition-colors font-bold text-lg no-underline group uppercase tracking-wide"
+          >
+            View All Promises 
+            <ArrowRightIcon style={{ width: '1.25rem', height: '1.25rem' }} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+      </div>
 
-          <div className="mt-12 text-center">
+      {/* Explore the Tracker Section */}
+      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 mb-5">
+        <div className="mb-4">
+          <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 32px)' }}>Explore the Tracker</h2>
+          </div>
+        </div>
+        
+        {/* Grid - same for all screen sizes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          {exploreCards.map((card, index) => (
             <Link
-              to="/promises"
+              key={index}
+              to={card.to}
+              className="group block bg-white border-2 border hover:border-blue-600 transition-all p-4 md:p-5 no-underline h-full"
+              style={{ borderColor: '#7F97E6', color: 'rgba(7,27,94,0.85)' }}
               onClick={() => window.scrollTo(0, 0)}
-              className="group inline-flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-black no-underline transition-colors hover:text-blue-600"
             >
-              View All Promises
-              <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </PageContainer>
-      </section>
-
-      {/* Explore */}
-      <section className="bg-white py-16 sm:py-20">
-        <PageContainer>
-          <SectionTitle title="Explore the Tracker" />
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {exploreCards.map((card, index) => (
-              <Link
-                key={index}
-                to={card.to}
-                onClick={() => window.scrollTo(0, 0)}
-                className="group block h-full bg-white p-5 no-underline transition-all hover:border-blue-600"
-                style={{
-                  borderWidth: 2,
-                  borderStyle: "solid",
-                  borderColor: "#7F97E6",
-                  color: "rgba(7,27,94,0.85)",
-                }}
-              >
-                <div className="flex h-full flex-col">
-                  <card.icon className="mb-4 h-10 w-10 text-[#1E3A8A]" />
-                  <h3 className="mb-2 text-lg font-bold uppercase tracking-wide transition-colors group-hover:text-blue-600">
-                    {card.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-gray-600">
-                    {card.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </PageContainer>
-      </section>
-
-      {/* Latest Updates */}
-      <section className="bg-gray-50 py-16 sm:py-20">
-        <PageContainer>
-          <SectionTitle title="Latest Updates" />
-
-          <div className="mx-auto max-w-3xl space-y-4">
-            {latestUpdates.map((item) => (
-              <div
-                key={item.id}
-                className="border-l-4 border-[#1E3A8A] bg-white p-4 shadow-sm"
-              >
-                <div className="mb-2 flex items-center gap-3">
-                  <span
-                    className="px-2 py-1 text-xs font-bold uppercase tracking-wide text-white"
-                    style={{
-                      backgroundColor:
-                        item.type === "promise" ? "#1E3A8A" : "#22C55E",
-                    }}
-                  >
-                    {item.type === "promise" ? "Promise" : "Action"}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {formatDate(item.date)}
-                  </span>
-                </div>
-
-                {item.type === "promise" ? (
-                  <p className="font-bold text-gray-900">{item.headline}</p>
-                ) : (
-                  <p className="text-gray-700">{item.description}</p>
-                )}
+              <div className="flex flex-col items-center text-center">
+                <card.icon style={{ width: 'clamp(3.5rem, 8vw, 4rem)', height: 'clamp(3.5rem, 8vw, 4rem)' }} className="text-[#0C2788] mb-3" />
+                <h3 className="font-bold text-black mb-2 tracking-tight" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
+                  {card.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed text-sm">
+                  {card.description}
+                </p>
               </div>
-            ))}
-          </div>
-        </PageContainer>
-      </section>
+            </Link>
+          ))}
+        </div>
+      </div>
 
-      {/* Membership */}
-      <section className="bg-white py-16 sm:py-20">
-        <PageContainer>
-          <SectionTitle
-            title="Become a Member. It's free!"
-            subtitle="Be part of the exciting public interest project tracking changes in NYC."
-          />
-          <MembershipForm />
-        </PageContainer>
-      </section>
+      {/* Latest Updates - Subway style */}
+      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 mb-5">
+        <div className="mb-4">
+          <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 32px)' }}>Latest Updates</h2>
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-3">
+          {latestUpdates.map((item) => (
+            <div key={item.id} className="border-l-[6px] border-[#0C2788] bg-white pl-3 py-2 hover:bg-[#E9EDFB] transition-all">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-1 bg-[#0C2788] text-white text-xs font-bold uppercase" style={{ letterSpacing: '0.1em' }}>
+                  {item.type === "promise" ? "Promise" : "Action"}
+                </span>
+                <span className="text-xs font-medium" style={{ color: '#374151' }}>
+                  {formatDate(item.date)}
+                </span>
+              </div>
+              {item.type === "promise" ? (
+                <Link 
+                  to={`/promises/${item.promiseId}`} 
+                  className="text-black hover:text-blue-600 transition-colors font-bold text-sm leading-tight no-underline block"
+                >
+                  {item.headline}
+                </Link>
+              ) : (
+                <span className="text-black font-bold text-sm leading-tight block">
+                  {item.description}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Be a Member Section */}
+      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 mb-5">
+        <div className="mb-4">
+          <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 32px)' }}>Become a Member. It's free!</h2>
+          </div>
+          <p className="text-sm max-w-3xl" style={{ color: '#374151' }}>
+            Be part of the exciting public interest project tracking changes in NYC.
+          </p>
+        </div>
+
+        <MembershipForm />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO } from "../../components/SEO";
+import { IndicatorCard } from "../../components/public/IndicatorCard";
+import { ChartBarIcon } from "@heroicons/react/24/solid";
 
 interface Indicator {
   id: string;
@@ -11,22 +14,6 @@ interface Indicator {
   current_description: string;
   source: string;
 }
-
-const getCategoryColor = (category: string): string => {
-  const colorMap: Record<string, string> = {
-    Housing: "#EE352E",
-    Transportation: "#0039A6",
-    Education: "#00933C",
-    Healthcare: "#FF6319",
-    Economy: "#FCCC0A",
-    Environment: "#6CBE45",
-    Safety: "#B933AD",
-    "Economic Justice": "#FCCC0A",
-    "Public Safety": "#B933AD",
-    "Government Reform": "#A7A9AC",
-  };
-  return colorMap[category] || "#A7A9AC";
-};
 
 export default function Indicators() {
   const [indicators, setIndicators] = useState<Indicator[]>([]);
@@ -49,79 +36,64 @@ export default function Indicators() {
     fetchIndicators();
   }, []);
 
+  // Transform data for IndicatorCard component
+  const transformedIndicators = indicators.map(ind => ({
+    id: ind.id,
+    headline: ind.headline,
+    category: ind.category,
+    current: ind.current,
+    currentDescription: ind.current_description,
+    target: ind.target,
+    descriptionParagraph: ind.description_paragraph,
+    source: ind.source,
+    promise: null
+  }));
+
   return (
-    <div className="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-subway-blue mb-4">
-            Key Performance Indicators
-          </h1>
-          <p className="text-gray-600 text-lg">
-            NYC data and metrics that show real impact on New Yorkers
+    <div className="min-h-screen">
+      <SEO 
+        title="NYC Data Indicators - Mamdani Tracker | Real Numbers & Context"
+        description="Track key NYC data indicators including housing, crime, unemployment, education, and public health metrics. Real numbers providing context for evaluating mayoral policy impact."
+        keywords="NYC data, city metrics, NYC housing data, NYC crime statistics, NYC unemployment, NYC education metrics, NYC public health data, city indicators, NYC statistics"
+      />
+      
+      {/* Hero Section */}
+      <div className="bg-[#0C2788] py-5 mb-5">
+        <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5">
+          <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4 flex-wrap">
+            <ChartBarIcon style={{ width: '2.5rem', height: '2.5rem' }} className="text-white hidden sm:block" />
+            <ChartBarIcon style={{ width: '2rem', height: '2rem' }} className="text-white sm:hidden" />
+            <h1 className="font-bold text-white tracking-tight mb-0" style={{ fontSize: 'clamp(32px, 6vw, 56px)' }}>
+              NYC Performance Indicators
+            </h1>
+          </div>
+          <p className="text-white mb-0" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
+            Key numbers and figures tracking progress on mayoral promises
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 pb-5">
+        <div className="bg-[#E9EDFB] border-l-4 border-[#0C2788] p-3 md:p-4 mb-4 md:mb-5 max-w-4xl">
+          <p className="m-0 leading-relaxed" style={{ fontSize: 'clamp(14px, 3vw, 16px)', lineHeight: '1.6', color: '#1F2937' }}>
+            ⚠️ These indicators reflect complex systems influenced by many factors. They provide 
+            context, not causation. Use them to understand the landscape, not to assign credit or blame.
           </p>
         </div>
 
         {isLoading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-subway-blue"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0C2788]"></div>
           </div>
-        ) : indicators.length === 0 ? (
-          <div className="bg-white border-2 border-gray-200 p-8 text-center">
-            <p className="text-gray-500 text-lg">
-              Key Performance Indicators will be published soon.
-            </p>
-            <p className="text-gray-400 mt-2">Check back for data-driven insights.</p>
+        ) : transformedIndicators.length === 0 ? (
+          <div className="text-center py-5 bg-white border-2 border-gray-300">
+            <p className="text-lg text-gray-600 mb-0">No indicators defined yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {indicators.map((indicator) => (
-              <div
-                key={indicator.id}
-                className="bg-white border-2 border-gray-200 p-6 hover:border-subway-blue transition-colors"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: getCategoryColor(indicator.category) }}
-                  >
-                    <span className="text-white font-bold">
-                      {indicator.category.charAt(0)}
-                    </span>
-                  </div>
-                  <span className="text-gray-500 font-bold uppercase tracking-wide text-xs">
-                    {indicator.category}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-bold text-subway-blue mb-3">{indicator.headline}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  {indicator.description_paragraph}
-                </p>
-
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
-                  <div>
-                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
-                      Target
-                    </div>
-                    <div className="text-lg font-bold text-subway-green">
-                      {indicator.target || "TBD"}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
-                      Current
-                    </div>
-                    <div className="text-lg font-bold text-subway-blue">
-                      {indicator.current || "TBD"}
-                    </div>
-                  </div>
-                </div>
-
-                {indicator.source && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <span className="text-xs text-gray-400">Source: {indicator.source}</span>
-                  </div>
-                )}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {transformedIndicators.map((indicator) => (
+              <div key={indicator.id}>
+                <IndicatorCard indicator={indicator} />
               </div>
             ))}
           </div>
