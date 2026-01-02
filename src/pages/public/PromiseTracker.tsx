@@ -119,7 +119,7 @@ export function PromiseTracker() {
           </div>
         </div>
 
-        {/* Results count */}
+        {/* Results count - hidden for now, restore later
         <div className="mt-3 pt-3 border-t">
           <p className="text-xs font-medium mb-0" style={{
           color: '#374151'
@@ -127,6 +127,7 @@ export function PromiseTracker() {
             Showing <span className="font-bold text-black">{filteredPromises.length}</span> of <span className="font-bold text-black">{promises.length}</span> promises
           </p>
         </div>
+        */}
       </div>
 
       {/* Promise Cards Grid */}
