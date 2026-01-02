@@ -48,7 +48,8 @@ const App = () => (
               <Route path="/promises/:slug" element={<PromiseDetail />} />
               <Route path="/membership" element={<Membership />} />
               <Route path="/about" element={<Methodology />} />
-              <Route path="/first100days" element={<First100Days />} />
+              <Route path="/zohran-mamdani-first-100-days" element={<First100Days />} />
+              <Route path="/first100days" element={<Navigate to="/zohran-mamdani-first-100-days" replace />} />
               <Route path="/indicators" element={<PublicIndicators />} />
               <Route path="/actions" element={<Actions />} />
               <Route path="/appointments" element={<Appointments />} />
