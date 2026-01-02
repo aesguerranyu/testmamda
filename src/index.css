@@ -245,6 +245,24 @@
   }
 }
 
+@keyframes train-left-to-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100vw + 240px));
+  }
+}
+
+@keyframes train-right-to-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100vw - 240px));
+  }
+}
+
 .subway-train {
   animation: train-move 30s linear infinite !important;
   will-change: transform;
