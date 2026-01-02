@@ -92,6 +92,36 @@ export type Database = {
         }
         Relationships: []
       }
+      memberships: {
+        Row: {
+          borough: string
+          city: string | null
+          created_at: string
+          email: string
+          id: string
+          last_name: string | null
+          name: string
+        }
+        Insert: {
+          borough: string
+          city?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          last_name?: string | null
+          name: string
+        }
+        Update: {
+          borough?: string
+          city?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          last_name?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
       promises: {
         Row: {
           category: string
