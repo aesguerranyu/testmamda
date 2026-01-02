@@ -68,7 +68,7 @@ export default function Indicators() {
             </h1>
           </div>
           <p className="text-white mb-0" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
-            Key numbers and figures tracking progress on mayoral promises
+            Key metrics and figures that help track how Mayor Zohran Mamdani's promises and policies are implemented.
           </p>
         </div>
       </div>
@@ -76,8 +76,7 @@ export default function Indicators() {
       <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 pb-5">
         <div className="bg-[#E9EDFB] border-l-4 border-[#0C2788] p-3 md:p-4 mb-4 md:mb-5 max-w-4xl">
           <p className="m-0 leading-relaxed" style={{ fontSize: 'clamp(14px, 3vw, 16px)', lineHeight: '1.6', color: '#1F2937' }}>
-            ⚠️ These indicators reflect complex systems influenced by many factors. They provide 
-            context, not causation. Use them to understand the landscape, not to assign credit or blame.
+            We will continue to refine and expand the KPIs to reflect the scholarly literature and best capture progress and outcomes related to Mamdani's agenda. These indicators provide context, not causation.
           </p>
         </div>
 
