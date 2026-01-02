@@ -1,86 +1,92 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRightIcon } from "@heroicons/react/24/solid";
 
 interface PromiseCardProps {
-  id: string;
-  category: string;
-  headline: string;
-  shortDescription: string;
-  status: string;
+  promise?: {
+    id: string;
+    headline: string;
+    shortDescription: string;
+    category: string;
+    status: string;
+  };
+  id?: string;
+  headline?: string;
+  shortDescription?: string;
+  category?: string;
+  status?: string;
 }
 
+// Map categories to subway line colors
 const getCategoryColor = (category: string): string => {
-  const colorMap: Record<string, string> = {
-    Housing: "#EE352E",
-    Transportation: "#0039A6",
-    Education: "#00933C",
-    Healthcare: "#FF6319",
-    Economy: "#FCCC0A",
-    Environment: "#6CBE45",
-    Safety: "#B933AD",
-    "Economic Justice": "#FCCC0A",
-    "Public Safety": "#B933AD",
-    "Government Reform": "#A7A9AC",
+  const colorMap: { [key: string]: string } = {
+    "Housing": "#EE352E",        // Red line (1,2,3)
+    "Transportation": "#0039A6",  // Blue line (A,C,E)
+    "Education": "#00933C",       // Green line (4,5,6)
+    "Healthcare": "#FF6319",      // Orange line (B,D,F,M)
+    "Economy": "#FCCC0A",         // Yellow line (N,Q,R,W)
+    "Environment": "#6CBE45",     // Lime (G line)
+    "Safety": "#B933AD",          // Purple (7 line)
+    "Economic Justice": "#FCCC0A", // Yellow
+    "Public Safety": "#B933AD",    // Purple
+    "Government Reform": "#A7A9AC" // Gray
   };
   return colorMap[category] || "#A7A9AC";
 };
 
-const getStatusColor = (status: string): string => {
-  const colorMap: Record<string, string> = {
-    "Not started": "#A7A9AC",
-    "In progress": "#0039A6",
-    Completed: "#00933C",
-    Stalled: "#EE352E",
-  };
-  return colorMap[status] || "#6B7280";
-};
-
-export function PromiseCard({ id, category, headline, shortDescription, status }: PromiseCardProps) {
+export function PromiseCard({ promise }: PromiseCardProps) {
   return (
     <Link
-      to={`/promises/${id}`}
-      className="block bg-white border-2 border-gray-200 p-5 hover:border-subway-blue transition-colors group no-underline h-full flex flex-col"
+      to={`/promises/${promise.id}`}
+      className="group block bg-white border-2 border-black hover:border-[#0C2788] transition-all no-underline p-4 md:p-5 flex flex-col h-full"
+      aria-label={`View details for promise: ${promise.headline}`}
+      onClick={() => window.scrollTo(0, 0)}
     >
       {/* Top row: Circle + Category left, Status badge right */}
-      <div className="flex items-center justify-between gap-3 mb-4">
+      <div className="flex items-start justify-between mb-4">
         {/* Category with circle */}
-        <div className="flex items-center gap-3">
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: getCategoryColor(category) }}
+        <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center justify-center rounded-full shrink-0"
+            style={{ width: '2.25rem', height: '2.25rem', backgroundColor: getCategoryColor(promise.category) }}
           >
-            <span className="text-white font-bold text-lg">{category.charAt(0)}</span>
+            <span className="text-white font-bold text-xs">
+              {promise.category.charAt(0)}
+            </span>
           </div>
-          <span className="text-gray-500 font-bold uppercase tracking-wide text-xs">
-            {category}
+          <span className="text-gray-600 font-bold uppercase tracking-wide text-xs">
+            {promise.category}
           </span>
         </div>
 
-        {/* Status badge */}
-        <div
-          className="px-3 py-1.5 flex-shrink-0"
-          style={{ backgroundColor: getStatusColor(status) }}
+        {/* Status badge - rectangular box */}
+        <div 
+          className="px-3 py-2 shrink-0"
+          style={{ 
+            backgroundColor: promise.status === "In progress" ? "#0039A6" : 
+                             promise.status === "Completed" ? "#00933C" :
+                             promise.status === "Stalled" ? "#EE352E" : "#6B7280"
+          }}
         >
           <span className="text-white font-bold uppercase tracking-wide text-xs">
-            {status}
+            {promise.status}
           </span>
         </div>
       </div>
 
       {/* Headline */}
-      <h3 className="text-lg font-bold text-subway-blue leading-tight mb-3 group-hover:text-subway-blue/80 transition-colors">
-        {headline}
-      </h3>
+      <h2 className="text-[#0C2788] font-bold leading-tight mb-3" style={{ fontSize: 'clamp(20px, 2.5vw, 24px)' }}>
+        {promise.headline}
+      </h2>
 
-      {/* Description */}
-      <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1 line-clamp-3">
-        {shortDescription}
+      {/* Description - grows to fill space */}
+      <p className="text-gray-600 text-base leading-relaxed mb-4 flex-grow">
+        {promise.shortDescription}
       </p>
 
-      {/* Track This button */}
-      <div className="flex items-center gap-2 text-subway-blue font-bold uppercase tracking-wide text-sm group-hover:gap-3 transition-all">
+      {/* Track This button - left aligned, stays at bottom */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide self-start" style={{ backgroundColor: 'rgba(12,39,136,0.65)' }}>
         Track This
-        <ArrowRight className="w-4 h-4" />
+        <ArrowRightIcon style={{ width: '1rem', height: '1rem' }} className="transition-transform group-hover:translate-x-1" />
       </div>
     </Link>
   );
