@@ -1,57 +1,44 @@
 type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled";
 
 interface StatusBadgeProps {
-  status: PromiseStatus | string;
-  variant?: "circle" | "pill";
-  size?: "sm" | "md" | "lg";
+  status: PromiseStatus;
 }
 
-const getStatusStyle = (status: string): { bg: string; text: string; line: string } => {
-  switch (status) {
-    case "Not started":
-      return { bg: "#A7A9AC", text: "#FFFFFF", line: "NS" };
-    case "In progress":
-      return { bg: "#0039A6", text: "#FFFFFF", line: "IP" };
-    case "Completed":
-      return { bg: "#00933C", text: "#FFFFFF", line: "C" };
-    case "Stalled":
-      return { bg: "#EE352E", text: "#FFFFFF", line: "S" };
-    default:
-      return { bg: "#A7A9AC", text: "#FFFFFF", line: "?" };
-  }
-};
-
-export function StatusBadge({ status, variant = "circle", size = "md" }: StatusBadgeProps) {
-  const style = getStatusStyle(status);
-  
-  const sizeClasses = {
-    sm: "w-6 h-6 text-xs",
-    md: "w-8 h-8 text-sm",
-    lg: "w-12 h-12 text-base",
+// NYC Subway line indicator style
+export function StatusBadge({ status }: StatusBadgeProps) {
+  const getStatusStyle = (status: PromiseStatus): { bg: string; text: string; line: string } => {
+    switch (status) {
+      case "Not started":
+        return { bg: "#A7A9AC", text: "#FFFFFF", line: "NS" }; // Gray line (like L/S)
+      case "In progress":
+        return { bg: "#0039A6", text: "#FFFFFF", line: "IP" }; // Blue line (like A/C/E)
+      case "Completed":
+        return { bg: "#00933C", text: "#FFFFFF", line: "C" }; // Green line (like 4/5/6)
+      case "Stalled":
+        return { bg: "#EE352E", text: "#FFFFFF", line: "S" }; // Red line (like 1/2/3)
+      default:
+        return { bg: "#A7A9AC", text: "#FFFFFF", line: "?" };
+    }
   };
 
-  if (variant === "pill") {
-    return (
-      <span
-        className="inline-flex items-center px-4 py-2 font-bold uppercase tracking-wide text-xs"
-        style={{ backgroundColor: style.bg, color: style.text }}
-      >
-        {status}
-      </span>
-    );
-  }
+  const style = getStatusStyle(status);
 
   return (
     <div className="inline-flex items-center gap-2">
-      <div
-        className={`flex items-center justify-center rounded-full flex-shrink-0 ${sizeClasses[size]}`}
-        style={{ backgroundColor: style.bg }}
+      {/* Subway circle indicator */}
+      <div 
+        className="flex items-center justify-center rounded-full"
+        style={{ backgroundColor: style.bg, width: '2rem', height: '2rem' }}
       >
-        <span className="font-bold" style={{ color: style.text }}>
+        <span 
+          className="font-bold text-sm"
+          style={{ color: style.text }}
+        >
           {style.line}
         </span>
       </div>
-      <span className="font-bold text-sm uppercase tracking-wide text-foreground">
+      {/* Status text */}
+      <span className="font-bold text-sm uppercase tracking-wide text-black">
         {status}
       </span>
     </div>
