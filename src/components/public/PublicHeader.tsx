@@ -10,21 +10,68 @@ const navItems = [
   { path: "/membership", label: "Membership" },
 ];
 
-// Subway train SVG component
-const SubwayTrain = () => (
-  <svg viewBox="0 0 120 24" className="h-6 w-auto" fill="currentColor">
-    <rect x="0" y="4" width="100" height="16" rx="2" />
-    <rect x="5" y="7" width="12" height="8" rx="1" fill="#0039A6" />
-    <rect x="20" y="7" width="12" height="8" rx="1" fill="#0039A6" />
-    <rect x="35" y="7" width="12" height="8" rx="1" fill="#0039A6" />
-    <rect x="50" y="7" width="12" height="8" rx="1" fill="#0039A6" />
-    <rect x="65" y="7" width="12" height="8" rx="1" fill="#0039A6" />
-    <rect x="80" y="7" width="12" height="8" rx="1" fill="#0039A6" />
-    <circle cx="15" cy="22" r="3" />
-    <circle cx="35" cy="22" r="3" />
-    <circle cx="65" cy="22" r="3" />
-    <circle cx="85" cy="22" r="3" />
-    <polygon points="100,4 100,20 115,12" />
+// 6-Car Subway Train SVG (same design as footer)
+const SubwayTrain = ({ color = "#fff" }: { color?: string }) => (
+  <svg width="360" height="26" viewBox="0 0 360 26" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.6, display: 'block' }}>
+    {/* Car 1 */}
+    <g>
+      <rect x="1" y="5" width="52" height="18" fill="none" stroke={color} strokeWidth="1"/>
+      <rect x="4" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <rect x="17" y="7" width="14" height="11" fill={color} opacity="0.3"/>
+      <rect x="34" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <circle cx="10" cy="24" r="1.5" fill={color}/>
+      <circle cx="44" cy="24" r="1.5" fill={color}/>
+    </g>
+    
+    {/* Car 2 */}
+    <g>
+      <rect x="55" y="5" width="52" height="18" fill="none" stroke={color} strokeWidth="1"/>
+      <rect x="58" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <rect x="71" y="7" width="14" height="11" fill={color} opacity="0.3"/>
+      <rect x="88" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <circle cx="64" cy="24" r="1.5" fill={color}/>
+      <circle cx="98" cy="24" r="1.5" fill={color}/>
+    </g>
+    
+    {/* Car 3 */}
+    <g>
+      <rect x="109" y="5" width="52" height="18" fill="none" stroke={color} strokeWidth="1"/>
+      <rect x="112" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <rect x="125" y="7" width="14" height="11" fill={color} opacity="0.3"/>
+      <rect x="142" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <circle cx="118" cy="24" r="1.5" fill={color}/>
+      <circle cx="152" cy="24" r="1.5" fill={color}/>
+    </g>
+    
+    {/* Car 4 */}
+    <g>
+      <rect x="163" y="5" width="52" height="18" fill="none" stroke={color} strokeWidth="1"/>
+      <rect x="166" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <rect x="179" y="7" width="14" height="11" fill={color} opacity="0.3"/>
+      <rect x="196" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <circle cx="172" cy="24" r="1.5" fill={color}/>
+      <circle cx="206" cy="24" r="1.5" fill={color}/>
+    </g>
+    
+    {/* Car 5 */}
+    <g>
+      <rect x="217" y="5" width="52" height="18" fill="none" stroke={color} strokeWidth="1"/>
+      <rect x="220" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <rect x="233" y="7" width="14" height="11" fill={color} opacity="0.3"/>
+      <rect x="250" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <circle cx="226" cy="24" r="1.5" fill={color}/>
+      <circle cx="260" cy="24" r="1.5" fill={color}/>
+    </g>
+    
+    {/* Car 6 */}
+    <g>
+      <rect x="271" y="5" width="52" height="18" fill="none" stroke={color} strokeWidth="1"/>
+      <rect x="274" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <rect x="287" y="7" width="14" height="11" fill={color} opacity="0.3"/>
+      <rect x="304" y="7" width="10" height="11" fill={color} opacity="0.3"/>
+      <circle cx="280" cy="24" r="1.5" fill={color}/>
+      <circle cx="314" cy="24" r="1.5" fill={color}/>
+    </g>
   </svg>
 );
 
@@ -62,9 +109,21 @@ export function PublicHeader() {
   return (
     <header className="bg-subway-blue sticky top-0 z-50">
       {/* Train animation track */}
-      <div className="relative h-6 overflow-hidden border-b border-white/20">
+      <div className="relative overflow-hidden" style={{ minHeight: '32px' }}>
+        {/* Track Line */}
         <div 
-          className={`absolute top-0 text-white transition-none ${
+          className="absolute left-0 w-full"
+          style={{
+            top: '28px',
+            height: '1px',
+            background: 'rgba(255, 255, 255, 0.3)',
+            zIndex: 1
+          }}
+        />
+        
+        {/* Animated Train */}
+        <div 
+          className={`absolute ${
             trainVisible 
               ? trainFromLeft 
                 ? 'animate-[train-left-to-right_4s_linear_forwards]' 
@@ -72,13 +131,15 @@ export function PublicHeader() {
               : 'opacity-0'
           }`}
           style={{
-            left: trainFromLeft ? '-120px' : 'auto',
-            right: trainFromLeft ? 'auto' : '-120px',
+            top: '5px',
+            left: trainFromLeft ? '-360px' : 'auto',
+            right: trainFromLeft ? 'auto' : '-360px',
+            width: '360px',
+            zIndex: 2,
+            transform: trainFromLeft ? 'scaleX(1)' : 'scaleX(-1)',
           }}
         >
-          <div style={{ transform: trainFromLeft ? 'scaleX(1)' : 'scaleX(-1)' }}>
-            <SubwayTrain />
-          </div>
+          <SubwayTrain color="#fff" />
         </div>
       </div>
 
