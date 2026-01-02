@@ -123,7 +123,7 @@ export function IndicatorCard({ indicator }: IndicatorCardProps) {
   const parsedSource = parseSource(indicator.source);
 
   return (
-    <article className="bg-white border border-gray-200 flex flex-col w-full max-w-[360px]">
+    <article className="bg-white border border-gray-200 h-full flex flex-col">
       {/* Category Header */}
       <div className="p-4 md:p-5 border-b border-gray-200">
         <div className="flex items-center gap-3">

@@ -90,9 +90,11 @@ export default function Indicators() {
             <p className="text-lg text-gray-600 mb-0">No indicators defined yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {transformedIndicators.map((indicator) => (
-              <IndicatorCard key={indicator.id} indicator={indicator} />
+              <div key={indicator.id}>
+                <IndicatorCard indicator={indicator} />
+              </div>
             ))}
           </div>
         )}
