@@ -233,7 +233,7 @@ export default function Membership() {
       </div>
 
       <p className="text-center text-xs text-gray-500 pb-8 px-4">
-        We respect your privacy. Your information will never be shared or sold.
+        You'll hear from us every now and then. No spam. No information selling. We promise.
       </p>
     </div>
   );
