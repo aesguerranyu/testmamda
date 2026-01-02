@@ -47,7 +47,7 @@ const getCategoryColor = (category: string): string => {
 export function PromiseCard({
   promise
 }: PromiseCardProps) {
-  return <Link to={`/promises/${promise.slug || promise.id}`} aria-label={`View details for promise: ${promise.headline}`} onClick={() => window.scrollTo(0, 0)} className="group block bg-white transition-all no-underline p-4 md:p-5 flex flex-col h-full border px-[35px] pt-[2px] py-[35px] border-[#071c5f]/[0.42]">
+  return <Link to={`/promises/${promise.slug || promise.id}`} aria-label={`View details for promise: ${promise.headline}`} onClick={() => window.scrollTo(0, 0)} className="group block bg-white transition-all no-underline p-5 flex flex-col border border-[#071c5f]/[0.42] aspect-square">
       {/* Top row: Circle + Category left, Status badge right */}
       <div className="flex items-start justify-between mb-4">
         {/* Category with circle */}
