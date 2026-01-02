@@ -194,12 +194,17 @@ export default function Home() {
           <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
             <h2 className="font-bold text-black tracking-tight" style={{
             fontSize: 'clamp(28px, 3.5vw, 32px)'
-          }}>Become a Member. It's free!</h2>
+          }}>Become a Member.  It's free.</h2>
           </div>
+          <p className="text-sm max-w-3xl mb-2" style={{
+          color: '#374151'
+        }}>
+            Be part of a public-interest project tracking changes in New York City.
+          </p>
           <p className="text-sm max-w-3xl" style={{
           color: '#374151'
         }}>
-            Be part of the exciting public interest project tracking changes in NYC.
+            You'll hear from us every now and then. No spam. No information selling. We promise.
           </p>
         </div>
 
