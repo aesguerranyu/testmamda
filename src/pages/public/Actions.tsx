@@ -1,7 +1,16 @@
+import { useEffect, useState } from "react";
 import { SEO } from "../../components/SEO";
-import { actions } from "../../data/mockData";
+
+interface Action {
+  id: string;
+  type: string;
+  description: string;
+  date: string;
+}
 
 export function Actions() {
+  const [actions, setActions] = useState<Action[]>([]);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });

@@ -1,18 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { promises, PromiseStatus, PromiseCategory } from "../../data/mockData";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { SEO } from "../../components/SEO";
 import { PromiseCard } from "../../components/public/PromiseCard";
+import { supabase } from "@/integrations/supabase/client";
+
+type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled" | "Broken";
+type PromiseCategory = "Housing" | "Transportation" | "Education" | "Healthcare" | "Environment" | "Economic Justice" | "Public Safety" | "Government Reform" | "Affordability";
+
+interface PromiseData {
+  id: string;
+  headline: string;
+  short_description: string;
+  category: string;
+  status: string;
+  url_slugs: string;
+}
 
 export function PromiseTracker() {
+  const [promises, setPromises] = useState<PromiseData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<PromiseStatus | "All">("All");
   const [selectedCategory, setSelectedCategory] = useState<PromiseCategory | "All">("All");
 
-  // Get unique statuses and categories from promises
-  const statuses: (PromiseStatus | "All")[] = ["All", "Not started", "In progress", "Completed", "Stalled"];
+  useEffect(() => {
+    const fetchPromises = async () => {
+      const { data, error } = await supabase
+        .from("promises")
+        .select("id, headline, short_description, category, status, url_slugs")
+        .eq("editorial_state", "published");
+
+      if (!error && data) {
+        setPromises(data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchPromises();
+  }, []);
+
+  const statuses: (PromiseStatus | "All")[] = ["All", "Not started", "In progress", "Completed", "Stalled", "Broken"];
   const categories: (PromiseCategory | "All")[] = [
     "All",
+    "Affordability",
     "Housing",
     "Transportation",
     "Education",
@@ -23,12 +53,31 @@ export function PromiseTracker() {
     "Government Reform"
   ];
 
-  // Filter promises based on selections
   const filteredPromises = promises.filter(promise => {
     const matchesStatus = selectedStatus === "All" || promise.status === selectedStatus;
     const matchesCategory = selectedCategory === "All" || promise.category === selectedCategory;
     return matchesStatus && matchesCategory;
   });
+
+  // Map database fields to PromiseCard expected format
+  const mappedPromises = filteredPromises.map(p => ({
+    id: p.id,
+    headline: p.headline,
+    shortDescription: p.short_description,
+    category: p.category,
+    status: p.status,
+    slug: p.url_slugs
+  }));
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0C2788]"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
@@ -106,7 +155,7 @@ export function PromiseTracker() {
 
       {/* Promise Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {filteredPromises.map((promise) => (
+        {mappedPromises.map((promise) => (
           <div key={promise.id} className="mb-4">
             <PromiseCard promise={promise} />
           </div>

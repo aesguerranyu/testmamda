@@ -1,18 +1,41 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getLatestUpdates, promises } from "../../data/mockData";
 import { ArrowRightIcon, FlagIcon, ClockIcon, ChartBarIcon, DocumentTextIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import { MembershipForm } from "../../components/public/MembershipForm";
 import { SEO } from "../../components/SEO";
 import { StructuredData } from "../../components/StructuredData";
 import { PromiseCard } from "../../components/public/PromiseCard";
+import { supabase } from "@/integrations/supabase/client";
+
+interface PromiseData {
+  id: string;
+  headline: string;
+  short_description: string;
+  category: string;
+  status: string;
+  url_slugs: string;
+}
 
 export default function Home() {
-  const latestUpdates = getLatestUpdates(5);
+  const [promises, setPromises] = useState<PromiseData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-  };
+  useEffect(() => {
+    const fetchPromises = async () => {
+      const { data, error } = await supabase
+        .from("promises")
+        .select("id, headline, short_description, category, status, url_slugs")
+        .eq("editorial_state", "published")
+        .limit(6);
+
+      if (!error && data) {
+        setPromises(data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchPromises();
+  }, []);
 
   const scrollToPromises = () => {
     const element = document.getElementById('promises-section');
@@ -53,6 +76,16 @@ export default function Home() {
       description: "Join our community and support independent civic tracking"
     }
   ];
+
+  // Map database fields to PromiseCard expected format
+  const mappedPromises = promises.map(p => ({
+    id: p.id,
+    headline: p.headline,
+    shortDescription: p.short_description,
+    category: p.category,
+    status: p.status,
+    slug: p.url_slugs
+  }));
 
   return (
     <div className="min-h-screen" style={{ margin: 0, padding: 0 }}>
@@ -115,13 +148,23 @@ export default function Home() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-5">
-          {promises.map((promise) => (
-            <div key={promise.id} className="mb-4">
-              <PromiseCard promise={promise} />
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0C2788]"></div>
+          </div>
+        ) : mappedPromises.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-5">
+            {mappedPromises.map((promise) => (
+              <div key={promise.id} className="mb-4">
+                <PromiseCard promise={promise} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 bg-white border-2 border-gray-200 mb-5">
+            <p className="text-gray-600">No published promises yet.</p>
+          </div>
+        )}
         
         <div className="text-center">
           <Link 
@@ -163,42 +206,6 @@ export default function Home() {
                 </p>
               </div>
             </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Latest Updates - Subway style */}
-      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 mb-5">
-        <div className="mb-4">
-          <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
-            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 32px)' }}>Latest Updates</h2>
-          </div>
-        </div>
-        
-        <div className="flex flex-col gap-3">
-          {latestUpdates.map((item) => (
-            <div key={item.id} className="border-l-[6px] border-[#0C2788] bg-white pl-3 py-2 hover:bg-[#E9EDFB] transition-all">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="px-2 py-1 bg-[#0C2788] text-white text-xs font-bold uppercase" style={{ letterSpacing: '0.1em' }}>
-                  {item.type === "promise" ? "Promise" : "Action"}
-                </span>
-                <span className="text-xs font-medium" style={{ color: '#374151' }}>
-                  {formatDate(item.date)}
-                </span>
-              </div>
-              {item.type === "promise" ? (
-                <Link 
-                  to={`/promises/${item.promiseId}`} 
-                  className="text-black hover:text-blue-600 transition-colors font-bold text-sm leading-tight no-underline block"
-                >
-                  {item.headline}
-                </Link>
-              ) : (
-                <span className="text-black font-bold text-sm leading-tight block">
-                  {item.description}
-                </span>
-              )}
-            </div>
           ))}
         </div>
       </div>
