@@ -6,7 +6,7 @@ import { PromiseCard } from "../../components/public/PromiseCard";
 import { supabase } from "@/integrations/supabase/client";
 
 type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled" | "Broken";
-type PromiseCategory = "Housing" | "Transportation" | "Education" | "Healthcare" | "Environment" | "Economic Justice" | "Public Safety" | "Government Reform" | "Affordability";
+type PromiseCategory = "Affordability" | "Childcare" | "Climate" | "Education" | "Housing" | "Transportation";
 
 interface PromiseData {
   id: string;
@@ -22,6 +22,7 @@ export function PromiseTracker() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<PromiseStatus | "All">("All");
   const [selectedCategory, setSelectedCategory] = useState<PromiseCategory | "All">("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPromises = async () => {
@@ -43,20 +44,20 @@ export function PromiseTracker() {
   const categories: (PromiseCategory | "All")[] = [
     "All",
     "Affordability",
-    "Housing",
-    "Transportation",
+    "Childcare",
+    "Climate",
     "Education",
-    "Healthcare",
-    "Environment",
-    "Economic Justice",
-    "Public Safety",
-    "Government Reform"
+    "Housing",
+    "Transportation"
   ];
 
   const filteredPromises = promises.filter(promise => {
     const matchesStatus = selectedStatus === "All" || promise.status === selectedStatus;
     const matchesCategory = selectedCategory === "All" || promise.category === selectedCategory;
-    return matchesStatus && matchesCategory;
+    const matchesSearch = searchQuery === "" || 
+      promise.headline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      promise.short_description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesCategory && matchesSearch;
   });
 
   // Map database fields to PromiseCard expected format
@@ -97,6 +98,21 @@ export function PromiseTracker() {
 
       {/* Filters */}
       <div className="bg-white p-4 mb-4">
+        {/* Search Bar */}
+        <div className="mb-4">
+          <label className="block text-xs font-bold text-black uppercase mb-2" style={{ letterSpacing: '0.1em' }}>
+            Search Promises
+          </label>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by headline or description..."
+            className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-[#0C2788] transition-colors"
+            style={{ color: '#374151' }}
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Status Filter */}
           <div>
@@ -167,6 +183,7 @@ export function PromiseTracker() {
             onClick={() => {
               setSelectedStatus("All");
               setSelectedCategory("All");
+              setSearchQuery("");
             }}
             className="px-4 py-2 bg-[#0C2788] text-white hover:bg-[#1436B3] transition-all font-bold uppercase tracking-wide border-0 cursor-pointer"
           >
