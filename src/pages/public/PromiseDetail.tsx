@@ -184,8 +184,8 @@ export default function PromiseDetail() {
             <h2 className="text-xl font-bold text-subway-dark mb-4">Overview</h2>
             <ul className="space-y-3">
               {descriptionPoints.map((point, index) => <li key={index} className="flex items-start gap-3">
-                  <span className="text-subway-blue font-bold text-lg flex-shrink-0">•</span>
-                  <p className="text-gray-600 leading-relaxed text-base">{point}</p>
+                  
+                  <p className="text-gray-600 leading-relaxed text-base text-justify font-sans">{point}</p>
                 </li>)}
             </ul>
           </section>}
