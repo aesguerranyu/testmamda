@@ -35,19 +35,15 @@ export default function First100Days() {
       />
       
       {/* Hero Section */}
-      <div className="bg-[#0C2788] py-5 mb-5">
-        <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5">
-          <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4 flex-wrap">
-            <CalendarIcon style={{ width: '2.5rem', height: '2.5rem' }} className="text-white hidden sm:block" />
-            <CalendarIcon style={{ width: '2rem', height: '2rem' }} className="text-white sm:hidden" />
-            <h1 className="font-bold text-white tracking-tight mb-0" style={{ fontSize: 'clamp(32px, 6vw, 56px)' }}>
-              First 100 Days
-            </h1>
-          </div>
-          <p className="text-white mb-0" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
-            January 1 – April 10, 2026
-          </p>
+      <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
+        <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+          <h1 className="font-bold text-black tracking-tight" style={{ fontSize: '40px' }}>
+            First 100 Days
+          </h1>
         </div>
+        <p className="text-base max-w-3xl" style={{ color: '#374151' }}>
+          A chronological timeline of Mayor Zohran Mamdani's actions, executive orders, appointments, and policy initiatives from January 1 to April 10, 2026.
+        </p>
       </div>
 
       {/* Main Content */}
