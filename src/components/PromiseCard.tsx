@@ -26,6 +26,8 @@ const getStatusStyles = (status: string) => {
   }
 };
 
+const getCategoryInitial = (category: string) => (category?.trim()?.[0] ?? "").toUpperCase();
+
 export function PromiseCard({ promise }: PromiseCardProps) {
   const categoryColor = getCategoryColor(promise.category);
   const statusStyles = getStatusStyles(promise.status);
@@ -34,49 +36,64 @@ export function PromiseCard({ promise }: PromiseCardProps) {
     <Link
       to={`/promise/${promise.id}`}
       onClick={() => window.scrollTo(0, 0)}
-      className="group block h-full bg-white no-underline transition-all hover:shadow-lg"
-      style={{
-        borderWidth: 2,
-        borderStyle: "solid",
-        borderColor: "#E5E7EB",
-      }}
+      className="group block h-full no-underline"
     >
-      {/* Category bar */}
-      <div
-        className="h-2 w-full"
-        style={{ backgroundColor: categoryColor }}
-      />
+      {/* Card */}
+      <article
+        className="flex h-full flex-col bg-white transition-all hover:shadow-lg"
+        style={{
+          borderWidth: 2,
+          borderStyle: "solid",
+          borderColor: "#E5E7EB",
+        }}
+      >
+        {/* Category bar */}
+        <div className="h-2 w-full" style={{ backgroundColor: categoryColor }} />
 
-      <div className="p-5">
-        {/* Category & Status */}
-        <div className="mb-3 flex items-center justify-between">
-          <span
-            className="text-xs font-bold uppercase tracking-wide"
-            style={{ color: categoryColor }}
-          >
-            {promise.category}
-          </span>
-          <span
-            className="px-2 py-1 text-xs font-bold uppercase tracking-wide"
-            style={{
-              backgroundColor: statusStyles.bg,
-              color: statusStyles.text,
-            }}
-          >
-            {promise.status}
-          </span>
+        {/* Content wrapper becomes a flex column so we can pin footer */}
+        <div className="flex flex-1 flex-col p-5">
+          {/* Header row */}
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Category icon circle (matches Figma screenshots) */}
+              <div
+                className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
+                style={{ backgroundColor: categoryColor, color: "#0B0F1A" }}
+              >
+                {getCategoryInitial(promise.category)}
+              </div>
+
+              <span className="text-xs font-bold uppercase tracking-wide text-gray-700">{promise.category}</span>
+            </div>
+
+            <span
+              className="px-3 py-2 text-xs font-bold uppercase tracking-wide"
+              style={{
+                backgroundColor: statusStyles.bg,
+                color: statusStyles.text,
+              }}
+            >
+              {promise.status}
+            </span>
+          </div>
+
+          {/* Body */}
+          <div className="flex-1">
+            <h3 className="mb-3 text-2xl font-extrabold leading-tight text-gray-900 transition-colors group-hover:text-blue-600">
+              {promise.headline}
+            </h3>
+
+            <p className="text-base leading-relaxed text-gray-600">{promise.shortDescription}</p>
+          </div>
+
+          {/* Footer pinned to bottom */}
+          <div className="mt-auto pt-6">
+            <div className="inline-flex items-center gap-3 bg-indigo-700 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white">
+              Track this <span aria-hidden="true">→</span>
+            </div>
+          </div>
         </div>
-
-        {/* Headline */}
-        <h3 className="mb-2 text-lg font-bold text-gray-900 transition-colors group-hover:text-blue-600">
-          {promise.headline}
-        </h3>
-
-        {/* Description */}
-        <p className="text-sm leading-relaxed text-gray-600">
-          {promise.shortDescription}
-        </p>
-      </div>
+      </article>
     </Link>
   );
 }
