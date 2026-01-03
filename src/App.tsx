@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/use-auth";
+import { AnalyticsListener } from "@/components/AnalyticsListener";
 import NotFound from "./pages/NotFound";
 
 // Public Pages
@@ -39,6 +40,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <AnalyticsListener />
           <Routes>
             {/* Public Routes */}
             <Route element={<PublicLayout />}>
