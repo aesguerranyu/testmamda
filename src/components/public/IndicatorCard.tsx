@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 
 interface IndicatorCardProps {
   indicator: {
@@ -19,23 +20,6 @@ interface IndicatorCardProps {
     } | null;
   };
 }
-
-// Map categories to subway line colors
-const getCategoryColor = (category: string): string => {
-  const colorMap: { [key: string]: string } = {
-    "Housing": "#EE352E",        // Red line (1,2,3)
-    "Transportation": "#0039A6",  // Blue line (A,C,E)
-    "Education": "#00933C",       // Green line (4,5,6)
-    "Healthcare": "#FF6319",      // Orange line (B,D,F,M)
-    "Environment": "#6CBE45",     // Lime (G line)
-    "Affordability": "#FCCC0A",   // Yellow line (N,Q,R,W)
-    "Labor": "#996633",           // Brown
-    "Childcare": "#FF6319",       // Orange
-    "Safety": "#B933AD",          // Purple (7 line)
-    "Government Reform": "#A7A9AC" // Gray
-  };
-  return colorMap[category] || "#A7A9AC";
-};
 
 // Determine trend direction from target
 const getTrendInfo = (target: string, current: string): { direction: 'up' | 'down' | null; isPositive: boolean } => {
@@ -104,7 +88,7 @@ const getValueColor = (category: string, target: string): string => {
 export function IndicatorCard({ indicator }: IndicatorCardProps) {
   const relatedPromise = indicator.promise || null;
   const categoryColor = getCategoryColor(indicator.category);
-  const textColor = indicator.category === "Affordability" ? "#000000" : "#FFFFFF";
+  const textColor = getCategoryTextColor(indicator.category);
   
   const trendInfo = getTrendInfo(indicator.target, indicator.current);
   const progress = calculateProgress(indicator.current, indicator.target);
@@ -283,7 +267,7 @@ export function IndicatorCard({ indicator }: IndicatorCardProps) {
                 <span 
                   className="font-bold text-xs" 
                   style={{ 
-                    color: relatedPromise.category === "Affordability" ? "#000000" : "#FFFFFF",
+                    color: getCategoryTextColor(relatedPromise.category),
                     lineHeight: 1 
                   }}
                 >

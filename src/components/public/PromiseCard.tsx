@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
+
 interface PromiseCardProps {
   promise?: {
     id: string;
@@ -7,7 +9,7 @@ interface PromiseCardProps {
     shortDescription: string;
     category: string;
     status: string;
-    slug?: string; // URL slug for canonical URLs
+    slug?: string;
   };
   id?: string;
   headline?: string;
@@ -16,34 +18,6 @@ interface PromiseCardProps {
   status?: string;
   slug?: string;
 }
-
-// Map categories to subway line colors
-const getCategoryColor = (category: string): string => {
-  const colorMap: {
-    [key: string]: string;
-  } = {
-    "Housing": "#EE352E",
-    // Red line (1,2,3)
-    "Transportation": "#0039A6",
-    // Blue line (A,C,E)
-    "Education": "#00933C",
-    // Green line (4,5,6)
-    "Healthcare": "#FF6319",
-    // Orange line (B,D,F,M)
-    "Economy": "#FCCC0A",
-    // Yellow line (N,Q,R,W)
-    "Environment": "#6CBE45",
-    // Lime (G line)
-    "Safety": "#B933AD",
-    // Purple (7 line)
-    "Economic Justice": "#FCCC0A",
-    // Yellow
-    "Public Safety": "#B933AD",
-    // Purple
-    "Government Reform": "#A7A9AC" // Gray
-  };
-  return colorMap[category] || "#A7A9AC";
-};
 export function PromiseCard(props: PromiseCardProps) {
   // Support both passing a promise object or individual props
   const promise = props.promise || {
@@ -65,7 +39,7 @@ export function PromiseCard(props: PromiseCardProps) {
           height: '2.25rem',
           backgroundColor: getCategoryColor(promise.category)
         }}>
-            <span className="text-white font-bold text-xs">
+            <span className="font-bold text-xs" style={{ color: getCategoryTextColor(promise.category) }}>
               {promise.category.charAt(0)}
             </span>
           </div>

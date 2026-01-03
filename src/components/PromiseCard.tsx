@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { getCategoryColor } from "@/lib/category-colors";
 
 interface PromiseCardProps {
   promise: {
@@ -9,22 +10,6 @@ interface PromiseCardProps {
     status: string;
   };
 }
-
-const getCategoryColor = (category: string): string => {
-  const colorMap: { [key: string]: string } = {
-    Housing: "#EE352E",
-    Transportation: "#0039A6",
-    Education: "#00933C",
-    Healthcare: "#FF6319",
-    Economy: "#FCCC0A",
-    Environment: "#6CBE45",
-    Safety: "#B933AD",
-    "Economic Justice": "#FCCC0A",
-    "Public Safety": "#B933AD",
-    "Government Reform": "#A7A9AC",
-  };
-  return colorMap[category] || "#A7A9AC";
-};
 
 const getStatusStyles = (status: string) => {
   switch (status) {
