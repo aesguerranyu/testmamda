@@ -34,11 +34,11 @@ export function PromiseCard(props: PromiseCardProps) {
       to={`/promises/${promise.slug || promise.id}`}
       aria-label={`View details for promise: ${promise.headline}`}
       onClick={() => window.scrollTo(0, 0)}
-      className="group block bg-white transition-all no-underline p-5 flex flex-col border border-[#071c5f]/[0.42] aspect-square"
+      className="group flex flex-col h-full bg-white transition-all no-underline border border-[#071c5f]/[0.42] hover:shadow-lg"
+      style={{ minHeight: "380px" }}
     >
-      {/* Top row: Circle + Category left, Status badge right */}
-      <div className="flex items-start justify-between mb-4">
-        {/* Category with circle */}
+      {/* Header: Category + Status */}
+      <div className="flex items-center justify-between p-5 pb-0">
         <div className="flex items-center gap-2">
           <div
             className="flex items-center justify-center rounded-full shrink-0"
@@ -59,8 +59,6 @@ export function PromiseCard(props: PromiseCardProps) {
             {promise.category}
           </span>
         </div>
-
-        {/* Status badge - rectangular box */}
         <div
           className="px-3 py-2 shrink-0"
           style={{
@@ -80,29 +78,31 @@ export function PromiseCard(props: PromiseCardProps) {
         </div>
       </div>
 
-      {/* Headline */}
-      <h2
-        className="text-[#0C2788] font-bold leading-tight mb-3"
-        style={{ fontSize: "clamp(20px, 2.5vw, 24px)" }}
-      >
-        {promise.headline}
-      </h2>
+      {/* Body: Headline + Description - flex-1 to push footer down */}
+      <div className="flex-1 p-5 pt-4">
+        <h2
+          className="text-[#0C2788] font-bold leading-tight mb-3"
+          style={{ fontSize: "clamp(20px, 2.5vw, 24px)" }}
+        >
+          {promise.headline}
+        </h2>
+        <p className="text-gray-600 text-base leading-relaxed">
+          {promise.shortDescription}
+        </p>
+      </div>
 
-      {/* Description - grows to fill space */}
-      <p className="text-gray-600 text-base leading-relaxed mb-4 flex-grow">
-        {promise.shortDescription}
-      </p>
-
-      {/* Track This button - left aligned, stays at bottom */}
-      <div
-        className="inline-flex items-center gap-2 px-4 py-2 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide self-start"
-        style={{ backgroundColor: "rgba(12,39,136,0.65)" }}
-      >
-        Track This
-        <ArrowRightIcon
-          style={{ width: "1rem", height: "1rem" }}
-          className="transition-transform group-hover:translate-x-1"
-        />
+      {/* Footer: CTA pinned to bottom */}
+      <div className="p-5 pt-0 mt-auto">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-2 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide"
+          style={{ backgroundColor: "rgba(12,39,136,0.65)" }}
+        >
+          Track This
+          <ArrowRightIcon
+            style={{ width: "1rem", height: "1rem" }}
+            className="transition-transform group-hover:translate-x-1"
+          />
+        </div>
       </div>
     </Link>
   );
