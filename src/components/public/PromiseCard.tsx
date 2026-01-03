@@ -34,12 +34,12 @@ export function PromiseCard(props: PromiseCardProps) {
       to={`/promises/${promise.slug || promise.id}`}
       aria-label={`View details for promise: ${promise.headline}`}
       onClick={() => window.scrollTo(0, 0)}
-      className="group block bg-white transition-all no-underline flex flex-col border border-[#071c5f]/[0.42] aspect-square p-8"
+      className="group block bg-white transition-all no-underline p-5 flex flex-col border border-[#071c5f]/[0.42] aspect-square"
     >
       {/* Top row: Circle + Category left, Status badge right */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-start justify-between mb-10">
         {/* Category with circle */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <div
             className="flex items-center justify-center rounded-full shrink-0"
             style={{
@@ -62,7 +62,7 @@ export function PromiseCard(props: PromiseCardProps) {
 
         {/* Status badge - rectangular box */}
         <div
-          className="px-8 py-4 shrink-0"
+          className="px-3 py-2 shrink-0"
           style={{
             backgroundColor:
               promise.status === "In progress"
@@ -82,27 +82,29 @@ export function PromiseCard(props: PromiseCardProps) {
 
       {/* Headline */}
       <h2
-        className="text-[#0C2788] font-bold leading-tight mb-6"
+        className="text-[#0C2788] font-bold leading-tight mb-7"
         style={{ fontSize: "clamp(20px, 2.5vw, 24px)" }}
       >
         {promise.headline}
       </h2>
 
-      {/* Description - grows to hold consistent whitespace */}
-      <p className="text-gray-600 text-base leading-relaxed mb-8 flex-grow">
+      {/* Description */}
+      <p className="text-gray-600 text-base leading-relaxed">
         {promise.shortDescription}
       </p>
 
       {/* Track This button - left aligned, stays at bottom */}
-      <div
-        className="inline-flex items-center gap-4 px-8 py-5 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide self-start mr-auto"
-        style={{ backgroundColor: "rgba(12,39,136,0.65)" }}
-      >
-        Track This
-        <ArrowRightIcon
-          style={{ width: "1rem", height: "1rem" }}
-          className="transition-transform group-hover:translate-x-1"
-        />
+      <div className="mt-auto pt-8 self-start">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-2 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide"
+          style={{ backgroundColor: "rgba(12,39,136,0.65)" }}
+        >
+          Track This
+          <ArrowRightIcon
+            style={{ width: "1rem", height: "1rem" }}
+            className="transition-transform group-hover:translate-x-1"
+          />
+        </div>
       </div>
     </Link>
   );
