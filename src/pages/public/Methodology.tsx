@@ -44,22 +44,50 @@ export function Methodology() {
               <span className="md:hidden">The Team</span>
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl pl-4 md:pl-6">
-            <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Anthony Esguerra</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Founder and Executive Editor</p>
+          <div className="flex flex-col gap-8 max-w-4xl pl-4 md:pl-6">
+            {/* Anthony Esguerra */}
+            <div>
+              <h3 className="font-bold text-black text-lg mb-1">Anthony Esguerra</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-3">Founder and Executive Editor</p>
+              <p className="text-lg text-gray-600 leading-relaxed mb-3">
+                Anthony is a journalist and newsroom leader specializing in audience engagement, content strategy, and innovation. Most recently, he served as Head of Audience Engagement at BenarNews, part of Radio Free Asia, where he led audience strategy across Malaysia, Indonesia, Thailand, the Philippines, Bangladesh, and the Pacific region. As a multimedia journalist, he has reported on some of Southeast Asia's defining political and social issues, including as a reporter for VICE World News, and previously reported on TV at GMA News and as a multimedia reporter and social media editor at INQUIRER.net.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Anthony holds a master's degree in media innovation from New York University and lives in the city. Outside the newsroom, he loves Broadway, choral music, and long walks around the city. One long-term dream is to take his favorite Filipino choir to perform at Carnegie Hall.
+              </p>
             </div>
-            <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Angeli Juani</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Research Editor</p>
+
+            {/* Cha Crisostomo */}
+            <div>
+              <h3 className="font-bold text-black text-lg mb-1">Cha Crisostomo</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-3">Co-Founder and Data Lead</p>
+              <p className="text-lg text-gray-600 leading-relaxed mb-3">
+                Cha is an economist focused on how technology, data, and policy intersect in real life. Her work looks at how tools like AI, green technologies, and digital platforms are adopted, and how they can be used to improve public decision-making and governance. She has worked on evaluating program effectiveness for international development institutions, including the Asian Development Bank and the Organisation for Economic Co-operation and Development. She has investigated program design and effectiveness in emerging markets. She holds a PhD in economics from the University of the Philippines.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                At Mamdani Tracker, Cha leads data research and methodology, helping shape how promises are defined, tracked, and measured over time. Outside of work, she likes to sing, bake while watching The Great British Baking Show, and spend weeknights thinking about better ways to measure whether policies are delivering what they claim.
+              </p>
             </div>
-            <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Cha Crisostomo</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Data Lead</p>
+
+            {/* Geli Juani */}
+            <div>
+              <h3 className="font-bold text-black text-lg mb-1">Geli Juani</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-3">Co-Founder and Research Editor</p>
+              <p className="text-lg text-gray-600 leading-relaxed mb-3">
+                Geli is a policy and quantitative analyst based in New York City. Her work sits at the intersection of technology and geoeconomics, with research spanning artificial intelligence and energy systems, cybersecurity, and global economic governance. She has experience tracking and analyzing competitiveness, investment climate, global value chains, and labor and poverty indicators, including through work on Arangkada Philippines and with multilateral institutions such as the Asian Development Bank and the World Bank. She holds a master's degree in economics from the University of the Philippines and a master's degree in global human development from Georgetown University.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Outside her day job, Geli helps build and maintain the Mamdani Tracker, contributing research, verification, and updates. In her spare time, she enjoys reading, creative writing, cooking, and long walks around the city.
+              </p>
             </div>
-            <div className="p-4">
-              <h3 className="font-bold text-black text-lg mb-2">Erwin Daez</h3>
-              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-2">Co-Founder and Technology Lead</p>
+
+            {/* Erwin Daez */}
+            <div>
+              <h3 className="font-bold text-black text-lg mb-1">Erwin Daez</h3>
+              <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-3">Co-Founder and Tech Lead</p>
+              <p className="text-lg text-gray-600 leading-relaxed italic">
+                [bio pending]
+              </p>
             </div>
           </div>
         </section>
