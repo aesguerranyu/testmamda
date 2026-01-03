@@ -17,7 +17,7 @@ export function PublicHeader() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-subway-blue sticky top-0 z-50">
+    <header className="sticky top-0 z-50" style={{ backgroundColor: '#0C2788' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

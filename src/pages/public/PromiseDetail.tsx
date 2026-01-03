@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Building2, Clock, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 
 interface PromiseDetail {
   id: string;
@@ -20,22 +21,6 @@ interface PromiseDetail {
   last_updated: string;
   updated_at: string;
 }
-
-const getCategoryColor = (category: string): string => {
-  const colorMap: Record<string, string> = {
-    Housing: "#EE352E",
-    Transportation: "#0039A6",
-    Education: "#00933C",
-    Healthcare: "#FF6319",
-    Economy: "#FCCC0A",
-    Environment: "#6CBE45",
-    Safety: "#B933AD",
-    "Economic Justice": "#FCCC0A",
-    "Public Safety": "#B933AD",
-    "Government Reform": "#A7A9AC",
-  };
-  return colorMap[category] || "#A7A9AC";
-};
 
 const getStatusColor = (status: string): string => {
   const colorMap: Record<string, string> = {
@@ -150,7 +135,7 @@ export default function PromiseDetail() {
               className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: getCategoryColor(promise.category) }}
             >
-              <span className="text-white font-bold text-xl">{promise.category.charAt(0)}</span>
+              <span className="font-bold text-xl" style={{ color: getCategoryTextColor(promise.category) }}>{promise.category.charAt(0)}</span>
             </div>
             <span className="text-gray-500 font-bold uppercase tracking-wide text-sm">
               {promise.category}
