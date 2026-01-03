@@ -1,228 +1,61 @@
-import { useState } from "react";
-import { Check } from "lucide-react";
+import { MembershipForm } from "@/components/public/MembershipForm";
+import { SEO } from "@/components/SEO";
+import { StructuredData } from "@/components/StructuredData";
 
 export default function Membership() {
-  const [formData, setFormData] = useState({
-    name: "",
-    lastName: "",
-    email: "",
-    borough: "",
-    city: ""
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const boroughs = [
-    "Manhattan",
-    "Brooklyn",
-    "Queens",
-    "The Bronx",
-    "Staten Island",
-    "Outside New York",
-    "Outside USA"
-  ];
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-      ...(name === "borough" && value !== "Outside New York" && value !== "Outside USA" ? { city: "" } : {})
-    }));
-  };
-
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4">
-        <div className="max-w-lg w-full bg-white border-2 border-gray-900 p-8 text-center">
-          <div 
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-            style={{ backgroundColor: '#22C55E' }}
-          >
-            <Check className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold mb-4" style={{ color: '#1E3A8A' }}>
-            Welcome to Mamdani Tracker!
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Thank you for joining. We'll keep you informed about updates and new developments.
-          </p>
-          <button
-            onClick={() => setSubmitted(false)}
-            className="px-6 py-3 text-white font-bold uppercase tracking-widest text-sm transition-colors hover:opacity-90"
-            style={{ backgroundColor: '#1E3A8A' }}
-          >
-            Submit Another Response
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Membership - Mamdani Tracker"
+        description="Join Mamdani Tracker for updates on NYC Mayor Zohran Mamdani's promises and actions. Membership is free."
+        keywords="Mamdani Tracker membership, Zohran Mamdani, NYC politics, government transparency"
+      />
+      <StructuredData type="website" />
+
       {/* Hero Section */}
-      <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
+      <header className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
         <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
-          <h1 className="font-bold text-black tracking-tight" style={{ fontSize: '40px' }}>
+          <h1 className="font-bold text-black tracking-tight" style={{ fontSize: "40px" }}>
             Become a Member
           </h1>
         </div>
-        <p className="text-base max-w-3xl" style={{ color: '#374151' }}>
-          Be part of the exciting public interest project tracking changes in NYC. Membership is free and focused on transparency.
+        <p className="text-base max-w-3xl" style={{ color: "#374151" }}>
+          Be part of the exciting public interest project tracking changes in NYC.
+          Membership is free and focused on transparency.
         </p>
-      </div>
+      </header>
 
-      {/* Why Join Section */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Why Join?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
-            <div 
-              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ backgroundColor: '#22C55E' }}
-            >
-              <Check className="w-4 h-4 text-white" />
+      <main>
+        {/* Why Join Section */}
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            Why Join?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
+              <span className="text-gray-600 text-sm">
+                Track the mayor's commitments and agenda items in one place
+              </span>
             </div>
-            <span className="text-gray-600 text-sm">
-              Track the mayor's commitments and agenda items in one place
-            </span>
-          </div>
-          <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
-            <div 
-              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ backgroundColor: '#22C55E' }}
-            >
-              <Check className="w-4 h-4 text-white" />
+            <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
+              <span className="text-gray-600 text-sm">
+                See what has changed and what evidence supports it
+              </span>
             </div>
-            <span className="text-gray-600 text-sm">
-              See what has changed and what evidence supports it
-            </span>
-          </div>
-          <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
-            <div 
-              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ backgroundColor: '#22C55E' }}
-            >
-              <Check className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-gray-600 text-sm">
-              Membership is free and focused on transparency
-            </span>
-          </div>
-        </div>
-
-        {/* Form */}
-        <form 
-          id="membership-form" 
-          onSubmit={handleSubmit} 
-          className="bg-white border-2 border-gray-200 p-6 sm:p-8"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                Name *
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                Last Name (optional)
-              </label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
-              />
+            <div className="flex items-start gap-3 p-4 bg-white border-2 border-gray-200">
+              <span className="text-gray-600 text-sm">
+                Membership is free and focused on transparency
+              </span>
             </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-              Email Address *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="you@example.com"
-              className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
-            />
+          {/* Form */}
+          <div id="membership-form">
+            <MembershipForm />
           </div>
-
-          <div className="mb-4">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-              Where do you live? *
-            </label>
-            <select
-              name="borough"
-              value={formData.borough}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
-            >
-              <option value="">Select a borough</option>
-              {boroughs.map((borough) => (
-                <option key={borough} value={borough}>
-                  {borough}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {(formData.borough === "Outside New York" || formData.borough === "Outside USA") && (
-            <div className="mb-4">
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                {formData.borough === "Outside USA" ? "City/Country" : "City, State"} *
-              </label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-[#1E3A8A] transition-colors"
-              />
-            </div>
-          )}
-
-          <div className="mt-6">
-            <button
-              type="submit"
-              className="w-full px-6 py-4 text-white font-bold uppercase tracking-widest text-sm transition-all hover:scale-[1.02]"
-              style={{ backgroundColor: '#1E3A8A' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#1E40AF';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1E3A8A';
-              }}
-            >
-              Join Now
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <p className="text-center text-xs text-gray-500 pb-8 px-4">
-        You'll hear from us every now and then. No spam. No information selling. We promise.
-      </p>
+        </section>
+      </main>
     </div>
   );
 }
+

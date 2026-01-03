@@ -3,16 +3,17 @@ import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { getStats } from '@/lib/cms-store';
 import { cn } from '@/lib/utils';
-import { 
-  LayoutDashboard, 
-  ClipboardCheck, 
-  BarChart3, 
-  Upload, 
+import {
+  LayoutDashboard,
+  ClipboardCheck,
+  BarChart3,
+  Upload,
+  Users,
   LogOut,
   Menu,
   X,
-  ChevronRight
-} from 'lucide-react';
+  ChevronRight,
+} from "lucide-react";
 
 interface StatsData {
   totalPromises: number;
@@ -27,10 +28,11 @@ interface StatsData {
 }
 
 const navItems = [
-  { path: '/rat-control/cms/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/rat-control/cms/promises', label: 'Promises', icon: ClipboardCheck },
-  { path: '/rat-control/cms/indicators', label: 'Indicators', icon: BarChart3 },
-  { path: '/rat-control/cms/import', label: 'Import CSV', icon: Upload },
+  { path: "/rat-control/cms/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/rat-control/cms/promises", label: "Promises", icon: ClipboardCheck },
+  { path: "/rat-control/cms/indicators", label: "Indicators", icon: BarChart3 },
+  { path: "/rat-control/cms/memberships", label: "Memberships", icon: Users },
+  { path: "/rat-control/cms/import", label: "Import CSV", icon: Upload },
 ];
 
 const CMSLayout = () => {

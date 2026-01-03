@@ -30,6 +30,7 @@ import PromiseEdit from "./pages/cms/PromiseEdit";
 import Indicators from "./pages/cms/Indicators";
 import IndicatorEdit from "./pages/cms/IndicatorEdit";
 import Import from "./pages/cms/Import";
+import Memberships from "./pages/cms/Memberships";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
               <Route path="promises/:id" element={<PromiseEdit />} />
               <Route path="indicators" element={<Indicators />} />
               <Route path="indicators/:id" element={<IndicatorEdit />} />
+              <Route path="memberships" element={<Memberships />} />
               <Route path="import" element={<Import />} />
             </Route>
             
