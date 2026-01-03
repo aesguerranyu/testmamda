@@ -65,29 +65,17 @@ export default function Membership() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div 
-        className="text-white py-12 px-4 sm:px-6 lg:px-8 text-center"
-        style={{ backgroundColor: '#1E3A8A' }}
-      >
-        <h1 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight">
-          Become a Member
-        </h1>
-        <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">
-          Be part of the exciting public interest project tracking changes in NYC.
+      <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
+        <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+          <h1 className="font-bold text-black tracking-tight" style={{ fontSize: '40px' }}>
+            Become a Member
+          </h1>
+        </div>
+        <p className="text-base max-w-3xl" style={{ color: '#374151' }}>
+          Be part of the exciting public interest project tracking changes in NYC. Membership is free and focused on transparency.
         </p>
-        <button
-          onClick={() => {
-            const formElement = document.getElementById('membership-form');
-            if (formElement) {
-              formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }}
-          className="px-6 py-2 bg-white text-[#1E3A8A] hover:bg-white/90 font-bold uppercase tracking-widest text-xs transition-all"
-        >
-          JOIN NOW
-        </button>
       </div>
 
       {/* Why Join Section */}
