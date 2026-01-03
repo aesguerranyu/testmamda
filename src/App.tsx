@@ -61,7 +61,7 @@ const App = () => (
             
             {/* CMS Routes */}
             <Route path="/rat-control/cms/admin" element={<CMSLogin />} />
-            <Route path="/rat-control/cms" element={<CMSLayout />}>
+            <Route path="/rat-control/cms/*" element={<CMSLayout />}>
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="promises" element={<Promises />} />
