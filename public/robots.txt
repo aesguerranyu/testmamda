@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://mamdanitracker.com/sitemap.xml
+Sitemap: https://mamdanitracker.nyc/sitemap.xml
