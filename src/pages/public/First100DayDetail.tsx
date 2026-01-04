@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { SEO } from "../../components/SEO";
+import { SEO } from "@/components/SEO";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import { getPublishedDayByNumber } from "@/lib/first100days-store";
+import { getPublishedDayByDate } from "@/lib/first100days-store";
 import { First100Day, First100Activity, activityTypeColors } from "@/types/first100days";
 
 export default function First100DayDetail() {
-  const { day } = useParams<{ day: string }>();
-  const dayNumber = parseInt(day || "0", 10);
+  const { year, month, day } = useParams<{ year: string; month: string; day: string }>();
+  const dateIso = `${year}-${month}-${day}`;
 
   const [dayEntry, setDayEntry] = useState<(First100Day & { activities: First100Activity[] }) | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,13 +15,13 @@ export default function First100DayDetail() {
 
   useEffect(() => {
     const loadData = async () => {
-      if (dayNumber < 1 || dayNumber > 100) {
+      if (!year || !month || !day) {
         setNotFound(true);
         setIsLoading(false);
         return;
       }
 
-      const data = await getPublishedDayByNumber(dayNumber);
+      const data = await getPublishedDayByDate(dateIso);
       if (data) {
         setDayEntry(data);
       } else {
@@ -30,7 +30,7 @@ export default function First100DayDetail() {
       setIsLoading(false);
     };
     loadData();
-  }, [dayNumber]);
+  }, [dateIso, year, month, day]);
 
   if (isLoading) {
     return (
@@ -50,7 +50,7 @@ export default function First100DayDetail() {
         <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-16 text-center">
           <h1 className="text-2xl font-bold text-black mb-4">Day not found</h1>
           <Link 
-            to="/first100days"
+            to="/zohran-mamdani-first-100-days"
             className="inline-flex items-center gap-2 text-[#1E3A8A] font-medium hover:underline"
           >
             <ArrowLeftIcon className="w-4 h-4" />
@@ -73,7 +73,7 @@ export default function First100DayDetail() {
       <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
         <div className="mb-4">
           <Link 
-            to="/first100days"
+            to="/zohran-mamdani-first-100-days"
             className="inline-flex items-center gap-2 text-[#1E3A8A] font-medium hover:underline text-sm"
           >
             <ArrowLeftIcon className="w-4 h-4" />
@@ -81,7 +81,7 @@ export default function First100DayDetail() {
           </Link>
         </div>
         
-        {/* Day Header - Large format matching timeline */}
+        {/* Day Header */}
         <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
           <h1 className="font-bold text-black mb-0" style={{ fontSize: 'clamp(28px, 5vw, 40px)' }}>
             Day {dayEntry.day} — {dayEntry.date_display}
@@ -99,10 +99,8 @@ export default function First100DayDetail() {
         <div className="flex flex-col gap-8 pl-3 md:pl-4">
           {dayEntry.activities.map((activity) => (
             <article key={activity.id} className="border-l-2 pl-3 sm:pl-4 py-2" style={{ borderColor: '#E5E7EB' }}>
-              {/* Pull Quote Type - Special Formatting */}
               {activity.type === "Pull Quote" ? (
                 <>
-                  {/* Quote */}
                   <div className="mb-4">
                     <div className="border-l-4 pl-4 sm:pl-6 py-2" style={{ borderColor: '#0C2788' }}>
                       <blockquote 
@@ -120,9 +118,9 @@ export default function First100DayDetail() {
                         </p>
                       )}
                     </div>
-                    {(activity.full_text_url || activity.sources?.[0]?.url) && (
+                    {(activity.full_text_url || (activity.sources as any)?.[0]?.url) && (
                       <a
-                        href={activity.full_text_url || activity.sources[0]?.url}
+                        href={activity.full_text_url || (activity.sources as any)[0]?.url}
                         className="inline-block mt-3 font-medium hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -133,7 +131,6 @@ export default function First100DayDetail() {
                     )}
                   </div>
 
-                  {/* Description */}
                   {activity.description && (
                     <p 
                       className="text-black mb-4"
@@ -143,8 +140,7 @@ export default function First100DayDetail() {
                     </p>
                   )}
 
-                  {/* Sources */}
-                  {activity.sources && activity.sources.length > 0 && (
+                  {Array.isArray(activity.sources) && activity.sources.length > 0 && (
                     <div className="mt-4">
                       <p 
                         className="font-bold uppercase mb-2"
@@ -152,7 +148,7 @@ export default function First100DayDetail() {
                       >
                         {activity.sources.length === 1 ? 'Source' : 'Sources'}
                       </p>
-                      {activity.sources.map((source, idx) => (
+                      {(activity.sources as any[]).map((source: any, idx: number) => (
                         <div key={idx} className="mb-2">
                           <a
                             href={source.url}
@@ -170,8 +166,6 @@ export default function First100DayDetail() {
                 </>
               ) : (
                 <>
-                  {/* Regular Activity Type - Standard Formatting */}
-                  {/* Activity Title with Pill */}
                   <div className="flex items-baseline gap-2 sm:gap-3 mb-3 flex-wrap">
                     <h2 className="text-black mb-0 font-bold" style={{ fontSize: 'clamp(20px, 4vw, 28px)' }}>
                       {activity.title}
@@ -191,7 +185,6 @@ export default function First100DayDetail() {
                     )}
                   </div>
                   
-                  {/* Activity Description */}
                   {activity.description && (
                     <p 
                       className="text-black mb-4"
@@ -201,8 +194,7 @@ export default function First100DayDetail() {
                     </p>
                   )}
                   
-                  {/* Sources */}
-                  {activity.sources && activity.sources.length > 0 && (
+                  {Array.isArray(activity.sources) && activity.sources.length > 0 && (
                     <div className="mt-4">
                       <p 
                         className="font-bold uppercase mb-2"
@@ -210,7 +202,7 @@ export default function First100DayDetail() {
                       >
                         {activity.sources.length === 1 ? 'Source' : 'Sources'}
                       </p>
-                      {activity.sources.map((source, idx) => (
+                      {(activity.sources as any[]).map((source: any, idx: number) => (
                         <div key={idx} className="mb-2">
                           <a
                             href={source.url}
@@ -231,10 +223,10 @@ export default function First100DayDetail() {
           ))}
         </div>
 
-        {/* Back link at bottom */}
+        {/* Back link */}
         <div className="mt-12 pt-8 border-t border-gray-200">
           <Link 
-            to="/first100days"
+            to="/zohran-mamdani-first-100-days"
             className="inline-flex items-center gap-2 text-[#1E3A8A] font-medium hover:underline"
           >
             <ArrowLeftIcon className="w-4 h-4" />

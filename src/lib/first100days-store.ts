@@ -316,3 +316,38 @@ export async function getPublishedDayByNumber(dayNumber: number): Promise<(First
     })) as First100Activity[],
   };
 }
+
+// Fetch a published day by ISO date (YYYY-MM-DD) with activities
+export async function getPublishedDayByDate(dateIso: string): Promise<(First100Day & { activities: First100Activity[] }) | null> {
+  const { data: day, error: dayError } = await supabase
+    .from('first100_days')
+    .select('*')
+    .eq('date_iso', dateIso)
+    .eq('editorial_state', 'published')
+    .maybeSingle();
+
+  if (dayError) {
+    console.error('Error fetching published day by date:', dayError);
+    return null;
+  }
+
+  if (!day) return null;
+
+  const { data: activities, error: activitiesError } = await supabase
+    .from('first100_activities')
+    .select('*')
+    .eq('day_id', day.id)
+    .order('sort_order', { ascending: true });
+
+  if (activitiesError) {
+    console.error('Error fetching activities:', activitiesError);
+  }
+
+  return {
+    ...(day as First100Day),
+    activities: (activities || []).map(act => ({
+      ...act,
+      sources: (act.sources as unknown as ActivitySource[]) || [],
+    })) as First100Activity[],
+  };
+}

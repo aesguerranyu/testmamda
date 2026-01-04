@@ -55,8 +55,8 @@ const App = () => (
               <Route path="/membership" element={<Membership />} />
               <Route path="/about" element={<Methodology />} />
               <Route path="/zohran-mamdani-first-100-days" element={<First100Days />} />
-              <Route path="/first100days" element={<First100Days />} />
-              <Route path="/first100days/:day" element={<First100DayDetail />} />
+              <Route path="/zohran-mamdani-first-100-days/:year/:month/:day" element={<First100DayDetail />} />
+              <Route path="/first100days" element={<Navigate to="/zohran-mamdani-first-100-days" replace />} />
               <Route path="/indicators" element={<PublicIndicators />} />
               <Route path="/actions" element={<Actions />} />
               <Route path="/appointments" element={<Appointments />} />
