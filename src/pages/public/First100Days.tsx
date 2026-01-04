@@ -101,7 +101,7 @@ export default function First100Days() {
               <div key={entry.id}>
                 {/* Day Header */}
                 <Link
-                  to={`/zohran-mamdani-first-100-days/${entry.day}`}
+                  to={`/zohran-mamdani-first-100-days/${entry.date_iso?.replace(/-/g, '/')}`}
                   className="block no-underline group"
                   onClick={() => window.scrollTo(0, 0)}
                 >
