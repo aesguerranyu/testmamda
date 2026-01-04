@@ -47,7 +47,7 @@ export default function First100DayDetail() {
           title="Day not found - First 100 Days - Mamdani Tracker"
           description="The requested day could not be found."
         />
-        <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-16 text-center">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 lg:px-6 py-16 text-center">
           <h1 className="text-2xl font-bold text-black mb-4">Day not found</h1>
           <Link 
             to="/zohran-mamdani-first-100-days"
@@ -65,12 +65,11 @@ export default function First100DayDetail() {
     <div className="min-h-screen bg-white">
       <SEO 
         title={`Day ${dayEntry.day} - ${dayEntry.date_display} | First 100 Days - Mamdani Tracker`}
-        description={`Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}). ${dayEntry.activities.length} ${dayEntry.activities.length === 1 ? 'activity' : 'activities'} documented.`}
-        keywords={`Mamdani Day ${dayEntry.day}, ${dayEntry.date_display}, first 100 days, NYC mayor timeline, mayoral actions`}
+        description={`Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}).`}
       />
       
-      {/* Header Section */}
-      <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 lg:px-6 py-5">
+        {/* Back Link */}
         <div className="mb-4">
           <Link 
             to="/zohran-mamdani-first-100-days"
@@ -80,51 +79,52 @@ export default function First100DayDetail() {
             First 100 Days
           </Link>
         </div>
-        
-        {/* Day Header */}
-        <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
-          <h1 className="font-bold text-black mb-0" style={{ fontSize: 'clamp(28px, 5vw, 40px)' }}>
+
+        {/* Day Header - matches listing page exactly */}
+        <div className="border-t-4 border-[#0C2788] pt-4 mb-5">
+          <h1 className="font-bold text-black mb-0" style={{ fontSize: "clamp(20px, 4.5vw, 32px)" }}>
             Day {dayEntry.day} — {dayEntry.date_display}
           </h1>
         </div>
-        
-        <p className="text-sm" style={{ color: '#6B7280' }}>
-          {dayEntry.activities.length} {dayEntry.activities.length === 1 ? 'Activity' : 'Activities'} documented
-        </p>
-      </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto max-w-7xl px-3 sm:px-4 lg:px-5 pb-8">
-        {/* Activities */}
-        <div className="flex flex-col gap-8 pl-3 md:pl-4">
-          {dayEntry.activities.map((activity) => (
-            <article key={activity.id} className="border-l-2 pl-3 sm:pl-4 py-2" style={{ borderColor: '#E5E7EB' }}>
+        {/* Activities - matches listing page exactly */}
+        <div className="flex flex-col gap-4 ml-8 sm:ml-12">
+          {dayEntry.activities?.map((activity) => (
+            <article key={activity.id} className="pl-4 sm:pl-5 border-l-4 border-gray-200">
               {activity.type === "Pull Quote" ? (
                 <>
-                  <div className="mb-4">
-                    <div className="border-l-4 pl-4 sm:pl-6 py-2" style={{ borderColor: '#0C2788' }}>
-                      <blockquote 
-                        className="font-semibold text-black italic"
-                        style={{ fontSize: 'clamp(20px, 4vw, 28px)', lineHeight: '1.4' }}
+                  {/* Pull Quote */}
+                  <div className="mb-4" style={{ maxWidth: "700px" }}>
+                    <div
+                      style={{
+                        backgroundColor: "#FAFBFC",
+                        padding: "clamp(48px, 8vw, 96px) clamp(40px, 7vw, 80px)",
+                      }}
+                    >
+                      <p
+                        className="mb-4"
+                        style={{
+                          fontSize: "clamp(28px, 6vw, 40px)",
+                          lineHeight: "1.5",
+                          color: "#0C2788",
+                          fontWeight: "900",
+                        }}
                       >
                         "{activity.quote}"
-                      </blockquote>
+                      </p>
                       {activity.quote_attribution && (
-                        <p 
-                          className="mt-3 font-medium"
-                          style={{ color: '#6B7280', fontSize: 'clamp(14px, 3vw, 16px)' }}
-                        >
+                        <p className="mb-0" style={{ fontSize: "clamp(12px, 2.5vw, 14px)", color: "#6B7280" }}>
                           {activity.quote_attribution}
                         </p>
                       )}
                     </div>
                     {(activity.full_text_url || (activity.sources as any)?.[0]?.url) && (
                       <a
-                        href={activity.full_text_url || (activity.sources as any)[0]?.url}
-                        className="inline-block mt-3 font-medium hover:underline"
+                        href={activity.full_text_url || (activity.sources as any)?.[0]?.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: '#1E3A8A', fontSize: 'clamp(13px, 2.8vw, 14px)' }}
+                        className="no-underline font-bold inline-block mt-3"
+                        style={{ fontSize: "clamp(14px, 3vw, 16px)", color: "#0C2788" }}
                       >
                         → {activity.full_text_label || "Read full speech"}
                       </a>
@@ -132,30 +132,50 @@ export default function First100DayDetail() {
                   </div>
 
                   {activity.description && (
-                    <p 
-                      className="text-black mb-4"
-                      style={{ lineHeight: '1.7', maxWidth: '48rem', color: '#374151', fontSize: 'clamp(15px, 3vw, 17px)' }}
+                    <p
+                      className="mb-4"
+                      style={{
+                        lineHeight: "1.7",
+                        maxWidth: "600px",
+                        color: "#374151",
+                        fontSize: "clamp(16px, 3.5vw, 18px)",
+                      }}
                     >
                       {activity.description}
                     </p>
                   )}
 
+                  {activity.image_url && (
+                    <div className="mb-4" style={{ maxWidth: "500px" }}>
+                      <img
+                        src={activity.image_url}
+                        alt={activity.image_caption || activity.title || ""}
+                        className="w-full h-auto block object-cover"
+                        style={{ aspectRatio: "16 / 9" }}
+                      />
+                      {activity.image_caption && (
+                        <p className="mt-2 text-sm text-gray-500">{activity.image_caption}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Sources */}
                   {Array.isArray(activity.sources) && activity.sources.length > 0 && (
                     <div className="mt-4">
-                      <p 
-                        className="font-bold uppercase mb-2"
-                        style={{ color: '#6B7280', letterSpacing: '0.05em', fontSize: 'clamp(10px, 2.5vw, 11px)' }}
+                      <div
+                        className="mb-2 uppercase font-bold"
+                        style={{ fontSize: "11px", letterSpacing: "0.05em", color: "#6B7280" }}
                       >
-                        {activity.sources.length === 1 ? 'Source' : 'Sources'}
-                      </p>
+                        {activity.sources.length === 1 ? "Source" : "Sources"}
+                      </div>
                       {(activity.sources as any[]).map((source: any, idx: number) => (
                         <div key={idx} className="mb-2">
                           <a
                             href={source.url}
-                            className="no-underline font-medium transition-colors inline-block hover:text-blue-800"
+                            className="no-underline font-medium"
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ fontSize: 'clamp(13px, 2.8vw, 14px)', color: '#1E3A8A', wordBreak: 'break-word' }}
+                            style={{ fontSize: "clamp(14px, 3vw, 16px)", color: "#1E3A8A" }}
                           >
                             → {source.title}
                           </a>
@@ -166,50 +186,71 @@ export default function First100DayDetail() {
                 </>
               ) : (
                 <>
-                  <div className="flex items-baseline gap-2 sm:gap-3 mb-3 flex-wrap">
-                    <h2 className="text-black mb-0 font-bold" style={{ fontSize: 'clamp(20px, 4vw, 28px)' }}>
+                  {/* Regular Activity */}
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
+                    <h3 className="text-black mb-0" style={{ fontSize: "clamp(20px, 4vw, 28px)" }}>
                       {activity.title}
-                    </h2>
+                    </h3>
                     {activity.type && (
-                      <span 
+                      <span
                         className="inline-block px-2 sm:px-3 py-1 text-white font-bold uppercase tracking-wide"
-                        style={{ 
-                          backgroundColor: activityTypeColors[activity.type] || '#808183', 
-                          letterSpacing: '0.05em', 
-                          whiteSpace: 'nowrap', 
-                          fontSize: 'clamp(10px, 2.5vw, 12px)' 
+                        style={{
+                          backgroundColor: activityTypeColors[activity.type] || "#0C2788",
+                          letterSpacing: "0.05em",
+                          whiteSpace: "nowrap",
+                          fontSize: "clamp(10px, 2.5vw, 12px)",
                         }}
                       >
                         {activity.type}
                       </span>
                     )}
                   </div>
-                  
+
                   {activity.description && (
-                    <p 
-                      className="text-black mb-4"
-                      style={{ lineHeight: '1.7', maxWidth: '48rem', color: '#374151', fontSize: 'clamp(15px, 3vw, 17px)' }}
+                    <p
+                      className="mb-4"
+                      style={{
+                        lineHeight: "1.7",
+                        maxWidth: "600px",
+                        color: "#374151",
+                        fontSize: "clamp(16px, 3.5vw, 18px)",
+                      }}
                     >
                       {activity.description}
                     </p>
                   )}
-                  
+
+                  {activity.image_url && (
+                    <div className="mb-4" style={{ maxWidth: "500px" }}>
+                      <img
+                        src={activity.image_url}
+                        alt={activity.image_caption || activity.title || ""}
+                        className="w-full h-auto block object-cover"
+                        style={{ aspectRatio: "16 / 9" }}
+                      />
+                      {activity.image_caption && (
+                        <p className="mt-2 text-sm text-gray-500">{activity.image_caption}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Sources */}
                   {Array.isArray(activity.sources) && activity.sources.length > 0 && (
                     <div className="mt-4">
-                      <p 
-                        className="font-bold uppercase mb-2"
-                        style={{ color: '#6B7280', letterSpacing: '0.05em', fontSize: 'clamp(10px, 2.5vw, 11px)' }}
+                      <div
+                        className="mb-2 uppercase font-bold"
+                        style={{ fontSize: "11px", letterSpacing: "0.05em", color: "#6B7280" }}
                       >
-                        {activity.sources.length === 1 ? 'Source' : 'Sources'}
-                      </p>
+                        {activity.sources.length === 1 ? "Source" : "Sources"}
+                      </div>
                       {(activity.sources as any[]).map((source: any, idx: number) => (
                         <div key={idx} className="mb-2">
                           <a
                             href={source.url}
-                            className="no-underline font-medium transition-colors inline-block hover:text-blue-800"
+                            className="no-underline font-medium"
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ fontSize: 'clamp(13px, 2.8vw, 14px)', color: '#1E3A8A', wordBreak: 'break-word' }}
+                            style={{ fontSize: "clamp(14px, 3vw, 16px)", color: "#1E3A8A" }}
                           >
                             → {source.title}
                           </a>
@@ -223,7 +264,7 @@ export default function First100DayDetail() {
           ))}
         </div>
 
-        {/* Back link */}
+        {/* Back link at bottom */}
         <div className="mt-12 pt-8 border-t border-gray-200">
           <Link 
             to="/zohran-mamdani-first-100-days"
