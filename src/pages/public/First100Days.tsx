@@ -1,4 +1,4 @@
-import { first100Days } from "../data/mockData";
+import { getPublishedDays } from "@/lib/first100days-store";
 import { SEO } from "../components/SEO";
 import { CalendarIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
