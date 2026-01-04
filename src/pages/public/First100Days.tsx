@@ -113,7 +113,7 @@ export default function First100Days() {
                 </Link>
 
                 {/* Activities */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 ml-8 sm:ml-12">
                   {entry.activities?.map((activity) => (
                     <article key={activity.id} className="pl-4 sm:pl-5 border-l-4 border-gray-200">
                       {activity.type === "Pull Quote" ? (
