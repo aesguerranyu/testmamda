@@ -58,18 +58,24 @@ export default function First100DayDetail() {
       <SEO title={`Day ${dayEntry.day} - ${dayEntry.date_display} | First 100 Days - Mamdani Tracker`} description={`Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}).`} />
       
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 lg:px-6 py-5">
-        {/* Back Link */}
-        <div className="mb-4">
-          
+        {/* Hero Section - matches First 100 Days listing page */}
+        <div className="mb-0">
+          <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
+            <h1 className="font-bold text-black tracking-tight" style={{ fontSize: "40px" }}>
+              First 100 Days
+            </h1>
+          </div>
+          <p className="text-base max-w-3xl" style={{ color: "#374151" }}>
+            A chronological timeline of Mayor Zohran Mamdani's actions, executive orders, appointments, and policy
+            initiatives from January 1 to April 10, 2026.
+          </p>
         </div>
 
-        {/* Day Header - matches listing page exactly */}
-        <div className="border-t-4 border-[#0C2788] pt-4 mb-5">
-          <h1 className="font-bold text-black mb-0" style={{
-          fontSize: "clamp(20px, 4.5vw, 32px)"
-        }}>
+        {/* Day Header */}
+        <div className="border-t-4 border-[#0C2788] pt-4 mb-5 mt-8">
+          <h2 className="font-bold text-black mb-0" style={{ fontSize: "clamp(20px, 4.5vw, 32px)" }}>
             Day {dayEntry.day} — {dayEntry.date_display}
-          </h1>
+          </h2>
         </div>
 
         {/* Activities - matches listing page exactly */}
