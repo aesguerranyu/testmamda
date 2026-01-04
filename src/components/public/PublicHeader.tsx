@@ -26,7 +26,7 @@ export function PublicHeader() {
               to="/"
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Mamdani Tracker Home"
-              className="text-white font-bold text-lg uppercase tracking-wider hover:opacity-80 transition-opacity"
+              className="text-white font-bold text-xl tracking-wide hover:opacity-80 transition-opacity"
             >
               Mamdani Tracker
             </Link>
@@ -38,7 +38,7 @@ export function PublicHeader() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3 py-2 text-sm font-bold uppercase tracking-wide transition-all ${
+                className={`px-3 py-2 text-sm font-semibold tracking-wide transition-all ${
                   isActive(item.path)
                     ? "text-white bg-white/20"
                     : "text-white/90 hover:text-white hover:bg-white/10"
@@ -73,7 +73,7 @@ export function PublicHeader() {
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block py-3 px-4 font-bold uppercase tracking-wide text-sm transition-colors ${
+                  className={`block py-3 px-4 font-semibold tracking-wide text-sm transition-colors ${
                     isActive(item.path)
                       ? "text-white bg-white/10 border-l-4 border-white"
                       : "text-white/90 hover:text-white hover:bg-white/10 pl-5"
