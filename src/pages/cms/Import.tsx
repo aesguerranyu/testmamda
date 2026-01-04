@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { importPromisesCSV, importIndicatorsCSV, getImportReports, resolvePromiseReferences } from '@/lib/cms-store';
+import { importFirst100DaysCSV } from '@/lib/first100days-store';
 import { ImportReport } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { 
@@ -7,6 +8,7 @@ import {
   FileText, 
   ClipboardCheck, 
   BarChart3, 
+  Calendar,
   XCircle,
   AlertTriangle,
   Clock,
@@ -20,7 +22,7 @@ const Import = () => {
   const [lastReport, setLastReport] = useState<ImportReport | null>(null);
   const [importHistory, setImportHistory] = useState<ImportReport[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [importType, setImportType] = useState<'promises' | 'indicators'>('promises');
+  const [importType, setImportType] = useState<'promises' | 'indicators' | 'first100days'>('promises');
 
   const loadHistory = async () => {
     const reports = await getImportReports();
@@ -48,8 +50,10 @@ const Import = () => {
       let report: ImportReport;
       if (importType === 'promises') {
         report = await importPromisesCSV(content);
-      } else {
+      } else if (importType === 'indicators') {
         report = await importIndicatorsCSV(content);
+      } else {
+        report = await importFirst100DaysCSV(content);
       }
 
       setLastReport(report);
@@ -92,7 +96,7 @@ const Import = () => {
       {/* Import type selection */}
       <div className="cms-card p-6">
         <h2 className="font-semibold text-foreground mb-4">Select Import Type</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <button
             onClick={() => setImportType('promises')}
             className={cn(
@@ -140,6 +144,30 @@ const Import = () => {
               <p className="text-sm text-muted-foreground">Import progress indicators</p>
             </div>
           </button>
+
+          <button
+            onClick={() => setImportType('first100days')}
+            className={cn(
+              "flex items-center gap-4 p-4 rounded-lg border-2 transition-all text-left",
+              importType === 'first100days'
+                ? "border-primary bg-primary/5"
+                : "border-border hover:border-primary/50"
+            )}
+          >
+            <div className={cn(
+              "p-3 rounded-lg",
+              importType === 'first100days' ? "bg-primary/10" : "bg-muted"
+            )}>
+              <Calendar className={cn(
+                "w-6 h-6",
+                importType === 'first100days' ? "text-primary" : "text-muted-foreground"
+              )} />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">First 100 Days</p>
+              <p className="text-sm text-muted-foreground">Import day entries</p>
+            </div>
+          </button>
         </div>
 
         {/* Upload area */}
@@ -173,9 +201,9 @@ const Import = () => {
                   {isImporting ? 'Importing...' : 'Click to upload CSV'}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {importType === 'promises' 
-                    ? 'Headers must match promise CSV schema exactly'
-                    : 'Headers must match indicator CSV schema exactly'}
+                  {importType === 'first100days' 
+                    ? 'Headers must match First 100 Days CSV schema'
+                    : 'Headers must match CSV schema exactly'}
                 </p>
               </div>
             </div>
@@ -190,8 +218,15 @@ const Import = () => {
           <p className="text-xs text-muted-foreground font-mono">
             {importType === 'promises'
               ? 'Category, Headline, Owner agency, Date Promised, Status, Requires state action or cooperation, Targets, Short description, Description, SEO tags, Updates, Source Text, Source URL, Last updated, URL Slugs'
-              : 'Category, Promise, Headline, Description Paragraph, Target, Current, Current Description, Source'}
+              : importType === 'indicators'
+              ? 'Category, Promise, Headline, Description Paragraph, Target, Current, Current Description, Source'
+              : 'Day, Date Display, Date ISO, Type, Title, Description, Quote, Quote Attribution, Image URL, Image Caption, Full Text URL, Full Text Label, Embed URL, Sources'}
           </p>
+          {importType === 'first100days' && (
+            <p className="text-xs text-muted-foreground mt-2">
+              <strong>Note:</strong> Multiple rows with the same Day number will create multiple activities for that day. Sources format: "Title1|URL1;Title2|URL2"
+            </p>
+          )}
         </div>
       </div>
 

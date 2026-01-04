@@ -62,7 +62,7 @@ export interface Indicator {
 // Import report structure
 export interface ImportReport {
   id: string;
-  type: 'promises' | 'indicators';
+  type: 'promises' | 'indicators' | 'first100days';
   timestamp: string;
   rowsProcessed: number;
   recordsCreated: number;
@@ -107,6 +107,29 @@ export const INDICATOR_CSV_HEADERS = [
 
 // Optional CSV headers for indicators (can be filled in via CMS)
 export const INDICATOR_CSV_OPTIONAL_HEADERS = ['Promise'] as const;
+
+// First 100 Days CSV headers
+export const FIRST100DAYS_CSV_HEADERS = [
+  'Day',
+  'Date Display',
+  'Date ISO',
+] as const;
+
+// First 100 Days Activity CSV headers
+export const FIRST100DAYS_ACTIVITY_CSV_HEADERS = [
+  'Day',
+  'Type',
+  'Title',
+  'Description',
+  'Quote',
+  'Quote Attribution',
+  'Image URL',
+  'Image Caption',
+  'Full Text URL',
+  'Full Text Label',
+  'Embed URL',
+  'Sources',
+] as const;
 
 // Auth types
 export interface CMSUser {
