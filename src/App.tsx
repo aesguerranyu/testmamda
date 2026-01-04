@@ -16,6 +16,7 @@ import PromisesByTag from "./pages/public/PromisesByTag";
 import Membership from "./pages/public/Membership";
 import Methodology from "./pages/public/Methodology";
 import First100Days from "./pages/public/First100Days";
+import First100DayDetail from "./pages/public/First100DayDetail";
 import PublicIndicators from "./pages/public/Indicators";
 import Actions from "./pages/public/Actions";
 import { Appointments } from "./pages/public/Appointments";
@@ -31,6 +32,8 @@ import Indicators from "./pages/cms/Indicators";
 import IndicatorEdit from "./pages/cms/IndicatorEdit";
 import Import from "./pages/cms/Import";
 import Memberships from "./pages/cms/Memberships";
+import First100DaysCMS from "./pages/cms/First100Days";
+import First100DayEdit from "./pages/cms/First100DayEdit";
 
 const queryClient = new QueryClient();
 
@@ -52,7 +55,8 @@ const App = () => (
               <Route path="/membership" element={<Membership />} />
               <Route path="/about" element={<Methodology />} />
               <Route path="/zohran-mamdani-first-100-days" element={<First100Days />} />
-              <Route path="/first100days" element={<Navigate to="/zohran-mamdani-first-100-days" replace />} />
+              <Route path="/first100days" element={<First100Days />} />
+              <Route path="/first100days/:day" element={<First100DayDetail />} />
               <Route path="/indicators" element={<PublicIndicators />} />
               <Route path="/actions" element={<Actions />} />
               <Route path="/appointments" element={<Appointments />} />
@@ -68,6 +72,8 @@ const App = () => (
               <Route path="promises/:id" element={<PromiseEdit />} />
               <Route path="indicators" element={<Indicators />} />
               <Route path="indicators/:id" element={<IndicatorEdit />} />
+              <Route path="first100days" element={<First100DaysCMS />} />
+              <Route path="first100days/:id" element={<First100DayEdit />} />
               <Route path="memberships" element={<Memberships />} />
               <Route path="import" element={<Import />} />
             </Route>

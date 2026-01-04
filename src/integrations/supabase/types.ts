@@ -14,6 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
+      first100_activities: {
+        Row: {
+          created_at: string
+          day_id: string
+          description: string | null
+          embed_url: string | null
+          full_text_label: string | null
+          full_text_url: string | null
+          id: string
+          image_caption: string | null
+          image_url: string | null
+          quote: string | null
+          quote_attribution: string | null
+          sort_order: number
+          sources: Json
+          title: string | null
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_id: string
+          description?: string | null
+          embed_url?: string | null
+          full_text_label?: string | null
+          full_text_url?: string | null
+          id?: string
+          image_caption?: string | null
+          image_url?: string | null
+          quote?: string | null
+          quote_attribution?: string | null
+          sort_order?: number
+          sources?: Json
+          title?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_id?: string
+          description?: string | null
+          embed_url?: string | null
+          full_text_label?: string | null
+          full_text_url?: string | null
+          id?: string
+          image_caption?: string | null
+          image_url?: string | null
+          quote?: string | null
+          quote_attribution?: string | null
+          sort_order?: number
+          sources?: Json
+          title?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "first100_activities_day_id_fkey"
+            columns: ["day_id"]
+            isOneToOne: false
+            referencedRelation: "first100_days"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      first100_days: {
+        Row: {
+          created_at: string
+          date_display: string
+          date_iso: string | null
+          day: number
+          editorial_state: string
+          id: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date_display: string
+          date_iso?: string | null
+          day: number
+          editorial_state?: string
+          id?: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date_display?: string
+          date_iso?: string | null
+          day?: number
+          editorial_state?: string
+          id?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       import_reports: {
         Row: {
           created_at: string
