@@ -14,7 +14,7 @@ export function SEO({
   title = "Mamdani Tracker - Tracking NYC Mayor Zohran Mamdani's Promises & Actions",
   description = "An independent public-interest website tracking New York City Mayor Zohran Mamdani's campaign promises, policy positions, mayoral actions, and appointments with verified sources.",
   keywords = "Zohran Mamdani, NYC Mayor, New York City, campaign promises, accountability, political tracker, mayoral actions, NYC politics, policy tracker, government transparency, public interest",
-  ogImage = "https://mamdanitracker.nyc/og-image.jpg",
+  ogImage = "https://mamdanitracker.nyc/og-image.png",
   ogType = "website",
   canonical
 }: SEOProps) {
