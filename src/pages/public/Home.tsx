@@ -209,7 +209,7 @@ export default function Home() {
             <h1 className="font-bold text-[#0C2788] mb-4 leading-tight tracking-tight" style={{
             fontSize: "clamp(40px, 6vw, 68px)",
             lineHeight: 1.2
-          }}>Tracking Big Promises
+          }}>Tracking Big Promises 
 to New Yorkers<br /> to New Yorkers
             </h1>
             <p className="text-black mx-auto leading-relaxed mb-5 font-medium py-3 px-4" style={{
