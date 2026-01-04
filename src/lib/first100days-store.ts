@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
-import { First100Day, First100Activity, ActivitySource } from '@/types/first100days';
+import { First100Day, First100Activity, ActivitySource, ActivityType, ACTIVITY_TYPES } from '@/types/first100days';
+import { ImportReport, ImportError } from '@/types/cms';
 
 // Fetch all days with their activities (for CMS)
 export async function getDays(): Promise<First100Day[]> {
@@ -350,4 +351,225 @@ export async function getPublishedDayByDate(dateIso: string): Promise<(First100D
       sources: (act.sources as unknown as ActivitySource[]) || [],
     })) as First100Activity[],
   };
+}
+
+// ============ CSV Import ============
+
+function parseCSVLine(line: string): string[] {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+function parseCSV(content: string): { headers: string[]; rows: string[][] } {
+  const lines = content.split(/\r?\n/).filter(line => line.trim());
+  if (lines.length === 0) return { headers: [], rows: [] };
+  
+  const headers = parseCSVLine(lines[0]);
+  const rows = lines.slice(1).map(line => parseCSVLine(line));
+  
+  return { headers, rows };
+}
+
+export async function importFirst100DaysCSV(content: string): Promise<ImportReport> {
+  const { headers, rows } = parseCSV(content);
+  const report: ImportReport = {
+    id: crypto.randomUUID(),
+    type: 'first100days',
+    timestamp: new Date().toISOString(),
+    rowsProcessed: rows.length,
+    recordsCreated: 0,
+    recordsUpdated: 0,
+    errors: [],
+  };
+
+  // Expected headers for days with activities
+  const expectedHeaders = ['Day', 'Date Display', 'Date ISO', 'Type', 'Title', 'Description', 'Quote', 'Quote Attribution', 'Image URL', 'Image Caption', 'Full Text URL', 'Full Text Label', 'Embed URL', 'Sources'];
+  
+  // Validate headers (be lenient - allow subset)
+  const headerMap: Record<string, number> = {};
+  headers.forEach((h, i) => {
+    headerMap[h.trim()] = i;
+  });
+
+  // Check required headers
+  if (headerMap['Day'] === undefined || headerMap['Date Display'] === undefined) {
+    report.errors.push({ row: 0, reason: 'Missing required headers: Day, Date Display' });
+    return report;
+  }
+
+  // Group rows by day number
+  const dayGroups: Map<number, { row: string[]; rowNum: number }[]> = new Map();
+  
+  rows.forEach((row, index) => {
+    const dayStr = row[headerMap['Day']]?.trim();
+    const dayNum = parseInt(dayStr, 10);
+    
+    if (!dayStr || isNaN(dayNum)) {
+      report.errors.push({ row: index + 2, reason: 'Invalid or missing Day number' });
+      return;
+    }
+    
+    if (!dayGroups.has(dayNum)) {
+      dayGroups.set(dayNum, []);
+    }
+    dayGroups.get(dayNum)!.push({ row, rowNum: index + 2 });
+  });
+
+  // Process each day
+  for (const [dayNum, dayRows] of dayGroups) {
+    try {
+      // Check if day exists
+      const { data: existingDay } = await supabase
+        .from('first100_days')
+        .select('*')
+        .eq('day', dayNum)
+        .maybeSingle();
+
+      let dayId: string;
+      const firstRow = dayRows[0].row;
+      const dateDisplay = firstRow[headerMap['Date Display']]?.trim() || '';
+      const dateIso = firstRow[headerMap['Date ISO']]?.trim() || null;
+
+      if (!dateDisplay) {
+        report.errors.push({ row: dayRows[0].rowNum, reason: 'Missing Date Display' });
+        continue;
+      }
+
+      if (existingDay) {
+        // Update existing day
+        const { data: updated, error } = await supabase
+          .from('first100_days')
+          .update({
+            date_display: dateDisplay,
+            date_iso: dateIso,
+          })
+          .eq('id', existingDay.id)
+          .select()
+          .single();
+
+        if (error) {
+          report.errors.push({ row: dayRows[0].rowNum, reason: error.message });
+          continue;
+        }
+        dayId = updated.id;
+        report.recordsUpdated++;
+      } else {
+        // Create new day
+        const { data: created, error } = await supabase
+          .from('first100_days')
+          .insert({
+            day: dayNum,
+            date_display: dateDisplay,
+            date_iso: dateIso,
+            slug: String(dayNum),
+            editorial_state: 'draft',
+          })
+          .select()
+          .single();
+
+        if (error) {
+          report.errors.push({ row: dayRows[0].rowNum, reason: error.message });
+          continue;
+        }
+        dayId = created.id;
+        report.recordsCreated++;
+      }
+
+      // Delete existing activities for this day (to replace with imported ones)
+      await supabase
+        .from('first100_activities')
+        .delete()
+        .eq('day_id', dayId);
+
+      // Create activities from rows
+      for (let i = 0; i < dayRows.length; i++) {
+        const { row, rowNum } = dayRows[i];
+        
+        const typeStr = row[headerMap['Type']]?.trim() || null;
+        const type = typeStr && ACTIVITY_TYPES.includes(typeStr as ActivityType) ? typeStr as ActivityType : null;
+        const title = row[headerMap['Title']]?.trim() || null;
+        const description = row[headerMap['Description']]?.trim() || null;
+        const quote = row[headerMap['Quote']]?.trim() || null;
+        const quoteAttribution = row[headerMap['Quote Attribution']]?.trim() || null;
+        const imageUrl = row[headerMap['Image URL']]?.trim() || null;
+        const imageCaption = row[headerMap['Image Caption']]?.trim() || null;
+        const fullTextUrl = row[headerMap['Full Text URL']]?.trim() || null;
+        const fullTextLabel = row[headerMap['Full Text Label']]?.trim() || null;
+        const embedUrl = row[headerMap['Embed URL']]?.trim() || null;
+        const sourcesStr = row[headerMap['Sources']]?.trim() || '';
+
+        // Parse sources (format: "Title1|URL1;Title2|URL2")
+        let sources: ActivitySource[] = [];
+        if (sourcesStr) {
+          sources = sourcesStr.split(';').map(s => {
+            const [t, u] = s.split('|');
+            return { title: t?.trim() || '', url: u?.trim() || '' };
+          }).filter(s => s.title || s.url);
+        }
+
+        // Only create activity if there's meaningful content
+        if (type || title || description || quote) {
+          const { error: actError } = await supabase
+            .from('first100_activities')
+            .insert({
+              day_id: dayId,
+              sort_order: i,
+              type,
+              title,
+              description,
+              quote,
+              quote_attribution: quoteAttribution,
+              image_url: imageUrl,
+              image_caption: imageCaption,
+              full_text_url: fullTextUrl,
+              full_text_label: fullTextLabel,
+              embed_url: embedUrl,
+              sources: JSON.parse(JSON.stringify(sources)),
+            });
+
+          if (actError) {
+            report.errors.push({ row: rowNum, reason: `Activity error: ${actError.message}` });
+          }
+        }
+      }
+    } catch (err: any) {
+      report.errors.push({ row: dayRows[0].rowNum, reason: err.message || 'Unknown error' });
+    }
+  }
+
+  // Save report
+  await saveFirst100DaysImportReport(report);
+
+  return report;
+}
+
+async function saveFirst100DaysImportReport(report: ImportReport): Promise<void> {
+  await supabase.from('import_reports').insert({
+    id: report.id,
+    type: report.type,
+    rows_processed: report.rowsProcessed,
+    records_created: report.recordsCreated,
+    records_updated: report.recordsUpdated,
+    errors: JSON.parse(JSON.stringify(report.errors)),
+  });
 }
