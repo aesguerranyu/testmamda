@@ -90,7 +90,7 @@ const CMSLayout = () => {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-foreground/20 z-40 lg:hidden"
+          className="fixed inset-0 bg-background z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
