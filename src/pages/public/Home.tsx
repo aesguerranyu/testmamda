@@ -106,10 +106,11 @@ export default function Home() {
       const { data, error } = await supabase
         .from("promises")
         .select("id, headline, short_description, category, status, url_slugs")
-        .eq("editorial_state", "published")
-        .limit(6);
+        .eq("editorial_state", "published");
       if (!error && data) {
-        setPromises(data);
+        // Shuffle promises randomly and take first 6
+        const shuffled = [...data].sort(() => Math.random() - 0.5);
+        setPromises(shuffled.slice(0, 6));
       }
       setIsLoading(false);
     };
