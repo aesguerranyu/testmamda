@@ -712,13 +712,18 @@ const First100DayEdit = () => {
                   {selectedDate ? format(selectedDate, 'MMMM d, yyyy') : 'Pick a date'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 z-[100]" align="start" side="bottom" sideOffset={4}>
+              <PopoverContent
+                className="w-auto p-0 z-[200] bg-[var(--popover)] text-[var(--popover-foreground)] border border-[var(--border)] shadow-md"
+                align="start"
+                side="bottom"
+                sideOffset={4}
+              >
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={handleDateSelect}
+                  initialFocus
                   defaultMonth={DAY_ONE}
-                  className="pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
