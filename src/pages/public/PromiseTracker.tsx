@@ -27,7 +27,9 @@ export function PromiseTracker() {
         error
       } = await supabase.from("promises").select("id, headline, short_description, category, status, url_slugs").eq("editorial_state", "published");
       if (!error && data) {
-        setPromises(data);
+        // Shuffle promises randomly for variety on each visit
+        const shuffled = [...data].sort(() => Math.random() - 0.5);
+        setPromises(shuffled);
       }
       setIsLoading(false);
     };
@@ -35,6 +37,7 @@ export function PromiseTracker() {
   }, []);
   const statuses: (PromiseStatus | "All")[] = ["All", "Not started", "In progress", "Completed", "Stalled", "Broken"];
   const categories: (PromiseCategory | "All")[] = ["All", "Affordability", "Childcare", "Climate", "Education", "Housing", "Transportation"];
+
   const filteredPromises = promises.filter(promise => {
     const matchesStatus = selectedStatus === "All" || promise.status === selectedStatus;
     const matchesCategory = selectedCategory === "All" || promise.category === selectedCategory;
