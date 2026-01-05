@@ -352,6 +352,7 @@ const First100DayEdit = () => {
   
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [slugText, setSlugText] = useState('');
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<First100Day>>({
     day: 1,
     date_display: '',
@@ -417,6 +418,7 @@ const First100DayEdit = () => {
     if (!date) return;
     
     setSelectedDate(date);
+    setCalendarOpen(false); // Close calendar on selection
     
     const dayNumber = calculateDayNumber(date);
     const displayDate = formatDisplayDate(date);
@@ -697,7 +699,7 @@ const First100DayEdit = () => {
           {/* Date Picker */}
           <div className="space-y-2">
             <Label className="cms-input-label">Date *</Label>
-            <Popover>
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -710,13 +712,13 @@ const First100DayEdit = () => {
                   {selectedDate ? format(selectedDate, 'MMMM d, yyyy') : 'Pick a date'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 z-[100]" align="start" side="bottom" sideOffset={4}>
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={handleDateSelect}
-                  initialFocus
                   defaultMonth={DAY_ONE}
+                  className="pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
