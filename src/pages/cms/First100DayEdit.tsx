@@ -713,7 +713,7 @@ const First100DayEdit = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-auto p-0 z-[200] bg-[var(--popover)] text-[var(--popover-foreground)] border border-[var(--border)] shadow-md"
+                className="w-auto p-0 z-[200] bg-popover text-popover-foreground border border-border shadow-md"
                 align="start"
                 side="bottom"
                 sideOffset={4}
