@@ -54,8 +54,18 @@ export default function First100DayDetail() {
         </div>
       </div>;
   }
+  const canonicalUrl = `https://mamdanitracker.nyc/zohran-mamdani-first-100-days/${year}/${month}/${day}`;
+  const pageTitle = `Day ${dayEntry.day} - ${dayEntry.date_display} | First 100 Days | Mamdani Tracker`;
+  const pageDescription = `Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}). View executive orders, policy announcements, and appointments from the first 100 days.`;
+
   return <div className="min-h-screen bg-white">
-      <SEO title={`Day ${dayEntry.day} - ${dayEntry.date_display} | First 100 Days - Mamdani Tracker`} description={`Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}).`} />
+      <SEO 
+        title={pageTitle} 
+        description={pageDescription}
+        canonical={canonicalUrl}
+        ogType="article"
+        keywords={`Zohran Mamdani Day ${dayEntry.day}, first 100 days, NYC mayor actions, ${dayEntry.date_display}`}
+      />
       
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 lg:px-6 py-5">
         {/* Hero Section - matches First 100 Days listing page */}

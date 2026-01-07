@@ -52,9 +52,10 @@ export default function Indicators() {
   return (
     <div className="min-h-screen">
       <SEO 
-        title="NYC Data Indicators - Mamdani Tracker | Real Numbers & Context"
-        description="Track key NYC data indicators including housing, crime, unemployment, education, and public health metrics. Real numbers providing context for evaluating mayoral policy impact."
-        keywords="NYC data, city metrics, NYC housing data, NYC crime statistics, NYC unemployment, NYC education metrics, NYC public health data, city indicators, NYC statistics"
+        title="Policy Indicators Dashboard | Mamdani Tracker"
+        description="Track key NYC performance indicators measuring the impact of Mayor Zohran Mamdani's policies. Data on housing, education, transportation, and more with verified sources."
+        keywords="NYC data, city metrics, NYC housing data, NYC performance indicators, NYC policy metrics, Mamdani administration"
+        canonical="https://mamdanitracker.nyc/indicators"
       />
       
       {/* Hero Section */}
