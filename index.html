@@ -45,31 +45,14 @@
   </head>
 
   <body>
-    <!-- Static crawlable content for SEO - hidden when JS loads -->
-    <div id="seo-content" style="max-width: 800px; margin: 0 auto; padding: 40px 20px; font-family: system-ui, sans-serif;">
-      <h1>Mamdani Tracker: Tracking NYC Mayor Zohran Mamdani's Promises and Actions</h1>
-      
-      <p>Mamdani Tracker is an independent, nonpartisan public-interest website that tracks New York City Mayor Zohran Mamdani's campaign promises, policy positions, mayoral actions, and key appointments. We document each promise with verified sources and monitor progress throughout his administration.</p>
-      
-      <p>Our mission is to build a definitive public record that helps New Yorkers understand city governance and hold the Mamdani administration accountable. We believe transparency strengthens democracy and that every New Yorker deserves access to clear, factual information about their mayor's commitments and actions.</p>
-      
-      <p>Made for New Yorkers, by and with New Yorkers. This project is not affiliated with any political campaign, party, or government office. We use only publicly available sources to ensure our tracking remains objective and verifiable.</p>
-    </div>
-    
+    <noscript>
+      <div style="max-width: 800px; margin: 0 auto; padding: 40px 20px; font-family: system-ui, sans-serif;">
+        <h1>Mamdani Tracker: Tracking NYC Mayor Zohran Mamdani's Promises and Actions</h1>
+        <p>Mamdani Tracker is an independent, nonpartisan public-interest website that tracks New York City Mayor Zohran Mamdani's campaign promises, policy positions, mayoral actions, and key appointments.</p>
+        <p>Please enable JavaScript to use this application.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Hide SEO content once React app loads
-      if (document.getElementById('root')) {
-        var observer = new MutationObserver(function(mutations) {
-          if (document.getElementById('root').children.length > 0) {
-            var seoContent = document.getElementById('seo-content');
-            if (seoContent) seoContent.style.display = 'none';
-            observer.disconnect();
-          }
-        });
-        observer.observe(document.getElementById('root'), { childList: true });
-      }
-    </script>
   </body>
 </html>

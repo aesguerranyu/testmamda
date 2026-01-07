@@ -59,7 +59,7 @@ export function SEO({
     // Open Graph meta tags
     updateMetaTag('og:title', title, true);
     updateMetaTag('og:description', description, true);
-    updateMetaTag('og:url', currentUrl, true);
+    updateMetaTag('og:url', canonicalUrl, true);
     updateMetaTag('og:type', ogType, true);
     updateMetaTag('og:image', ogImage, true);
     updateMetaTag('og:site_name', 'Mamdani Tracker', true);
