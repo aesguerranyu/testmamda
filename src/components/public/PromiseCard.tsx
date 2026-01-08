@@ -38,7 +38,7 @@ export function PromiseCard(props: PromiseCardProps) {
       style={{ minHeight: "380px" }}
     >
       {/* Header: Category + Status */}
-      <div className="flex items-center justify-between p-5 pb-0">
+      <div className="flex items-center justify-between p-5 pb-4">
         <div className="flex items-center gap-2">
           <div
             className="flex items-center justify-center rounded-full shrink-0"
@@ -78,8 +78,8 @@ export function PromiseCard(props: PromiseCardProps) {
         </div>
       </div>
 
-      {/* Body: Headline + Description - centered within available space */}
-      <div className="flex-1 p-5 pt-4 flex flex-col justify-center">
+      {/* Body: Headline + Description */}
+      <div className="flex-1 px-5 flex flex-col justify-center">
         <h2
           className="text-[#0C2788] font-bold leading-tight mb-3"
           style={{ fontSize: "clamp(20px, 2.5vw, 24px)" }}
