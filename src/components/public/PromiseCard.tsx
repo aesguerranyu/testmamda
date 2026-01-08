@@ -34,65 +34,66 @@ export function PromiseCard(props: PromiseCardProps) {
       to={`/promises/${promise.slug || promise.id}`}
       aria-label={`View details for promise: ${promise.headline}`}
       onClick={() => window.scrollTo(0, 0)}
-      className="group flex flex-col h-full bg-white transition-all no-underline border border-[#071c5f]/[0.42] hover:shadow-lg"
-      style={{ minHeight: "380px" }}
+      className="group flex flex-col justify-between h-full bg-white transition-all no-underline border border-[#071c5f]/[0.42] hover:shadow-lg aspect-square"
     >
-      {/* Header: Category + Status */}
-      <div className="flex items-center justify-between p-5 pb-0">
-        <div className="flex items-center gap-2">
-          <div
-            className="flex items-center justify-center rounded-full shrink-0"
-            style={{
-              width: "2.25rem",
-              height: "2.25rem",
-              backgroundColor: getCategoryColor(promise.category),
-            }}
-          >
-            <span
-              className="font-bold text-xs"
-              style={{ color: getCategoryTextColor(promise.category) }}
+      <div className="flex flex-col p-5 gap-3">
+        {/* Header: Category + Status */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: "2.25rem",
+                height: "2.25rem",
+                backgroundColor: getCategoryColor(promise.category),
+              }}
             >
-              {promise.category.charAt(0)}
+              <span
+                className="font-bold text-xs"
+                style={{ color: getCategoryTextColor(promise.category) }}
+              >
+                {promise.category.charAt(0)}
+              </span>
+            </div>
+            <span className="text-gray-600 font-bold uppercase tracking-wide text-xs">
+              {promise.category}
             </span>
           </div>
-          <span className="text-gray-600 font-bold uppercase tracking-wide text-xs">
-            {promise.category}
-          </span>
+          <div
+            className="px-3 py-2 shrink-0"
+            style={{
+              backgroundColor:
+                promise.status === "In progress"
+                  ? "#0039A6"
+                  : promise.status === "Completed"
+                    ? "#00933C"
+                    : promise.status === "Stalled"
+                      ? "#EE352E"
+                      : "#6B7280",
+            }}
+          >
+            <span className="text-white font-bold uppercase tracking-wide text-xs">
+              {promise.status}
+            </span>
+          </div>
         </div>
-        <div
-          className="px-3 py-2 shrink-0"
-          style={{
-            backgroundColor:
-              promise.status === "In progress"
-                ? "#0039A6"
-                : promise.status === "Completed"
-                  ? "#00933C"
-                  : promise.status === "Stalled"
-                    ? "#EE352E"
-                    : "#6B7280",
-          }}
-        >
-          <span className="text-white font-bold uppercase tracking-wide text-xs">
-            {promise.status}
-          </span>
-        </div>
-      </div>
 
-      {/* Body: Headline + Description - flex-1 to push footer down */}
-      <div className="flex-1 p-5 pt-4">
+        {/* Headline */}
         <h2
-          className="text-[#0C2788] font-bold leading-tight mb-3"
-          style={{ fontSize: "clamp(20px, 2.5vw, 24px)" }}
+          className="text-[#0C2788] font-bold leading-tight"
+          style={{ fontSize: "clamp(18px, 2vw, 22px)" }}
         >
           {promise.headline}
         </h2>
-        <p className="text-gray-600 text-base leading-relaxed">
+
+        {/* Description */}
+        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
           {promise.shortDescription}
         </p>
       </div>
 
-      {/* Footer: CTA pinned to bottom */}
-      <div className="p-5 pt-0 mt-auto">
+      {/* Footer: CTA */}
+      <div className="p-5 pt-0">
         <div
           className="inline-flex items-center gap-2 px-4 py-2 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide"
           style={{ backgroundColor: "rgba(12,39,136,0.65)" }}
