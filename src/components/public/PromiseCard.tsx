@@ -31,7 +31,7 @@ export function PromiseCard(props: PromiseCardProps) {
     minHeight: "380px"
   }}>
       {/* Header: Category + Status */}
-      <div className="flex items-center justify-between px-5 pt-9 pb-0">
+      <div className="flex items-center justify-between px-5 pt-9 pb-0 py-[38px]">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center rounded-full shrink-0" style={{
           width: "2.25rem",
