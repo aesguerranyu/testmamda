@@ -78,19 +78,21 @@ export function PromiseCard(props: PromiseCardProps) {
           </div>
         </div>
 
-        {/* Content (keeps CTA close to description; extra space stays below) */}
-        <div className="pt-4">
+        {/* Body + CTA (keep CTA close to copy; extra space lives below CTA) */}
+        <div className="flex flex-1 flex-col pt-7">
           <h2
-            className="text-[#0C2788] font-bold leading-tight"
+            className="text-[#0C2788] font-bold leading-tight line-clamp-3"
             style={{ fontSize: "clamp(20px, 2.5vw, 24px)" }}
           >
             {promise.headline}
           </h2>
 
-          <p className="mt-3 text-gray-600 text-base leading-relaxed line-clamp-3">
+          {/* Reserve space so short descriptions don’t create a huge empty block */}
+          <p className="mt-4 text-gray-600 text-base leading-relaxed line-clamp-4 min-h-[6.5rem]">
             {promise.shortDescription}
           </p>
 
+          {/* CTA stays with the content (not pinned to the bottom) */}
           <div className="mt-6">
             <div
               className="inline-flex items-center gap-2 px-4 py-2 text-white group-hover:bg-[#1436B3] transition-all font-bold text-xs uppercase tracking-wide"
@@ -103,6 +105,9 @@ export function PromiseCard(props: PromiseCardProps) {
               />
             </div>
           </div>
+
+          {/* Any remaining whitespace goes under the CTA (like the reference) */}
+          <div className="flex-1" />
         </div>
       </div>
     </Link>
