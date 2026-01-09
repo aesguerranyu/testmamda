@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertCircle, Lock, UserPlus } from 'lucide-react';
+import { AlertCircle, Lock } from 'lucide-react';
 import { z } from 'zod';
 
 const authSchema = z.object({
@@ -14,13 +14,11 @@ const authSchema = z.object({
 
 const CMSLogin = () => {
   const navigate = useNavigate();
-  const { user, isCmsUser, isLoading, signIn, signUp, signOut } = useAuth();
+  const { user, isCmsUser, isLoading, signIn, signOut } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [success, setSuccess] = useState('');
 
   // Redirect if already authenticated with CMS access
   useEffect(() => {
@@ -32,7 +30,6 @@ const CMSLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
     setIsSubmitting(true);
 
     // Validate input
@@ -44,30 +41,15 @@ const CMSLogin = () => {
     }
 
     try {
-      if (isSignUp) {
-        const { error: signUpError } = await signUp(email, password);
-        if (signUpError) {
-          if (signUpError.message.includes('already registered')) {
-            setError('An account with this email already exists. Please sign in instead.');
-          } else {
-            setError(signUpError.message);
-          }
+      const { error: signInError } = await signIn(email, password);
+      if (signInError) {
+        if (signInError.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password');
         } else {
-          setSuccess('Account created! Please contact an administrator to grant you CMS access.');
-          setEmail('');
-          setPassword('');
+          setError(signInError.message);
         }
-      } else {
-        const { error: signInError } = await signIn(email, password);
-        if (signInError) {
-          if (signInError.message.includes('Invalid login credentials')) {
-            setError('Invalid email or password');
-          } else {
-            setError(signInError.message);
-          }
-        }
-        // Navigation will happen via useEffect when isCmsUser is true
       }
+      // Navigation will happen via useEffect when isCmsUser is true
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
     }
@@ -124,34 +106,6 @@ const CMSLogin = () => {
 
         {/* Login Card */}
         <div className="cms-card p-6">
-          <div className="flex gap-2 mb-6">
-            <Button
-              type="button"
-              variant={!isSignUp ? 'default' : 'outline'}
-              className="flex-1"
-              onClick={() => {
-                setIsSignUp(false);
-                setError('');
-                setSuccess('');
-              }}
-            >
-              Sign In
-            </Button>
-            <Button
-              type="button"
-              variant={isSignUp ? 'default' : 'outline'}
-              className="flex-1"
-              onClick={() => {
-                setIsSignUp(true);
-                setError('');
-                setSuccess('');
-              }}
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Sign Up
-            </Button>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="cms-input-label">
@@ -179,15 +133,10 @@ const CMSLogin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                autoComplete="current-password"
                 className="h-11"
                 required
               />
-              {isSignUp && (
-                <p className="text-xs text-muted-foreground">
-                  Password must be at least 6 characters
-                </p>
-              )}
             </div>
 
             {error && (
@@ -197,27 +146,18 @@ const CMSLogin = () => {
               </div>
             )}
 
-            {success && (
-              <div className="flex items-center gap-2 text-primary text-sm p-3 bg-primary/10 rounded-md">
-                <span>{success}</span>
-              </div>
-            )}
-
             <Button
               type="submit"
               className="w-full h-11"
               disabled={isSubmitting}
             >
-              {isSubmitting ? (isSignUp ? 'Creating account...' : 'Signing in...') : (isSignUp ? 'Create Account' : 'Sign in')}
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          {isSignUp 
-            ? 'After signing up, an administrator must grant you CMS access'
-            : 'Authorized personnel only'
-          }
+          Authorized personnel only
         </p>
       </div>
     </div>
