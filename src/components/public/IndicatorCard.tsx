@@ -168,10 +168,10 @@ export function IndicatorCard({
         </div>
 
         {/* Headline */}
-        <h3 className="font-bold text-black mb-3 tracking-tight" style={{
+        <h3 style={{
         fontSize: 'clamp(18px, 4vw, 22px)',
         lineHeight: 1.2
-      }}>
+      }} className="font-bold text-black mb-3 tracking-tight text-3xl">
           {indicator.headline}
         </h3>
 
