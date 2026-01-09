@@ -84,18 +84,20 @@ export default function Indicators() {
     return related.slice(0, 2);
   };
 
-  // Transform data for IndicatorCard component
-  const transformedIndicators = indicators.map(ind => ({
-    id: ind.id,
-    headline: ind.headline,
-    category: ind.category,
-    current: ind.current,
-    currentDescription: ind.current_description,
-    target: ind.target,
-    descriptionParagraph: ind.description_paragraph,
-    source: ind.source,
-    relatedPromises: findRelatedPromises(ind)
-  }));
+  // Transform and shuffle data for IndicatorCard component
+  const transformedIndicators = indicators
+    .map(ind => ({
+      id: ind.id,
+      headline: ind.headline,
+      category: ind.category,
+      current: ind.current,
+      currentDescription: ind.current_description,
+      target: ind.target,
+      descriptionParagraph: ind.description_paragraph,
+      source: ind.source,
+      relatedPromises: findRelatedPromises(ind)
+    }))
+    .sort(() => Math.random() - 0.5);
 
   return (
     <div className="min-h-screen">
