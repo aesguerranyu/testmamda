@@ -13,28 +13,76 @@ interface Indicator {
   current: string;
   current_description: string;
   source: string;
+  promise_reference: string;
+}
+
+interface Promise {
+  id: string;
+  headline: string;
+  category: string;
+  url_slugs: string;
 }
 
 export default function Indicators() {
   const [indicators, setIndicators] = useState<Indicator[]>([]);
+  const [promises, setPromises] = useState<Promise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchIndicators = async () => {
-      const { data, error } = await supabase
-        .from("indicators")
-        .select("*")
-        .eq("editorial_state", "published")
-        .order("category", { ascending: true });
+    const fetchData = async () => {
+      const [indicatorsRes, promisesRes] = await Promise.all([
+        supabase
+          .from("indicators")
+          .select("*")
+          .eq("editorial_state", "published")
+          .order("category", { ascending: true }),
+        supabase
+          .from("promises")
+          .select("id, headline, category, url_slugs")
+          .eq("editorial_state", "published")
+      ]);
 
-      if (!error && data) {
-        setIndicators(data);
+      if (!indicatorsRes.error && indicatorsRes.data) {
+        setIndicators(indicatorsRes.data);
+      }
+      if (!promisesRes.error && promisesRes.data) {
+        setPromises(promisesRes.data);
       }
       setIsLoading(false);
     };
 
-    fetchIndicators();
+    fetchData();
   }, []);
+
+  // Find up to 2 related promises for an indicator
+  const findRelatedPromises = (indicator: Indicator): Promise[] => {
+    const related: Promise[] = [];
+    
+    // First, check if there's a direct promise_reference match
+    if (indicator.promise_reference) {
+      const directMatch = promises.find(p => 
+        p.headline.toLowerCase() === indicator.promise_reference.toLowerCase() ||
+        p.id === indicator.promise_reference
+      );
+      if (directMatch) {
+        related.push(directMatch);
+      }
+    }
+    
+    // Then, find promises in the same category
+    const categoryMatches = promises.filter(p => 
+      p.category.toLowerCase() === indicator.category.toLowerCase() &&
+      !related.some(r => r.id === p.id)
+    );
+    
+    // Add category matches until we have 2 promises
+    for (const match of categoryMatches) {
+      if (related.length >= 2) break;
+      related.push(match);
+    }
+    
+    return related.slice(0, 2);
+  };
 
   // Transform data for IndicatorCard component
   const transformedIndicators = indicators.map(ind => ({
@@ -46,7 +94,7 @@ export default function Indicators() {
     target: ind.target,
     descriptionParagraph: ind.description_paragraph,
     source: ind.source,
-    promise: null
+    relatedPromises: findRelatedPromises(ind)
   }));
 
   return (
