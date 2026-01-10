@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Building2, Clock, ChevronDown, ChevronUp } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 import { SEO } from "@/components/SEO";
+import { StructuredData } from "@/components/StructuredData";
 interface PromiseDetail {
   id: string;
   headline: string;
@@ -95,6 +96,23 @@ export default function PromiseDetail() {
   const seoTitle = `${promise.headline} | Mamdani Tracker`;
   const seoDescription = promise.short_description || `Track the status of Mayor Zohran Mamdani's promise: ${promise.headline}. Category: ${promise.category}. Status: ${promise.status}.`;
 
+  // Structured data for search engines
+  const articleData = {
+    headline: promise.headline,
+    description: seoDescription,
+    url: promiseUrl,
+    dateModified: promise.updated_at,
+    datePublished: promise.date_promised,
+    category: promise.category,
+    status: promise.status
+  };
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://mamdanitracker.nyc" },
+    { name: "Promises", url: "https://mamdanitracker.nyc/promises" },
+    { name: promise.headline, url: promiseUrl }
+  ];
+
   return <div className="bg-white min-h-screen">
       <SEO
         title={seoTitle}
@@ -103,6 +121,7 @@ export default function PromiseDetail() {
         ogType="article"
         keywords={`${promise.category}, ${promise.status}, Zohran Mamdani, NYC Mayor, ${promise.seo_tags || ''}`}
       />
+      <StructuredData type="article" articleData={articleData} breadcrumbs={breadcrumbs} />
       {/* Back Navigation */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">

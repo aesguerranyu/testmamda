@@ -88,6 +88,24 @@ Deno.serve(async (req) => {
     <lastmod>${formatDate(mostRecentDate)}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/about</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/actions</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/appointments</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>`
 
     // Add individual promise pages
