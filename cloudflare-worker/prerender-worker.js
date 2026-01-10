@@ -4,12 +4,10 @@
  * Routes crawler/bot requests to the Supabase prerender edge function
  * while serving the normal SPA to regular users.
  * 
- * CLOUDFLARE ROUTE PATTERNS TO CONFIGURE:
+ * CLOUDFLARE ROUTE PATTERNS TO CONFIGURE (use these specific patterns, NOT catch-all):
  * - mamdanitracker.nyc/promises*
  * - mamdanitracker.nyc/indicators*
  * - mamdanitracker.nyc/zohran-mamdani-first-100-days*
- * 
- * Or use a single catch-all: mamdanitracker.nyc/*
  */
 
 // Bot user agents to detect
@@ -43,7 +41,7 @@ const BOT_AGENTS = [
   'petalbot',
 ];
 
-// Routes that should be prerendered for bots
+// Routes that should be prerendered for bots (homepage excluded)
 const PRERENDER_ROUTES = [
   /^\/promises$/,
   /^\/promises\/.+$/,
@@ -51,7 +49,6 @@ const PRERENDER_ROUTES = [
   /^\/indicators\/.+$/,
   /^\/zohran-mamdani-first-100-days$/,
   /^\/zohran-mamdani-first-100-days\/\d{4}\/\d{2}\/\d{2}$/,
-  /^\/$/,
 ];
 
 // Supabase prerender function URL
@@ -104,6 +101,14 @@ async function fetchPrerendered(pathname) {
 }
 
 /**
+ * Check if the request accepts HTML
+ */
+function acceptsHtml(request) {
+  const accept = request.headers.get('accept') || '';
+  return accept.includes('text/html') || accept.includes('*/*');
+}
+
+/**
  * Main worker handler
  */
 export default {
@@ -112,13 +117,18 @@ export default {
     const pathname = url.pathname;
     const userAgent = request.headers.get('user-agent') || '';
     
-    // Only process GET requests
-    if (request.method !== 'GET') {
+    // Only process GET and HEAD requests
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
       return fetch(request);
     }
     
     // Skip static assets
-    if (pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|xml|txt)$/i)) {
+    if (pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|xml|txt|map|webp|avif)$/i)) {
+      return fetch(request);
+    }
+    
+    // Only prerender requests that accept HTML (skip API/JSON requests)
+    if (!acceptsHtml(request)) {
       return fetch(request);
     }
     
