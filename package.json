@@ -8,8 +8,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "postbuild": "node scripts/generate-static.js"
+    "preview": "vite preview"
+        "postbuild": "node scripts/generate-static.js",
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
