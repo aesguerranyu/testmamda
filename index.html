@@ -1,6 +1,42 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (async () => {
+            const path = window.location.pathname;
+        const promiseMatch = path.match(/^\/promises\/([^\/]+)$/);
+        
+        if (!promiseMatch) return;
+        
+        const slug = promiseMatch[1];
+        const supabaseUrl = 'https://vjtltqxakolhzlqdnhop.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqdGx0cXhha29saHpscWRuaG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk3NTc5NzQsImV4cCI6MTkyNTMzMzk3NH0.5vBf9RLzz9LfVxOF9zBnE5QEtR1wQlC_fJ6B1Q0VYTE';
+        
+        try {
+                const response = await fetch(`${supabaseUrl}/rest/v1/promises?url_slugs=eq.${slug}&select=headline,short_description,status`, {
+                          headers: { apikey: supabaseKey }
+      });
+          const data = await response.json();
+          const promise = data[0];
+          
+          if (!promise) return;
+          
+          const url = `https://mamdanitracker.nyc/promises/${slug}`;
+          const title = `${promise.headline} | Mamdani Tracker`;
+          const desc = promise.short_description || `Track: ${promise.headline}`;
+          
+          document.title = title;
+          document.querySelector('link[rel="canonical"]').href = url;
+          document.querySelector('meta[name="description"]').content = desc;
+          document.querySelector('meta[property="og:title"]').content = title;
+          document.querySelector('meta[property="og:description"]').content = desc;
+          document.querySelector('meta[property="og:url"]').content = url;
+      } catch (e) {
+              console.error('SEO update failed:', e);
+      }
+      })();
+    </script>script>
+  </script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-40865MB76X"></script>
     <script>
