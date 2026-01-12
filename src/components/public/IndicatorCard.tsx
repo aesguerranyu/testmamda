@@ -2,6 +2,14 @@ import { Link } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
+
+interface RelatedPromise {
+  id: string;
+  headline: string;
+  category: string;
+  url_slugs?: string;
+}
+
 interface IndicatorCardProps {
   indicator: {
     id: string;
@@ -12,11 +20,7 @@ interface IndicatorCardProps {
     target: string;
     descriptionParagraph: string;
     source: string;
-    promise?: {
-      id: string;
-      headline: string;
-      category: string;
-    } | null;
+    relatedPromises?: RelatedPromise[];
   };
 }
 
@@ -100,7 +104,7 @@ const getValueColor = (category: string, target: string): string => {
 export function IndicatorCard({
   indicator
 }: IndicatorCardProps) {
-  const relatedPromise = indicator.promise || null;
+  const relatedPromises = (indicator.relatedPromises || []).slice(0, 2);
   const categoryColor = getCategoryColor(indicator.category);
   const textColor = getCategoryTextColor(indicator.category);
   const trendInfo = getTrendInfo(indicator.target, indicator.current);
@@ -168,10 +172,10 @@ export function IndicatorCard({
         </div>
 
         {/* Headline */}
-        <h3 className="font-bold text-black mb-3 tracking-tight" style={{
+        <h3 style={{
         fontSize: 'clamp(18px, 4vw, 22px)',
         lineHeight: 1.2
-      }}>
+      }} className="font-bold text-black mb-3 tracking-tight text-3xl">
           {indicator.headline}
         </h3>
 
@@ -233,29 +237,40 @@ export function IndicatorCard({
         </div>
 
         {/* Related Promises */}
-        {relatedPromise && <div className="border-t border-gray-200 pt-4 mt-4">
+        {relatedPromises.length > 0 && (
+          <div className="border-t border-gray-200 pt-4 mt-4">
             <h4 className="uppercase font-bold mb-3 text-gray-500" style={{
-          letterSpacing: '0.1em',
-          fontSize: '11px'
-        }}>
+              letterSpacing: '0.1em',
+              fontSize: '11px'
+            }}>
               RELATED PROMISES
             </h4>
-            <Link to={`/promises/${relatedPromise.id}`} className="text-black hover:text-[#0039A6] transition-colors no-underline flex items-center gap-3 p-3 border border-gray-200 hover:border-[#0039A6]" onClick={() => window.scrollTo(0, 0)}>
-              <div className="flex items-center justify-center rounded-full shrink-0" style={{
-            width: '2rem',
-            height: '2rem',
-            backgroundColor: getCategoryColor(relatedPromise.category)
-          }}>
-                <span className="font-bold text-xs" style={{
-              color: getCategoryTextColor(relatedPromise.category),
-              lineHeight: 1
-            }}>
-                  {relatedPromise.category.charAt(0)}
-                </span>
-              </div>
-              <span className="font-medium text-sm">{relatedPromise.headline}</span>
-            </Link>
-          </div>}
+            <div className="flex flex-col gap-2">
+              {relatedPromises.map((promise) => (
+                <Link 
+                  key={promise.id}
+                  to={`/promises/${promise.url_slugs || promise.id}`} 
+                  className="text-black hover:text-[#0039A6] transition-colors no-underline flex items-center gap-3 p-3 border border-gray-200 hover:border-[#0039A6]" 
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  <div className="flex items-center justify-center rounded-full shrink-0" style={{
+                    width: '2rem',
+                    height: '2rem',
+                    backgroundColor: getCategoryColor(promise.category)
+                  }}>
+                    <span className="font-bold text-xs" style={{
+                      color: getCategoryTextColor(promise.category),
+                      lineHeight: 1
+                    }}>
+                      {promise.category.charAt(0)}
+                    </span>
+                  </div>
+                  <span className="font-medium text-sm line-clamp-2">{promise.headline}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </article>;
 }

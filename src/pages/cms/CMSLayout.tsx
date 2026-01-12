@@ -13,6 +13,8 @@ import {
   Menu,
   X,
   ChevronRight,
+  Key,
+  UserCog,
 } from "lucide-react";
 
 interface StatsData {
@@ -156,11 +158,37 @@ const CMSLayout = () => {
           })}
         </nav>
 
-        {/* User/Logout */}
-        <div className="p-3 border-t border-sidebar-border">
-          <div className="px-3 py-2 mb-2">
+        {/* User/Settings/Logout */}
+        <div className="p-3 border-t border-sidebar-border space-y-1">
+          <div className="px-3 py-2">
             <p className="text-xs text-cms-sidebar-muted truncate">{user.email}</p>
           </div>
+          <Link
+            to="/rat-control/cms/users"
+            onClick={() => setSidebarOpen(false)}
+            className={cn(
+              "flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm transition-colors",
+              location.pathname === '/rat-control/cms/users'
+                ? "bg-cms-sidebar-accent text-cms-sidebar-foreground"
+                : "text-cms-sidebar-muted hover:text-cms-sidebar-foreground hover:bg-cms-sidebar-accent/50"
+            )}
+          >
+            <UserCog className="w-4 h-4" />
+            <span>Manage Users</span>
+          </Link>
+          <Link
+            to="/rat-control/cms/change-password"
+            onClick={() => setSidebarOpen(false)}
+            className={cn(
+              "flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm transition-colors",
+              location.pathname === '/rat-control/cms/change-password'
+                ? "bg-cms-sidebar-accent text-cms-sidebar-foreground"
+                : "text-cms-sidebar-muted hover:text-cms-sidebar-foreground hover:bg-cms-sidebar-accent/50"
+            )}
+          >
+            <Key className="w-4 h-4" />
+            <span>Change Password</span>
+          </Link>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm text-cms-sidebar-muted hover:text-cms-sidebar-foreground hover:bg-cms-sidebar-accent/50 transition-colors"

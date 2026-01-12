@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Building2, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
+import { SEO } from "@/components/SEO";
 interface PromiseDetail {
   id: string;
   headline: string;
@@ -19,6 +20,7 @@ interface PromiseDetail {
   seo_tags: string;
   last_updated: string;
   updated_at: string;
+  url_slugs: string;
 }
 const getStatusColor = (status: string): string => {
   const colorMap: Record<string, string> = {
@@ -87,7 +89,20 @@ export default function PromiseDetail() {
 
   // Parse SEO tags
   const tags = promise.seo_tags ? promise.seo_tags.split(",").map(t => t.trim()).filter(Boolean) : [];
+
+  // SEO: Generate promise-specific metadata
+  const promiseUrl = `https://mamdanitracker.nyc/promises/${promise.url_slugs}`;
+  const seoTitle = `${promise.headline} | Mamdani Tracker`;
+  const seoDescription = promise.short_description || `Track the status of Mayor Zohran Mamdani's promise: ${promise.headline}. Category: ${promise.category}. Status: ${promise.status}.`;
+
   return <div className="bg-white min-h-screen">
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        canonical={promiseUrl}
+        ogType="article"
+        keywords={`${promise.category}, ${promise.status}, Zohran Mamdani, NYC Mayor, ${promise.seo_tags || ''}`}
+      />
       {/* Back Navigation */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
