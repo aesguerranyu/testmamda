@@ -48,11 +48,6 @@ export function Footer() {
                     Become a Member
                   </Link>
                 </li>
-                <li className="mb-2">
-                  <a href="/rss.xml" className="text-white no-underline text-sm block hover:opacity-70 transition-opacity">
-                    RSS
-                  </a>
-                </li>
               </ul>
             </nav>
           </div>

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
-import { StructuredData } from "@/components/StructuredData";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { getPublishedDayByDate } from "@/lib/first100days-store";
 import { First100Day, First100Activity, activityTypeColors } from "@/types/first100days";
@@ -55,34 +54,8 @@ export default function First100DayDetail() {
         </div>
       </div>;
   }
-  const canonicalUrl = `https://mamdanitracker.nyc/zohran-mamdani-first-100-days/${year}/${month}/${day}`;
-  const pageTitle = `Day ${dayEntry.day} - ${dayEntry.date_display} | First 100 Days | Mamdani Tracker`;
-  const pageDescription = `Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}). View executive orders, policy announcements, and appointments from the first 100 days.`;
-
-  // Structured data for search engines
-  const articleData = {
-    headline: `Day ${dayEntry.day} - ${dayEntry.date_display}`,
-    description: pageDescription,
-    url: canonicalUrl,
-    dateModified: dayEntry.updated_at,
-    datePublished: dayEntry.date_iso || dayEntry.created_at
-  };
-
-  const breadcrumbs = [
-    { name: "Home", url: "https://mamdanitracker.nyc" },
-    { name: "First 100 Days", url: "https://mamdanitracker.nyc/zohran-mamdani-first-100-days" },
-    { name: `Day ${dayEntry.day}`, url: canonicalUrl }
-  ];
-
   return <div className="min-h-screen bg-white">
-      <SEO 
-        title={pageTitle} 
-        description={pageDescription}
-        canonical={canonicalUrl}
-        ogType="article"
-        keywords={`Zohran Mamdani Day ${dayEntry.day}, first 100 days, NYC mayor actions, ${dayEntry.date_display}`}
-      />
-      <StructuredData type="article" articleData={articleData} breadcrumbs={breadcrumbs} />
+      <SEO title={`Day ${dayEntry.day} - ${dayEntry.date_display} | First 100 Days - Mamdani Tracker`} description={`Track Mayor Zohran Mamdani's actions on Day ${dayEntry.day} (${dayEntry.date_display}).`} />
       
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 lg:px-6 py-5">
         {/* Hero Section - matches First 100 Days listing page */}

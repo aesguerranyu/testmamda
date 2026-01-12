@@ -62,12 +62,7 @@ export function PromiseTracker() {
       </div>;
   }
   return <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
-      <SEO 
-        title="Campaign Promises Tracker | Mamdani Tracker" 
-        description="Track all of Mayor Zohran Mamdani's campaign promises. Filter by status and category to see which commitments are in progress, completed, or stalled. Every promise documented with verified sources." 
-        keywords="Zohran Mamdani promises, NYC mayor promises, campaign promises tracker, NYC housing policy, NYC transportation, mayoral accountability"
-        canonical="https://mamdanitracker.nyc/promises"
-      />
+      <SEO title="Promise Tracker - Mamdani Tracker | NYC Mayor Campaign Promises" description="Track every campaign promise made by NYC Mayor Zohran Mamdani. Filter by status (in progress, completed, stalled) and category (housing, transportation, education, healthcare, and more). Every commitment tracked with verified sources." keywords="Zohran Mamdani promises, NYC mayor promises, campaign promises tracker, NYC housing policy, NYC transportation, mayoral accountability, political promise tracking" />
       <div className="mb-5">
         <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
           <h1 className="font-bold text-black tracking-tight" style={{

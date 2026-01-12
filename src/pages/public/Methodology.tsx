@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
 import { SEO } from "../../components/SEO";
 import { MagnifyingGlassIcon, ArrowPathIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+
 export function Methodology() {
-  return <div className="min-h-screen">
-      <SEO title="About - Mamdani Tracker | How We Track NYC Mayor" description="Learn about Mamdani Tracker's methodology for tracking campaign promises and mayoral actions. Independent, non-partisan research with transparent sourcing and verification processes." keywords="political accountability methodology, fact checking process, independent research, NYC political tracking, promise verification, source transparency, non-partisan tracker" />
+  return (
+    <div className="min-h-screen">
+      <SEO 
+        title="About - Mamdani Tracker | How We Track NYC Mayor"
+        description="Learn about Mamdani Tracker's methodology for tracking campaign promises and mayoral actions. Independent, non-partisan research with transparent sourcing and verification processes."
+        keywords="political accountability methodology, fact checking process, independent research, NYC political tracking, promise verification, source transparency, non-partisan tracker"
+      />
 
       <div className="container mx-auto max-w-5xl px-6 sm:px-8 lg:px-12 py-8">
         {/* What is Mamdani Tracker */}
         <section className="mb-8">
           <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
-            <h1 className="font-bold text-black tracking-tight" style={{
-            fontSize: '28px'
-          }}>
-              <span className="hidden md:inline" style={{
-              fontSize: '32px'
-            }}>What is Mamdani Tracker?</span>
+            <h1 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+              <span className="hidden md:inline" style={{ fontSize: '32px' }}>What is Mamdani Tracker?</span>
               <span className="md:hidden">What is Mamdani Tracker?</span>
             </h1>
           </div>
@@ -37,12 +39,8 @@ export function Methodology() {
         {/* The Team */}
         <section className="mb-8">
           <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
-            <h2 className="font-bold text-black tracking-tight" style={{
-            fontSize: '28px'
-          }}>
-              <span className="hidden md:inline" style={{
-              fontSize: '32px'
-            }}>The Team</span>
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+              <span className="hidden md:inline" style={{ fontSize: '32px' }}>The Team</span>
               <span className="md:hidden">The Team</span>
             </h2>
           </div>
@@ -87,10 +85,9 @@ export function Methodology() {
             <div>
               <h3 className="font-bold text-black text-lg mb-1">Erwin Daez</h3>
               <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-3">Co-Founder and Tech Lead</p>
-              <p className="text-lg text-gray-600 leading-relaxed italic">Erwin is a web developer based with professional experience working for several U.S.-based web development companies. He specializes in PHP-based web development and the maintenance of large, content-driven platforms, including building special websites and applications for INQUIRER.net, the multimedia arm of the Philippine Daily Inquirer. His work sits at the intersection of web engineering, accessibility, and standards-compliant implementation, with a focus on building reliable, secure, and scalable web solutions. He has hands-on experience in Linux-based environments, developing and troubleshooting server-side and front-end integrations, and supporting accessibility compliance initiatives aligned with Section 508 requirements.  
-
-
-His background includes working on complex systems that require close attention to performance, maintainability, and user experience.  Outside of his professional work, Erwin continues to deepen his technical expertise, keeps up with developments in web standards and accessibility, and enjoys thoughtful films, reading, and refining personal projects.  </p>
+              <p className="text-lg text-gray-600 leading-relaxed italic">
+                [bio pending]
+              </p>
             </div>
           </div>
         </section>
@@ -98,12 +95,8 @@ His background includes working on complex systems that require close attention 
         {/* What Is a Promise */}
         <section className="mb-8">
           <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
-            <h2 className="font-bold text-black tracking-tight" style={{
-            fontSize: '28px'
-          }}>
-              <span className="hidden md:inline" style={{
-              fontSize: '32px'
-            }}>What Is a Promise?</span>
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+              <span className="hidden md:inline" style={{ fontSize: '32px' }}>What Is a Promise?</span>
               <span className="md:hidden">What Is a Promise?</span>
             </h2>
           </div>
@@ -135,12 +128,8 @@ His background includes working on complex systems that require close attention 
         {/* Promise Status System */}
         <section className="mb-8">
           <div className="border-t-4 border-[#0C2788] pt-5 mb-5">
-            <h2 className="font-bold text-black tracking-tight" style={{
-            fontSize: '28px'
-          }}>
-              <span className="hidden md:inline" style={{
-              fontSize: '32px'
-            }}>Promise Status System</span>
+            <h2 className="font-bold text-black tracking-tight" style={{ fontSize: '28px' }}>
+              <span className="hidden md:inline" style={{ fontSize: '32px' }}>Promise Status System</span>
               <span className="md:hidden">Promise Status System</span>
             </h2>
           </div>
@@ -150,41 +139,31 @@ His background includes working on complex systems that require close attention 
             </p>
             
             <div className="flex flex-col gap-4">
-              {[{
-              status: "Not started",
-              color: "#6B7280",
-              desc: "No public action has been taken toward implementation."
-            }, {
-              status: "In progress",
-              color: "#0039A6",
-              desc: "Public steps are underway, such as hearings, public consultations, pilot programs, or administrative action."
-            }, {
-              status: "Completed",
-              color: "#00933C",
-              desc: "The policy has been carried out through legislation, regulation, or a program launch."
-            }, {
-              status: "Stalled",
-              color: "#FCCC0A",
-              desc: "Progress has paused because of legal, political, or practical obstacles."
-            }, {
-              status: "Not delivered",
-              color: "#EE352E",
-              desc: "The promise has not been fulfilled or appears to have been abandoned."
-            }].map(item => <div key={item.status}>
+              {[
+                { status: "Not started", color: "#6B7280", desc: "No public action has been taken toward implementation." },
+                { status: "In progress", color: "#0039A6", desc: "Public steps are underway, such as hearings, public consultations, pilot programs, or administrative action." },
+                { status: "Completed", color: "#00933C", desc: "The policy has been carried out through legislation, regulation, or a program launch." },
+                { status: "Stalled", color: "#FCCC0A", desc: "Progress has paused because of legal, political, or practical obstacles." },
+                { status: "Not delivered", color: "#EE352E", desc: "The promise has not been fulfilled or appears to have been abandoned." }
+              ].map((item) => (
+                <div key={item.status}>
                   <div className="flex items-start gap-4">
-                    <span className="px-4 py-2 text-white font-bold uppercase tracking-wide text-sm shrink-0" style={{
-                  backgroundColor: item.color,
-                  color: item.status === "Stalled" ? "#000" : "#fff"
-                }}>
+                    <span 
+                      className="px-4 py-2 text-white font-bold uppercase tracking-wide text-sm shrink-0"
+                      style={{ backgroundColor: item.color, color: item.status === "Stalled" ? "#000" : "#fff" }}
+                    >
                       {item.status}
                     </span>
                     <p className="text-lg text-gray-600 m-0 pt-1">{item.desc}</p>
                   </div>
-                </div>)}
+                </div>
+              ))}
             </div>
           </div>
         </section>
       </div>
-    </div>;
+    </div>
+  );
 }
+
 export default Methodology;

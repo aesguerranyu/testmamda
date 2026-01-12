@@ -13,99 +13,48 @@ interface Indicator {
   current: string;
   current_description: string;
   source: string;
-  promise_reference: string;
-}
-
-interface Promise {
-  id: string;
-  headline: string;
-  category: string;
-  url_slugs: string;
 }
 
 export default function Indicators() {
   const [indicators, setIndicators] = useState<Indicator[]>([]);
-  const [promises, setPromises] = useState<Promise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const [indicatorsRes, promisesRes] = await Promise.all([
-        supabase
-          .from("indicators")
-          .select("*")
-          .eq("editorial_state", "published")
-          .order("category", { ascending: true }),
-        supabase
-          .from("promises")
-          .select("id, headline, category, url_slugs")
-          .eq("editorial_state", "published")
-      ]);
+    const fetchIndicators = async () => {
+      const { data, error } = await supabase
+        .from("indicators")
+        .select("*")
+        .eq("editorial_state", "published")
+        .order("category", { ascending: true });
 
-      if (!indicatorsRes.error && indicatorsRes.data) {
-        setIndicators(indicatorsRes.data);
-      }
-      if (!promisesRes.error && promisesRes.data) {
-        setPromises(promisesRes.data);
+      if (!error && data) {
+        setIndicators(data);
       }
       setIsLoading(false);
     };
 
-    fetchData();
+    fetchIndicators();
   }, []);
 
-  // Find up to 2 related promises for an indicator
-  const findRelatedPromises = (indicator: Indicator): Promise[] => {
-    const related: Promise[] = [];
-    
-    // First, check if there's a direct promise_reference match
-    if (indicator.promise_reference) {
-      const directMatch = promises.find(p => 
-        p.headline.toLowerCase() === indicator.promise_reference.toLowerCase() ||
-        p.id === indicator.promise_reference
-      );
-      if (directMatch) {
-        related.push(directMatch);
-      }
-    }
-    
-    // Then, find promises in the same category
-    const categoryMatches = promises.filter(p => 
-      p.category.toLowerCase() === indicator.category.toLowerCase() &&
-      !related.some(r => r.id === p.id)
-    );
-    
-    // Add category matches until we have 2 promises
-    for (const match of categoryMatches) {
-      if (related.length >= 2) break;
-      related.push(match);
-    }
-    
-    return related.slice(0, 2);
-  };
-
-  // Transform and shuffle data for IndicatorCard component
-  const transformedIndicators = indicators
-    .map(ind => ({
-      id: ind.id,
-      headline: ind.headline,
-      category: ind.category,
-      current: ind.current,
-      currentDescription: ind.current_description,
-      target: ind.target,
-      descriptionParagraph: ind.description_paragraph,
-      source: ind.source,
-      relatedPromises: findRelatedPromises(ind)
-    }))
-    .sort(() => Math.random() - 0.5);
+  // Transform data for IndicatorCard component
+  const transformedIndicators = indicators.map(ind => ({
+    id: ind.id,
+    headline: ind.headline,
+    category: ind.category,
+    current: ind.current,
+    currentDescription: ind.current_description,
+    target: ind.target,
+    descriptionParagraph: ind.description_paragraph,
+    source: ind.source,
+    promise: null
+  }));
 
   return (
     <div className="min-h-screen">
       <SEO 
-        title="Policy Indicators Dashboard | Mamdani Tracker"
-        description="Track key NYC performance indicators measuring the impact of Mayor Zohran Mamdani's policies. Data on housing, education, transportation, and more with verified sources."
-        keywords="NYC data, city metrics, NYC housing data, NYC performance indicators, NYC policy metrics, Mamdani administration"
-        canonical="https://mamdanitracker.nyc/indicators"
+        title="NYC Data Indicators - Mamdani Tracker | Real Numbers & Context"
+        description="Track key NYC data indicators including housing, crime, unemployment, education, and public health metrics. Real numbers providing context for evaluating mayoral policy impact."
+        keywords="NYC data, city metrics, NYC housing data, NYC crime statistics, NYC unemployment, NYC education metrics, NYC public health data, city indicators, NYC statistics"
       />
       
       {/* Hero Section */}

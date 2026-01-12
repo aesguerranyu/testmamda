@@ -39,11 +39,8 @@ export default function First100Days() {
   return (
     <>
       <SEO
-        title="Zohran Mamdani's First 100 Days | Mamdani Tracker"
-        description="A chronological timeline documenting Mayor Zohran Mamdani's actions, executive orders, appointments, and policy initiatives during his first 100 days in office from January 1 to April 10, 2026."
-        keywords="Zohran Mamdani first 100 days, NYC mayor actions, executive orders, mayoral appointments, NYC policy initiatives"
-        canonical="https://mamdanitracker.nyc/zohran-mamdani-first-100-days"
-        ogType="article"
+        title="First 100 Days - Mamdani Tracker"
+        description="Track the first 100 days of Mayor Zohran Mamdani's administration."
       />
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 lg:px-6 py-5">

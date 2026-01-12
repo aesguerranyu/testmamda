@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { path: "/promises", label: "Promises" },
-  { path: "/zohran-mamdani-first-100-days", label: "First 100 Days" },
+  { path: "/first100days", label: "First 100 Days" },
   { path: "/indicators", label: "Key Performance Indicators" },
   { path: "/about", label: "About" },
   { path: "/membership", label: "Membership" },

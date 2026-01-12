@@ -34,8 +34,6 @@ import Import from "./pages/cms/Import";
 import Memberships from "./pages/cms/Memberships";
 import First100DaysCMS from "./pages/cms/First100Days";
 import First100DayEdit from "./pages/cms/First100DayEdit";
-import Users from "./pages/cms/Users";
-import ChangePassword from "./pages/cms/ChangePassword";
 
 const queryClient = new QueryClient();
 
@@ -78,8 +76,6 @@ const App = () => (
               <Route path="first100days/:id" element={<First100DayEdit />} />
               <Route path="memberships" element={<Memberships />} />
               <Route path="import" element={<Import />} />
-              <Route path="users" element={<Users />} />
-              <Route path="change-password" element={<ChangePassword />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
