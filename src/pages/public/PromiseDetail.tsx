@@ -96,11 +96,8 @@ export default function PromiseDetail() {
     );
   }
 
-  // Parse updates if they exist
   const updates = promise.updates ? promise.updates.split("\\n").filter((u) => u.trim()) : [];
-  // Parse description into bullet points
   const descriptionPoints = promise.description ? promise.description.split("\\n").filter((p) => p.trim()) : [];
-  // Parse SEO tags
   const tags = promise.seo_tags
     ? promise.seo_tags
         .split(",")
@@ -108,14 +105,12 @@ export default function PromiseDetail() {
         .filter(Boolean)
     : [];
 
-  // SEO: Generate promise-specific metadata
   const promiseUrl = `https://mamdanitracker.nyc/promises/${promise.url_slugs}`;
   const seoTitle = `${promise.headline} | Mamdani Tracker`;
   const seoDescription =
     promise.short_description ||
     `Track the status of Mayor Zohran Mamdani's promise: ${promise.headline}. Category: ${promise.category}. Status: ${promise.status}.`;
 
-  // Structured data for search engines
   const articleData = {
     headline: promise.headline,
     description: seoDescription,
@@ -144,7 +139,6 @@ export default function PromiseDetail() {
         <meta property="og:url" content={promiseUrl} />
       </Helmet>
       <StructuredData type="article" articleData={articleData} breadcrumbs={breadcrumbs} />
-      {/* Back Navigation */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
           <Link
@@ -157,9 +151,7 @@ export default function PromiseDetail() {
         </div>
       </div>
       <article className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        {/* Header Card */}
         <header className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
-          {/* Status badge at top right */}
           <div className="flex justify-end mb-4">
             <span
               className="px-4 py-2 text-white font-bold uppercase tracking-wide text-xs"
@@ -170,7 +162,6 @@ export default function PromiseDetail() {
               {promise.status}
             </span>
           </div>
-          {/* Category with circle */}
           <div className="flex items-center gap-3 mb-6">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
@@ -189,11 +180,8 @@ export default function PromiseDetail() {
             </div>
             <span className="text-gray-500 font-bold uppercase tracking-wide text-sm">{promise.category}</span>
           </div>
-          {/* Headline */}
           <h1 className="text-2xl font-bold text-subway-blue leading-tight mb-4 sm:text-4xl">{promise.headline}</h1>
-          {/* Short Description */}
           <p className="text-gray-600 leading-relaxed mb-6 text-base">{promise.short_description}</p>
-          {/* Metadata Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t-2 border-gray-200">
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5 text-subway-blue flex-shrink-0" />
@@ -236,7 +224,6 @@ export default function PromiseDetail() {
             <span>Last updated: {formatDate(promise.updated_at)}</span>
           </div>
         </header>
-        {/* Description */}
         {descriptionPoints.length > 0 && (
           <section className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
             <h2 className="text-xl font-bold text-subway-dark mb-4">Overview</h2>
@@ -249,7 +236,6 @@ export default function PromiseDetail() {
             </ul>
           </section>
         )}
-        {/* Updates Section */}
         <section className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
           <button
             onClick={() => setUpdatesExpanded(!updatesExpanded)}
@@ -280,7 +266,6 @@ export default function PromiseDetail() {
             </div>
           )}
         </section>
-        {/* Sources */}
         {(promise.source_text || promise.source_url) && (
           <section className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
             <h2 className="text-xl font-bold text-subway-dark mb-4">Sources</h2>
@@ -302,7 +287,6 @@ export default function PromiseDetail() {
             </div>
           </section>
         )}
-        {/* SEO Tags */}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
             {tags.map((tag, index) => (
