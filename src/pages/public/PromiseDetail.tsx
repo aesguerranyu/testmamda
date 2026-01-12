@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Building2, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { StructuredData } from "@/components/StructuredData";
 
 interface PromiseDetail {
@@ -129,15 +129,13 @@ export default function PromiseDetail() {
 
   return (
     <div className="bg-white min-h-screen">
-      <Helmet>
-        <title>{seoTitle}</title>
-        <meta name="description" content={seoDescription} />
-        <link rel="canonical" href={promiseUrl} />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:url" content={promiseUrl} />
-      </Helmet>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        canonical={promiseUrl}
+        ogType="article"
+        keywords={`${promise.category}, ${promise.status}`}
+      />
       <StructuredData type="article" articleData={articleData} breadcrumbs={breadcrumbs} />
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
