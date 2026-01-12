@@ -1,16 +1,14 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
+Allow: /
+
+# Allow AI assistants to cite your content
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
 Allow: /
 
 Sitemap: https://mamdanitracker.nyc/sitemap.xml
