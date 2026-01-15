@@ -112,24 +112,25 @@ export function PromiseTracker() {
       </div>
 
       {/* Stats Dashboard - Exact replica of reference */}
-      <div className="mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 mb-6">
+      <div className="mb-8">
+        {/* Row 1: Total count left, Status squares right */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
           {/* Left: Total Count */}
-          <div>
-            <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: '#0C2788' }}>
+          <div className="mb-6 lg:mb-0">
+            <p className="text-sm font-bold uppercase tracking-widest" style={{ color: '#0C2788' }}>
               Total Promises Tracked
             </p>
-            <p className="text-7xl font-bold leading-none" style={{ color: '#0C2788' }}>
+            <p className="text-8xl font-bold leading-none" style={{ color: '#0C2788' }}>
               {totalPromises}
             </p>
-            <p className="text-xl font-bold mt-1" style={{ color: '#0C2788' }}>
+            <p className="text-2xl font-bold" style={{ color: '#0C2788' }}>
               100%
             </p>
           </div>
 
-          {/* Right: Status Squares */}
-          <div className="flex gap-4">
-            {(["Completed", "In progress", "Stalled", "Not started"] as PromiseStatus[]).map(status => {
+          {/* Right: Status Squares - all 5 statuses */}
+          <div className="flex flex-wrap gap-3 lg:gap-4">
+            {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
               const count = statusStats[status];
               const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
               return (
@@ -140,7 +141,7 @@ export function PromiseTracker() {
                   >
                     <span className="text-4xl font-bold text-white">{count}</span>
                   </div>
-                  <p className="text-xs font-bold uppercase tracking-wide mt-2" style={{ color: '#1e3a5f' }}>
+                  <p className="text-xs font-bold uppercase tracking-wide mt-2 text-black">
                     {status}
                   </p>
                   <p className="text-base font-bold" style={{ color: STATUS_COLORS[status] }}>
@@ -152,7 +153,7 @@ export function PromiseTracker() {
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* Row 2: Progress Bar */}
         <div className="h-12 flex border-2 border-black overflow-hidden">
           {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
             const count = statusStats[status];
@@ -177,7 +178,7 @@ export function PromiseTracker() {
         </div>
 
         {/* Thick black divider line */}
-        <div className="h-1 bg-black mt-6"></div>
+        <div className="h-1 bg-black mt-8"></div>
       </div>
 
       {/* Filters */}
