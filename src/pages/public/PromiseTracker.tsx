@@ -111,40 +111,37 @@ export function PromiseTracker() {
       }}>Here is what Mayor Zohran Mamdani and his team have said they will do, organized by policy area. Each entry notes the responsible city agency and whether state action or cooperation is required.</p>
       </div>
 
-      {/* Stats Dashboard - Exact replica of reference */}
-      <div className="mb-8">
-        {/* Row 1: Total count left, Status squares right */}
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
+      {/* Stats Dashboard */}
+      {/* Gray bordered box with total left, squares right */}
+      <div className="border border-gray-300 p-8 mb-6">
+        <div className="flex items-center justify-between">
           {/* Left: Total Count */}
-          <div className="mb-6 lg:mb-0">
-            <p className="text-sm font-bold uppercase tracking-widest" style={{ color: '#0C2788' }}>
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: '#6B7280' }}>
               Total Promises Tracked
             </p>
-            <p className="text-8xl font-bold leading-none" style={{ color: '#0C2788' }}>
+            <p className="text-9xl font-bold leading-none" style={{ color: '#0C2788' }}>
               {totalPromises}
-            </p>
-            <p className="text-2xl font-bold" style={{ color: '#0C2788' }}>
-              100%
             </p>
           </div>
 
           {/* Right: Status Squares - all 5 statuses */}
-          <div className="flex flex-wrap gap-3 lg:gap-4">
+          <div className="flex gap-4">
             {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
               const count = statusStats[status];
               const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
               return (
                 <div key={status} className="text-center">
                   <div 
-                    className="w-20 h-20 flex items-center justify-center"
+                    className="w-24 h-24 flex items-center justify-center"
                     style={{ backgroundColor: STATUS_COLORS[status] }}
                   >
-                    <span className="text-4xl font-bold text-white">{count}</span>
+                    <span className="text-5xl font-bold text-white">{count}</span>
                   </div>
                   <p className="text-xs font-bold uppercase tracking-wide mt-2 text-black">
                     {status}
                   </p>
-                  <p className="text-base font-bold" style={{ color: STATUS_COLORS[status] }}>
+                  <p className="text-lg font-bold" style={{ color: STATUS_COLORS[status] }}>
                     {percentage}%
                   </p>
                 </div>
@@ -152,34 +149,33 @@ export function PromiseTracker() {
             })}
           </div>
         </div>
-
-        {/* Row 2: Progress Bar */}
-        <div className="h-12 flex border-2 border-black overflow-hidden">
-          {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
-            const count = statusStats[status];
-            const percentage = totalPromises > 0 ? (count / totalPromises) * 100 : 0;
-            if (percentage === 0) return null;
-            return (
-              <div
-                key={status}
-                className="h-full flex items-center justify-center"
-                style={{ 
-                  backgroundColor: STATUS_COLORS[status],
-                  width: `${percentage}%`,
-                  minWidth: percentage > 0 ? '80px' : '0'
-                }}
-              >
-                <span className="text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap">
-                  {status}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Thick black divider line */}
-        <div className="h-1 bg-black mt-8"></div>
       </div>
+
+      {/* Progress Bar - separate, full width */}
+      <div className="h-16 flex border-2 border-black overflow-hidden mb-6">
+        {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
+          const count = statusStats[status];
+          const percentage = totalPromises > 0 ? (count / totalPromises) * 100 : 0;
+          if (percentage === 0) return null;
+          return (
+            <div
+              key={status}
+              className="h-full flex items-center justify-center"
+              style={{ 
+                backgroundColor: STATUS_COLORS[status],
+                width: `${percentage}%`
+              }}
+            >
+              <span className="text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap">
+                {status}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Thick black divider line */}
+      <div className="h-1 bg-black mb-8"></div>
 
       {/* Filters */}
       <div className="mb-4">
