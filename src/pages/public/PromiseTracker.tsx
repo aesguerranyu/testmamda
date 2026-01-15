@@ -106,98 +106,92 @@ export function PromiseTracker() {
           fontSize: '40px'
         }}>Promise Tracker</h1>
         </div>
-        <p className="text-base max-w-3xl mb-6" style={{
+        <p className="text-base max-w-3xl" style={{
         color: '#374151'
       }}>Here is what Mayor Zohran Mamdani and his team have said they will do, organized by policy area. Each entry notes the responsible city agency and whether state action or cooperation is required.</p>
-        
-        {/* Stats Dashboard */}
-        <div className="bg-white p-6 border-2 border-black">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-            {/* Total Count */}
-            <div className="flex-shrink-0">
-              <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#374151' }}>
-                Total Promises Tracked
-              </p>
-              <p className="text-6xl font-bold" style={{ color: '#0C2788' }}>
-                {totalPromises}
-              </p>
-            </div>
+      </div>
 
-            {/* Status Breakdown */}
-            <div className="flex flex-wrap gap-3">
-              {(["Completed", "In progress", "Stalled", "Not started", "Broken"] as PromiseStatus[]).map(status => {
-                const count = statusStats[status];
-                const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
-                return (
-                  <div key={status} className="text-center">
-                    <div 
-                      className="w-16 h-16 flex items-center justify-center mb-1"
-                      style={{ backgroundColor: STATUS_COLORS[status] }}
-                    >
-                      <span className="text-2xl font-bold text-white">{count}</span>
-                    </div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-black">
-                      {status}
-                    </p>
-                    <p className="text-sm font-bold" style={{ color: STATUS_COLORS[status] }}>
-                      {percentage}%
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
+      {/* Stats Dashboard - Exact replica of reference */}
+      <div className="mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 mb-6">
+          {/* Left: Total Count */}
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: '#0C2788' }}>
+              Total Promises Tracked
+            </p>
+            <p className="text-7xl font-bold leading-none" style={{ color: '#0C2788' }}>
+              {totalPromises}
+            </p>
+            <p className="text-xl font-bold mt-1" style={{ color: '#0C2788' }}>
+              100%
+            </p>
           </div>
 
-          {/* Progress Bar */}
-          <div className="mt-6 h-10 flex border-2 border-black overflow-hidden">
-            {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
+          {/* Right: Status Squares */}
+          <div className="flex gap-4">
+            {(["Completed", "In progress", "Stalled", "Not started"] as PromiseStatus[]).map(status => {
               const count = statusStats[status];
-              const percentage = totalPromises > 0 ? (count / totalPromises) * 100 : 0;
-              if (percentage === 0) return null;
+              const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
               return (
-                <div
-                  key={status}
-                  className="h-full flex items-center justify-center"
-                  style={{ 
-                    backgroundColor: STATUS_COLORS[status],
-                    width: `${percentage}%`,
-                    minWidth: percentage > 0 ? '40px' : '0'
-                  }}
-                >
-                  <span className="text-xs font-bold uppercase tracking-wide text-white px-2 whitespace-nowrap">
+                <div key={status} className="text-center">
+                  <div 
+                    className="w-20 h-20 flex items-center justify-center"
+                    style={{ backgroundColor: STATUS_COLORS[status] }}
+                  >
+                    <span className="text-4xl font-bold text-white">{count}</span>
+                  </div>
+                  <p className="text-xs font-bold uppercase tracking-wide mt-2" style={{ color: '#1e3a5f' }}>
                     {status}
-                  </span>
+                  </p>
+                  <p className="text-base font-bold" style={{ color: STATUS_COLORS[status] }}>
+                    {percentage}%
+                  </p>
                 </div>
               );
             })}
           </div>
         </div>
+
+        {/* Progress Bar */}
+        <div className="h-12 flex border-2 border-black overflow-hidden">
+          {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
+            const count = statusStats[status];
+            const percentage = totalPromises > 0 ? (count / totalPromises) * 100 : 0;
+            if (percentage === 0) return null;
+            return (
+              <div
+                key={status}
+                className="h-full flex items-center justify-center"
+                style={{ 
+                  backgroundColor: STATUS_COLORS[status],
+                  width: `${percentage}%`,
+                  minWidth: percentage > 0 ? '80px' : '0'
+                }}
+              >
+                <span className="text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap">
+                  {status}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Thick black divider line */}
+        <div className="h-1 bg-black mt-6"></div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 mb-4">
-        {/* Search Bar */}
-        <div className="mb-4">
-          <label className="block text-xs font-bold text-black uppercase mb-2" style={{
-          letterSpacing: '0.1em'
-        }}>
-            Search Promises
-          </label>
-          <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by headline or description..." className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-[#0C2788] transition-colors" style={{
-          color: '#374151'
-        }} />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Status Filter */}
           <div>
-            <label className="block text-xs font-bold text-black uppercase mb-2" style={{
-            letterSpacing: '0.1em'
+            <label className="block text-sm font-bold text-black uppercase mb-3" style={{
+            letterSpacing: '0.05em'
           }}>
               Filter by Status
             </label>
             <div className="flex flex-wrap gap-2">
-              {statuses.map(status => <button key={status} onClick={() => setSelectedStatus(status)} className={`px-3 py-2 text-xs font-bold transition-all border-0 cursor-pointer ${selectedStatus === status ? "bg-[#0C2788] text-white" : "bg-gray-100 hover:bg-[#E9EDFB]"}`} style={selectedStatus !== status ? {
+              {statuses.map(status => <button key={status} onClick={() => setSelectedStatus(status)} className={`px-4 py-2 text-sm font-medium transition-all border cursor-pointer ${selectedStatus === status ? "bg-[#0C2788] text-white border-[#0C2788]" : "bg-gray-100 border-gray-200 hover:bg-gray-200"}`} style={selectedStatus !== status ? {
               color: '#374151'
             } : {}}>
                   {status}
@@ -207,13 +201,13 @@ export function PromiseTracker() {
 
           {/* Category Filter */}
           <div>
-            <label className="block text-xs font-bold text-black uppercase mb-2" style={{
-            letterSpacing: '0.1em'
+            <label className="block text-sm font-bold text-black uppercase mb-3" style={{
+            letterSpacing: '0.05em'
           }}>
               Filter by Category
             </label>
             <div className="flex flex-wrap gap-2">
-              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-2 text-xs font-bold transition-all border-0 cursor-pointer ${selectedCategory === category ? "bg-[#0C2788] text-white" : "bg-gray-100 hover:bg-[#E9EDFB]"}`} style={selectedCategory !== category ? {
+              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 text-sm font-medium transition-all border cursor-pointer ${selectedCategory === category ? "bg-[#0C2788] text-white border-[#0C2788]" : "bg-gray-100 border-gray-200 hover:bg-gray-200"}`} style={selectedCategory !== category ? {
               color: '#374151'
             } : {}}>
                   {category}
@@ -222,15 +216,17 @@ export function PromiseTracker() {
           </div>
         </div>
 
-        {/* Results count - hidden for now, restore later
-        <div className="mt-3 pt-3 border-t">
-          <p className="text-xs font-medium mb-0" style={{
-          color: '#374151'
+        {/* Search Bar */}
+        <div className="mt-6">
+          <label className="block text-sm font-bold text-black uppercase mb-3" style={{
+          letterSpacing: '0.05em'
         }}>
-            Showing <span className="font-bold text-black">{filteredPromises.length}</span> of <span className="font-bold text-black">{promises.length}</span> promises
-          </p>
+            Search Promises
+          </label>
+          <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by headline or description..." className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-[#0C2788] transition-colors" style={{
+          color: '#374151'
+        }} />
         </div>
-        */}
       </div>
 
       {/* Promise Cards Grid */}
