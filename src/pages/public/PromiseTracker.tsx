@@ -1,10 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { SEO } from "../../components/SEO";
 import { PromiseCard } from "../../components/public/PromiseCard";
 import { supabase } from "@/integrations/supabase/client";
+
 type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled" | "Broken";
+
+// Status colors matching NYC Subway aesthetic
+const STATUS_COLORS: Record<PromiseStatus, string> = {
+  "Completed": "#00933C",     // Green (4/5/6)
+  "In progress": "#0039A6",   // Blue (A/C/E)
+  "Stalled": "#EE352E",       // Red (1/2/3)
+  "Not started": "#A7A9AC",   // Gray (L/S)
+  "Broken": "#996633",        // Brown (J/Z)
+};
 type PromiseCategory = "Affordability" | "Childcare" | "Climate" | "Education" | "Housing" | "Transportation";
 interface PromiseData {
   id: string;
@@ -45,6 +55,28 @@ export function PromiseTracker() {
     return matchesStatus && matchesCategory && matchesSearch;
   });
 
+  // Calculate status stats from ALL promises (not filtered)
+  const statusStats = useMemo(() => {
+    const stats: Record<PromiseStatus, number> = {
+      "Not started": 0,
+      "In progress": 0,
+      "Completed": 0,
+      "Stalled": 0,
+      "Broken": 0,
+    };
+    
+    promises.forEach(p => {
+      const status = p.status as PromiseStatus;
+      if (stats.hasOwnProperty(status)) {
+        stats[status]++;
+      }
+    });
+    
+    return stats;
+  }, [promises]);
+
+  const totalPromises = promises.length;
+
   // Map database fields to PromiseCard expected format
   const mappedPromises = filteredPromises.map(p => ({
     id: p.id,
@@ -74,9 +106,72 @@ export function PromiseTracker() {
           fontSize: '40px'
         }}>Promise Tracker</h1>
         </div>
-        <p className="text-base max-w-3xl" style={{
+        <p className="text-base max-w-3xl mb-6" style={{
         color: '#374151'
       }}>Here is what Mayor Zohran Mamdani and his team have said they will do, organized by policy area. Each entry notes the responsible city agency and whether state action or cooperation is required.</p>
+        
+        {/* Stats Dashboard */}
+        <div className="bg-white p-6 border-2 border-black">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            {/* Total Count */}
+            <div className="flex-shrink-0">
+              <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#374151' }}>
+                Total Promises Tracked
+              </p>
+              <p className="text-6xl font-bold" style={{ color: '#0C2788' }}>
+                {totalPromises}
+              </p>
+            </div>
+
+            {/* Status Breakdown */}
+            <div className="flex flex-wrap gap-3">
+              {(["Completed", "In progress", "Stalled", "Not started", "Broken"] as PromiseStatus[]).map(status => {
+                const count = statusStats[status];
+                const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
+                return (
+                  <div key={status} className="text-center">
+                    <div 
+                      className="w-16 h-16 flex items-center justify-center mb-1"
+                      style={{ backgroundColor: STATUS_COLORS[status] }}
+                    >
+                      <span className="text-2xl font-bold text-white">{count}</span>
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-black">
+                      {status}
+                    </p>
+                    <p className="text-sm font-bold" style={{ color: STATUS_COLORS[status] }}>
+                      {percentage}%
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mt-6 h-10 flex border-2 border-black overflow-hidden">
+            {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
+              const count = statusStats[status];
+              const percentage = totalPromises > 0 ? (count / totalPromises) * 100 : 0;
+              if (percentage === 0) return null;
+              return (
+                <div
+                  key={status}
+                  className="h-full flex items-center justify-center"
+                  style={{ 
+                    backgroundColor: STATUS_COLORS[status],
+                    width: `${percentage}%`,
+                    minWidth: percentage > 0 ? '40px' : '0'
+                  }}
+                >
+                  <span className="text-xs font-bold uppercase tracking-wide text-white px-2 whitespace-nowrap">
+                    {status}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
