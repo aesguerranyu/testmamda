@@ -188,7 +188,7 @@ export function PromiseTracker() {
               Filter by Status
             </label>
             <div className="flex flex-wrap gap-2">
-              {statuses.map(status => <button key={status} onClick={() => setSelectedStatus(status)} className={`px-4 py-2 text-sm font-medium transition-all border cursor-pointer ${selectedStatus === status ? "bg-[#0C2788] text-white border-[#0C2788]" : "bg-gray-100 border-gray-200 hover:bg-gray-200"}`} style={selectedStatus !== status ? {
+              {statuses.map(status => <button key={status} onClick={() => setSelectedStatus(status)} className={`px-4 py-2 text-sm font-medium transition-all border cursor-pointer uppercase ${selectedStatus === status ? "bg-[#0C2788] text-white border-[#0C2788]" : "bg-gray-100 border-gray-200 hover:bg-gray-200"}`} style={selectedStatus !== status ? {
               color: '#374151'
             } : {}}>
                   {status}
@@ -204,7 +204,7 @@ export function PromiseTracker() {
               Filter by Category
             </label>
             <div className="flex flex-wrap gap-2">
-              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 text-sm font-medium transition-all border cursor-pointer ${selectedCategory === category ? "bg-[#0C2788] text-white border-[#0C2788]" : "bg-gray-100 border-gray-200 hover:bg-gray-200"}`} style={selectedCategory !== category ? {
+              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 text-sm font-medium transition-all border cursor-pointer uppercase ${selectedCategory === category ? "bg-[#0C2788] text-white border-[#0C2788]" : "bg-gray-100 border-gray-200 hover:bg-gray-200"}`} style={selectedCategory !== category ? {
               color: '#374151'
             } : {}}>
                   {category}
