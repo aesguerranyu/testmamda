@@ -56,23 +56,34 @@ export function PromiseTracker() {
   });
 
   // Calculate status stats from ALL promises (not filtered)
+  // TEMPORARY: Mock data to preview progress bar
   const statusStats = useMemo(() => {
-    const stats: Record<PromiseStatus, number> = {
-      "Not started": 0,
-      "In progress": 0,
-      "Completed": 0,
-      "Stalled": 0,
-      "Broken": 0,
-    };
+    // TEMP MOCK DATA - DELETE THIS BLOCK LATER
+    return {
+      "Completed": 10,
+      "In progress": 50,
+      "Stalled": 15,
+      "Broken": 5,
+      "Not started": 20,
+    } as Record<PromiseStatus, number>;
     
-    promises.forEach(p => {
-      const status = p.status as PromiseStatus;
-      if (stats.hasOwnProperty(status)) {
-        stats[status]++;
-      }
-    });
-    
-    return stats;
+    // ORIGINAL CODE - UNCOMMENT WHEN DONE PREVIEWING
+    // const stats: Record<PromiseStatus, number> = {
+    //   "Not started": 0,
+    //   "In progress": 0,
+    //   "Completed": 0,
+    //   "Stalled": 0,
+    //   "Broken": 0,
+    // };
+    // 
+    // promises.forEach(p => {
+    //   const status = p.status as PromiseStatus;
+    //   if (stats.hasOwnProperty(status)) {
+    //     stats[status]++;
+    //   }
+    // });
+    // 
+    // return stats;
   }, [promises]);
 
   const totalPromises = promises.length;
