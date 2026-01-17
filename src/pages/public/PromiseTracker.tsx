@@ -127,7 +127,7 @@ export function PromiseTracker() {
       <div className="border border-gray-300 p-4 md:p-8 mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           {/* Left: Total Count */}
-          <div>
+          <div className="text-center md:text-left">
             <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: '#6B7280' }}>
               Total Promises Tracked
             </p>
