@@ -166,7 +166,7 @@ export function PromiseTracker() {
       <div className="h-16 flex border-2 border-black overflow-hidden mb-6">
         {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
           const count = statusStats[status];
-          const percentage = totalPromises > 0 ? (count / totalPromises) * 100 : 0;
+          const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
           if (percentage === 0) return null;
           return (
             <div
@@ -178,7 +178,7 @@ export function PromiseTracker() {
               }}
             >
               <span className="text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap">
-                {status}
+                {percentage}%
               </span>
             </div>
           );
