@@ -124,35 +124,35 @@ export function PromiseTracker() {
 
       {/* Stats Dashboard */}
       {/* Gray bordered box with total left, squares right */}
-      <div className="border border-gray-300 p-8 mb-6">
-        <div className="flex items-center justify-between">
+      <div className="border border-gray-300 p-4 md:p-8 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           {/* Left: Total Count */}
-          <div>
+          <div className="text-center md:text-left">
             <p className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: '#6B7280' }}>
               Total Promises Tracked
             </p>
-            <p className="text-9xl font-bold leading-none" style={{ color: '#0C2788' }}>
+            <p className="text-7xl md:text-9xl font-bold leading-none" style={{ color: '#0C2788' }}>
               {totalPromises}
             </p>
           </div>
 
           {/* Right: Status Squares - all 5 statuses */}
-          <div className="flex gap-4">
+          <div className="grid grid-cols-3 md:flex gap-3 md:gap-4">
             {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map(status => {
               const count = statusStats[status];
               const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
               return (
                 <div key={status} className="text-center">
                   <div 
-                    className="w-24 h-24 flex items-center justify-center"
+                    className="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center mx-auto"
                     style={{ backgroundColor: STATUS_COLORS[status] }}
                   >
-                    <span className="text-5xl font-bold text-white">{count}</span>
+                    <span className="text-2xl md:text-5xl font-bold text-white">{count}</span>
                   </div>
                   <p className="text-xs font-bold uppercase tracking-wide mt-2 text-black">
                     {status}
                   </p>
-                  <p className="text-lg font-bold" style={{ color: STATUS_COLORS[status] }}>
+                  <p className="text-sm md:text-lg font-bold" style={{ color: STATUS_COLORS[status] }}>
                     {percentage}%
                   </p>
                 </div>
