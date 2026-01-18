@@ -58,7 +58,7 @@ export default function AppointmentTracker() {
         <div className="mb-6">
           <div className="border-t-4 border-[#0C2788] pt-4 mb-3">
             <h1 className="font-bold text-black tracking-tight" style={{ fontSize: "40px" }}>
-              Mamdani Administration Tracker
+              Mamdani Appointment Tracker
             </h1>
           </div>
           <p className="text-base max-w-3xl" style={{ color: "#374151" }}>
