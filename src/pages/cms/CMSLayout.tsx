@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Key,
   UserCog,
+  Briefcase,
 } from "lucide-react";
 
 interface StatsData {
@@ -34,6 +35,7 @@ const navItems = [
   { path: "/rat-control/cms/promises", label: "Promises", icon: ClipboardCheck },
   { path: "/rat-control/cms/indicators", label: "Indicators", icon: BarChart3 },
   { path: "/rat-control/cms/first100days", label: "First 100 Days", icon: ClipboardCheck },
+  { path: "/rat-control/cms/appointments", label: "Appointments", icon: Briefcase },
   { path: "/rat-control/cms/memberships", label: "Memberships", icon: Users },
   { path: "/rat-control/cms/import", label: "Import CSV", icon: Upload },
 ];
