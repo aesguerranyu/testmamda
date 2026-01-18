@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointee_name: string
+          created_at: string
+          editorial_state: string
+          former_role: string
+          id: string
+          role: string
+          section: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          appointee_name?: string
+          created_at?: string
+          editorial_state?: string
+          former_role?: string
+          id?: string
+          role?: string
+          section?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          appointee_name?: string
+          created_at?: string
+          editorial_state?: string
+          former_role?: string
+          id?: string
+          role?: string
+          section?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       first100_activities: {
         Row: {
           created_at: string
