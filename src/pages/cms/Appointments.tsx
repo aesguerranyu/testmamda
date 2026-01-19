@@ -1,252 +1,291 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
+import { MoreHorizontal, Plus, Search, X, Trash2, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'sonner';
 import { 
   getAppointments, 
   deleteAppointment, 
   updateAppointmentEditorialState,
-  Appointment 
+  type Appointment 
 } from '@/lib/appointments-store';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  Plus, 
-  Search, 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  EyeOff,
-  X,
-  Briefcase
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 
-const AppointmentsCMS = () => {
+export default function AppointmentsCMS() {
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'draft' | 'published' | ''>('');
-  const [sectionFilter, setSectionFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sectionFilter, setSectionFilter] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
-
-  const loadAppointments = async () => {
-    const data = await getAppointments();
-    setAppointments(data);
-    setIsLoading(false);
-  };
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadAppointments();
   }, []);
 
+  const loadAppointments = async () => {
+    setIsLoading(true);
+    const data = await getAppointments();
+    setAppointments(data);
+    setIsLoading(false);
+    setSelectedIds(new Set());
+  };
+
   const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Delete appointment for ${name}?`)) {
-      await deleteAppointment(id);
-      loadAppointments();
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+    const success = await deleteAppointment(id);
+    if (success) {
       toast.success('Appointment deleted');
+      loadAppointments();
+    } else {
+      toast.error('Failed to delete appointment');
     }
   };
 
   const handleToggleState = async (id: string, currentState: 'draft' | 'published') => {
-    const newState = currentState === 'draft' ? 'published' : 'draft';
-    await updateAppointmentEditorialState(id, newState);
-    loadAppointments();
-    toast.success(`Appointment ${newState === 'published' ? 'published' : 'reverted to draft'}`);
+    const newState = currentState === 'published' ? 'draft' : 'published';
+    const success = await updateAppointmentEditorialState(id, newState);
+    if (success) {
+      toast.success(`Appointment ${newState === 'published' ? 'published' : 'unpublished'}`);
+      loadAppointments();
+    } else {
+      toast.error('Failed to update appointment');
+    }
   };
 
   const clearFilters = () => {
-    setSearch('');
-    setStatusFilter('');
-    setSectionFilter('');
+    setSearchQuery('');
+    setStatusFilter('all');
+    setSectionFilter('all');
   };
 
-  // Get unique sections
-  const sections = [...new Set(appointments.map(a => a.section).filter(Boolean))];
+  const sections = [...new Set(appointments.map(a => a.section))].filter(Boolean).sort();
 
-  // Filter appointments
-  const filteredAppointments = appointments.filter(a => {
-    const matchesSearch = !search || 
-      a.appointee_name.toLowerCase().includes(search.toLowerCase()) ||
-      a.role.toLowerCase().includes(search.toLowerCase()) ||
-      a.section.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = !statusFilter || a.editorial_state === statusFilter;
-    const matchesSection = !sectionFilter || a.section === sectionFilter;
+  const filteredAppointments = appointments.filter(appointment => {
+    const matchesSearch = 
+      appointment.appointee_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.section.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || appointment.editorial_state === statusFilter;
+    const matchesSection = sectionFilter === 'all' || appointment.section === sectionFilter;
     return matchesSearch && matchesStatus && matchesSection;
   });
 
-  const hasFilters = search || statusFilter || sectionFilter;
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(filteredAppointments.map(a => a.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    const newSelected = new Set(selectedIds);
+    if (checked) {
+      newSelected.add(id);
+    } else {
+      newSelected.delete(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const isAllSelected = filteredAppointments.length > 0 && filteredAppointments.every(a => selectedIds.has(a.id));
+  const isSomeSelected = selectedIds.size > 0;
+
+  const handleBulkPublish = async () => {
+    if (!confirm(`Publish ${selectedIds.size} appointments?`)) return;
+    let successCount = 0;
+    for (const id of selectedIds) {
+      const success = await updateAppointmentEditorialState(id, 'published');
+      if (success) successCount++;
+    }
+    toast.success(`Published ${successCount} appointments`);
+    loadAppointments();
+  };
+
+  const handleBulkDraft = async () => {
+    if (!confirm(`Move ${selectedIds.size} appointments to draft?`)) return;
+    let successCount = 0;
+    for (const id of selectedIds) {
+      const success = await updateAppointmentEditorialState(id, 'draft');
+      if (success) successCount++;
+    }
+    toast.success(`Moved ${successCount} appointments to draft`);
+    loadAppointments();
+  };
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Delete ${selectedIds.size} appointments? This cannot be undone.`)) return;
+    let successCount = 0;
+    for (const id of selectedIds) {
+      const success = await deleteAppointment(id);
+      if (success) successCount++;
+    }
+    toast.success(`Deleted ${successCount} appointments`);
+    loadAppointments();
+  };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <div className="p-8 text-center">Loading appointments...</div>;
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Appointments</h1>
-          <p className="text-muted-foreground mt-1">
-            {filteredAppointments.length} of {appointments.length} appointments
-          </p>
-        </div>
-        <Link to="/rat-control/cms/appointments/new">
-          <Button className="gap-2">
-            <Plus className="w-4 h-4" />
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Appointments</h1>
+        <Button asChild>
+          <Link to="/rat-control/cms/appointments/new">
+            <Plus className="mr-2 h-4 w-4" />
             Add Appointment
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
-      {/* Filters */}
-      <div className="cms-card p-4">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by name, role, or section..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <select
-            value={sectionFilter}
-            onChange={(e) => setSectionFilter(e.target.value)}
-            className="h-10 px-3 rounded-md border bg-background text-sm min-w-[180px]"
-          >
-            <option value="">All Sections</option>
+      <div className="flex flex-wrap gap-4 items-center">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search appointments..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={sectionFilter} onValueChange={setSectionFilter}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="All sections" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All sections</SelectItem>
             {sections.map(section => (
-              <option key={section} value={section}>{section}</option>
+              <SelectItem key={section} value={section}>{section}</SelectItem>
             ))}
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as 'draft' | 'published' | '')}
-            className="h-10 px-3 rounded-md border bg-background text-sm min-w-[130px]"
-          >
-            <option value="">All States</option>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
-          {hasFilters && (
-            <Button variant="ghost" size="icon" onClick={clearFilters}>
-              <X className="w-4 h-4" />
-            </Button>
-          )}
-        </div>
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[150px]">
+            <SelectValue placeholder="All statuses" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="draft">Draft</SelectItem>
+            <SelectItem value="published">Published</SelectItem>
+          </SelectContent>
+        </Select>
+        {(searchQuery || statusFilter !== 'all' || sectionFilter !== 'all') && (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
+            <X className="mr-2 h-4 w-4" />
+            Clear filters
+          </Button>
+        )}
       </div>
 
-      {/* Table */}
-      <div className="cms-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="cms-table-header border-b">
-                <th className="text-left p-4">Appointee</th>
-                <th className="text-left p-4 hidden sm:table-cell">Role</th>
-                <th className="text-left p-4 hidden md:table-cell">Section</th>
-                <th className="text-left p-4">State</th>
-                <th className="text-right p-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAppointments.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="p-8 text-center text-muted-foreground">
-                    {appointments.length === 0 
-                      ? 'No appointments yet. Add the first appointment to get started.'
-                      : 'No appointments match your filters.'}
-                  </td>
-                </tr>
-              ) : (
-                filteredAppointments.map((apt) => (
-                  <tr 
-                    key={apt.id} 
-                    className="border-b last:border-0 hover:bg-muted/30 transition-colors"
-                  >
-                    <td className="p-4">
-                      <Link 
-                        to={`/rat-control/cms/appointments/${apt.id}`}
-                        className="font-medium text-foreground hover:text-primary transition-colors flex items-center gap-2"
-                      >
-                        <Briefcase className="w-4 h-4 text-muted-foreground" />
-                        {apt.appointee_name || '(No name)'}
-                      </Link>
-                    </td>
-                    <td className="p-4 hidden sm:table-cell">
-                      <span className="text-sm text-muted-foreground">{apt.role}</span>
-                    </td>
-                    <td className="p-4 hidden md:table-cell">
-                      <span className="text-sm text-muted-foreground">{apt.section}</span>
-                    </td>
-                    <td className="p-4">
-                      <span className={cn(
-                        "cms-status-badge",
-                        apt.editorial_state === 'published'
-                          ? 'bg-status-published text-status-published-foreground'
-                          : 'bg-status-draft text-status-draft-foreground'
-                      )}>
-                        {apt.editorial_state}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link to={`/rat-control/cms/appointments/${apt.id}`}>
-                              <Edit className="w-4 h-4 mr-2" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleToggleState(apt.id, apt.editorial_state)}>
-                            {apt.editorial_state === 'published' ? (
-                              <>
-                                <EyeOff className="w-4 h-4 mr-2" />
-                                Revert to Draft
-                              </>
-                            ) : (
-                              <>
-                                <Eye className="w-4 h-4 mr-2" />
-                                Publish
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => handleDelete(apt.id, apt.appointee_name)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="text-sm text-muted-foreground">
+        Showing {filteredAppointments.length} of {appointments.length} appointments
+        {isSomeSelected && ` • ${selectedIds.size} selected`}
       </div>
+
+      {filteredAppointments.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          {appointments.length === 0 
+            ? 'No appointments yet. Add your first appointment to get started.'
+            : 'No appointments match your filters.'}
+        </div>
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">
+                  <Checkbox 
+                    checked={isAllSelected}
+                    onCheckedChange={handleSelectAll}
+                  />
+                </TableHead>
+                <TableHead>Appointee</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Section</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[70px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredAppointments.map((appointment) => (
+                <TableRow key={appointment.id}>
+                  <TableCell>
+                    <Checkbox 
+                      checked={selectedIds.has(appointment.id)}
+                      onCheckedChange={(checked) => handleSelectOne(appointment.id, checked as boolean)}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{appointment.appointee_name}</TableCell>
+                  <TableCell>{appointment.role}</TableCell>
+                  <TableCell>{appointment.section}</TableCell>
+                  <TableCell>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      appointment.editorial_state === 'published' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {appointment.editorial_state}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => navigate(`/rat-control/cms/appointments/${appointment.id}`)}>
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleToggleState(appointment.id, appointment.editorial_state as 'draft' | 'published')}>
+                          {appointment.editorial_state === 'published' ? 'Unpublish' : 'Publish'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => handleDelete(appointment.id, appointment.appointee_name)}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      {isSomeSelected && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-background border rounded-lg shadow-lg p-4 flex items-center gap-4 z-50">
+          <span className="text-sm font-medium">{selectedIds.size} selected</span>
+          <div className="h-4 w-px bg-border" />
+          <Button size="sm" variant="outline" onClick={handleBulkPublish}>
+            <Eye className="mr-2 h-4 w-4" />
+            Publish All
+          </Button>
+          <Button size="sm" variant="outline" onClick={handleBulkDraft}>
+            <EyeOff className="mr-2 h-4 w-4" />
+            Draft All
+          </Button>
+          <Button size="sm" variant="destructive" onClick={handleBulkDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete All
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
-};
-
-export default AppointmentsCMS;
+}
