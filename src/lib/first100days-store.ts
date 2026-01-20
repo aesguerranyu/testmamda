@@ -402,8 +402,8 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
     errors: [],
   };
 
-  // Expected headers for days with activities
-  const expectedHeaders = ['Day', 'Date Display', 'Date ISO', 'Type', 'Title', 'Description', 'Quote', 'Quote Attribution', 'Image URL', 'Image Caption', 'Full Text URL', 'Full Text Label', 'Embed URL', 'Sources'];
+  // Expected headers for days with activities - support both Title and Headline
+  const expectedHeaders = ['Day', 'Date Display', 'Date ISO', 'Type', 'Title', 'Headline', 'Description', 'Quote', 'Quote Attribution', 'Image URL', 'Image Caption', 'Full Text URL', 'Full Text Label', 'Embed URL', 'Sources', 'Sources Text', 'Source URL', 'Alt Source URL'];
   
   // Validate headers (be lenient - allow subset)
   const headerMap: Record<string, number> = {};
@@ -507,7 +507,9 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
         
         const typeStr = row[headerMap['Type']]?.trim() || null;
         const type = typeStr && ACTIVITY_TYPES.includes(typeStr as ActivityType) ? typeStr as ActivityType : null;
-        const title = row[headerMap['Title']]?.trim() || null;
+        
+        // Support both Title and Headline columns (Headline takes precedence for CSV imports)
+        const title = row[headerMap['Headline']]?.trim() || row[headerMap['Title']]?.trim() || null;
         const description = row[headerMap['Description']]?.trim() || null;
         const quote = row[headerMap['Quote']]?.trim() || null;
         const quoteAttribution = row[headerMap['Quote Attribution']]?.trim() || null;
@@ -516,15 +518,51 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
         const fullTextUrl = row[headerMap['Full Text URL']]?.trim() || null;
         const fullTextLabel = row[headerMap['Full Text Label']]?.trim() || null;
         const embedUrl = row[headerMap['Embed URL']]?.trim() || null;
-        const sourcesStr = row[headerMap['Sources']]?.trim() || '';
-
-        // Parse sources (format: "Title1|URL1;Title2|URL2")
+        
+        // Handle sources - support multiple formats:
+        // 1. Combined "Sources" column with "Title1|URL1;Title2|URL2" format
+        // 2. Separate "Sources Text", "Source URL", "Alt Source URL" columns
+        // 3. Combined format in "Sources Text" column (Title|URL)
         let sources: ActivitySource[] = [];
+        
+        const sourcesStr = row[headerMap['Sources']]?.trim() || '';
+        const sourcesTextStr = row[headerMap['Sources Text']]?.trim() || '';
+        const sourceUrlStr = row[headerMap['Source URL']]?.trim() || '';
+        const altSourceUrlStr = row[headerMap['Alt Source URL']]?.trim() || '';
+        
         if (sourcesStr) {
+          // Original format: "Title1|URL1;Title2|URL2"
           sources = sourcesStr.split(';').map(s => {
             const [t, u] = s.split('|');
             return { title: t?.trim() || '', url: u?.trim() || '' };
           }).filter(s => s.title || s.url);
+        } else if (sourcesTextStr) {
+          // Check if Sources Text contains combined format (Title|URL)
+          if (sourcesTextStr.includes('|')) {
+            // Combined format in Sources Text: "Title|URL" or "Title1|URL1;Title2|URL2"
+            sources = sourcesTextStr.split(';').map(s => {
+              const parts = s.split('|');
+              const t = parts[0]?.trim() || '';
+              const u = parts[1]?.trim() || '';
+              return { title: t, url: u };
+            }).filter(s => s.title || s.url);
+          } else {
+            // Separate columns: Sources Text as title, Source URL as URL
+            if (sourceUrlStr) {
+              sources.push({ title: sourcesTextStr, url: sourceUrlStr });
+            }
+          }
+          
+          // Add Alt Source URL if present (use Sources Text as title if no other title)
+          if (altSourceUrlStr) {
+            sources.push({ title: sourcesTextStr || 'Source', url: altSourceUrlStr });
+          }
+        } else if (sourceUrlStr) {
+          // Only Source URL present, no title
+          sources.push({ title: 'Source', url: sourceUrlStr });
+          if (altSourceUrlStr) {
+            sources.push({ title: 'Source', url: altSourceUrlStr });
+          }
         }
 
         // Only create activity if there's meaningful content

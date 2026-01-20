@@ -220,11 +220,11 @@ const Import = () => {
               ? 'Category, Headline, Owner agency, Date Promised, Status, Requires state action or cooperation, Targets, Short description, Description, SEO tags, Updates, Source Text, Source URL, Last updated, URL Slugs'
               : importType === 'indicators'
               ? 'Category, Promise, Headline, Description Paragraph, Target, Current, Current Description, Source'
-              : 'Day, Date Display, Date ISO, Type, Title, Description, Quote, Quote Attribution, Image URL, Image Caption, Full Text URL, Full Text Label, Embed URL, Sources'}
+              : 'Day, Date Display, Date ISO, Type, Headline, Description, Quote, Quote Attribution, Image URL, Image Caption, Full Text URL, Full Text Label, Embed URL, Sources Text, Source URL, Alt Source URL'}
           </p>
           {importType === 'first100days' && (
             <p className="text-xs text-muted-foreground mt-2">
-              <strong>Note:</strong> Multiple rows with the same Day number will create multiple activities for that day. Sources format: "Title1|URL1;Title2|URL2"
+              <strong>Note:</strong> Multiple rows with the same Day number will create multiple activities for that day. Sources Text can use combined format "Title|URL" or be separate from Source URL column.
             </p>
           )}
         </div>
