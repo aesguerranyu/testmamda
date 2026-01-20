@@ -31,6 +31,7 @@ const AppointmentEdit = () => {
     role: '',
     appointee_name: '',
     former_role: '',
+    url: '',
     sort_order: 0,
     editorial_state: 'draft',
   });
@@ -246,6 +247,21 @@ const AppointmentEdit = () => {
           />
           <p className="text-xs text-muted-foreground">
             Brief description of the appointee's previous or current position
+          </p>
+        </div>
+
+        {/* URL */}
+        <div className="space-y-2">
+          <Label htmlFor="url">URL</Label>
+          <Input
+            id="url"
+            type="url"
+            value={appointment.url || ''}
+            onChange={(e) => setAppointment(prev => ({ ...prev, url: e.target.value }))}
+            placeholder="https://example.com/profile"
+          />
+          <p className="text-xs text-muted-foreground">
+            Optional. If provided, the appointee's name will be hyperlinked on the public page.
           </p>
         </div>
 

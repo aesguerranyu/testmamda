@@ -25,6 +25,7 @@ export type Database = {
           section: string
           sort_order: number
           updated_at: string
+          url: string
         }
         Insert: {
           appointee_name?: string
@@ -36,6 +37,7 @@ export type Database = {
           section?: string
           sort_order?: number
           updated_at?: string
+          url?: string
         }
         Update: {
           appointee_name?: string
@@ -47,6 +49,7 @@ export type Database = {
           section?: string
           sort_order?: number
           updated_at?: string
+          url?: string
         }
         Relationships: []
       }
