@@ -118,8 +118,10 @@ export const FIRST100DAYS_CSV_HEADERS = [
 // First 100 Days Activity CSV headers
 export const FIRST100DAYS_ACTIVITY_CSV_HEADERS = [
   'Day',
+  'Date Display',
+  'Date ISO',
   'Type',
-  'Title',
+  'Headline',
   'Description',
   'Quote',
   'Quote Attribution',
@@ -128,7 +130,9 @@ export const FIRST100DAYS_ACTIVITY_CSV_HEADERS = [
   'Full Text URL',
   'Full Text Label',
   'Embed URL',
-  'Sources',
+  'Sources Text',
+  'Source URL',
+  'Alt Source URL',
 ] as const;
 
 // Auth types

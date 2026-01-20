@@ -2,6 +2,7 @@
 
 export type ActivityType = 
   | 'Executive Order'
+  | 'Emergency Executive Order'
   | 'Legislation'
   | 'Ceremony'
   | 'Announcement'
@@ -10,7 +11,11 @@ export type ActivityType =
   | 'Budget'
   | 'Event'
   | 'Meeting'
-  | 'Pull Quote';
+  | 'Pull Quote'
+  | 'Speech'
+  | 'Program Launch'
+  | 'Program Reform'
+  | 'Statement';
 
 export interface ActivitySource {
   title: string;
@@ -50,6 +55,7 @@ export interface First100Activity {
 // Activity type colors (NYC Subway line colors)
 export const activityTypeColors: Record<string, string> = {
   'Executive Order': '#0039A6',
+  'Emergency Executive Order': '#0039A6',
   'Legislation': '#FF6319',
   'Ceremony': '#B933AD',
   'Announcement': '#EE352E',
@@ -59,10 +65,15 @@ export const activityTypeColors: Record<string, string> = {
   'Event': '#0099D8',
   'Meeting': '#808183',
   'Pull Quote': '#0C2788',
+  'Speech': '#6CBE45',
+  'Program Launch': '#A7A9AC',
+  'Program Reform': '#A7A9AC',
+  'Statement': '#FF6319',
 };
 
 export const ACTIVITY_TYPES: ActivityType[] = [
   'Executive Order',
+  'Emergency Executive Order',
   'Legislation',
   'Ceremony',
   'Announcement',
@@ -72,4 +83,8 @@ export const ACTIVITY_TYPES: ActivityType[] = [
   'Event',
   'Meeting',
   'Pull Quote',
+  'Speech',
+  'Program Launch',
+  'Program Reform',
+  'Statement',
 ];
