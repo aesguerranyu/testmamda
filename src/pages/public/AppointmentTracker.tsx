@@ -103,7 +103,18 @@ export default function AppointmentTracker() {
                             {apt.role}
                           </TableCell>
                           <TableCell className="text-black py-4">
-                            {apt.appointee_name}
+                            {apt.url ? (
+                              <a 
+                                href={apt.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-[#1E3A8A] hover:underline font-medium"
+                              >
+                                {apt.appointee_name}
+                              </a>
+                            ) : (
+                              apt.appointee_name
+                            )}
                           </TableCell>
                           <TableCell className="text-gray-600 py-4 hidden sm:table-cell" style={{
                     fontSize: "14px"

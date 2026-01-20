@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { importPromisesCSV, importIndicatorsCSV, getImportReports, resolvePromiseReferences } from '@/lib/cms-store';
 import { importFirst100DaysCSV } from '@/lib/first100days-store';
+import { importAppointmentsCSV } from '@/lib/appointments-store';
 import { ImportReport } from '@/types/cms';
 import { Button } from '@/components/ui/button';
 import { 
@@ -9,6 +10,7 @@ import {
   ClipboardCheck, 
   BarChart3, 
   Calendar,
+  Users,
   XCircle,
   AlertTriangle,
   Clock,
@@ -22,7 +24,7 @@ const Import = () => {
   const [lastReport, setLastReport] = useState<ImportReport | null>(null);
   const [importHistory, setImportHistory] = useState<ImportReport[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [importType, setImportType] = useState<'promises' | 'indicators' | 'first100days'>('promises');
+  const [importType, setImportType] = useState<'promises' | 'indicators' | 'first100days' | 'appointments'>('promises');
 
   const loadHistory = async () => {
     const reports = await getImportReports();
@@ -52,6 +54,8 @@ const Import = () => {
         report = await importPromisesCSV(content);
       } else if (importType === 'indicators') {
         report = await importIndicatorsCSV(content);
+      } else if (importType === 'appointments') {
+        report = await importAppointmentsCSV(content);
       } else {
         report = await importFirst100DaysCSV(content);
       }
@@ -96,7 +100,7 @@ const Import = () => {
       {/* Import type selection */}
       <div className="cms-card p-6">
         <h2 className="font-semibold text-foreground mb-4">Select Import Type</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <button
             onClick={() => setImportType('promises')}
             className={cn(
@@ -168,6 +172,30 @@ const Import = () => {
               <p className="text-sm text-muted-foreground">Import day entries</p>
             </div>
           </button>
+
+          <button
+            onClick={() => setImportType('appointments')}
+            className={cn(
+              "flex items-center gap-4 p-4 rounded-lg border-2 transition-all text-left",
+              importType === 'appointments'
+                ? "border-primary bg-primary/5"
+                : "border-border hover:border-primary/50"
+            )}
+          >
+            <div className={cn(
+              "p-3 rounded-lg",
+              importType === 'appointments' ? "bg-primary/10" : "bg-muted"
+            )}>
+              <Users className={cn(
+                "w-6 h-6",
+                importType === 'appointments' ? "text-primary" : "text-muted-foreground"
+              )} />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">Appointments</p>
+              <p className="text-sm text-muted-foreground">Import appointments</p>
+            </div>
+          </button>
         </div>
 
         {/* Upload area */}
@@ -220,11 +248,18 @@ const Import = () => {
               ? 'Category, Headline, Owner agency, Date Promised, Status, Requires state action or cooperation, Targets, Short description, Description, SEO tags, Updates, Source Text, Source URL, Last updated, URL Slugs'
               : importType === 'indicators'
               ? 'Category, Promise, Headline, Description Paragraph, Target, Current, Current Description, Source'
+              : importType === 'appointments'
+              ? 'Section, Role, Appointee Name, Former Role, URL'
               : 'Day, Date Display, Date ISO, Type, Headline, Description, Quote, Quote Attribution, Image URL, Image Caption, Full Text URL, Full Text Label, Embed URL, Sources Text, Source URL, Alt Source URL'}
           </p>
           {importType === 'first100days' && (
             <p className="text-xs text-muted-foreground mt-2">
               <strong>Note:</strong> Multiple rows with the same Day number will create multiple activities for that day. Sources Text can use combined format "Title|URL" or be separate from Source URL column.
+            </p>
+          )}
+          {importType === 'appointments' && (
+            <p className="text-xs text-muted-foreground mt-2">
+              <strong>Note:</strong> URL is optional. If provided, the appointee name will be hyperlinked on the public page.
             </p>
           )}
         </div>
