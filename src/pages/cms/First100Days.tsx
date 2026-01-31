@@ -4,6 +4,7 @@ import { getDays, deleteDay, updateDayEditorialState } from '@/lib/first100days-
 import { First100Day } from '@/types/first100days';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Plus, 
   Search, 
@@ -30,11 +31,13 @@ const First100DaysCMS = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'draft' | 'published' | ''>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const loadDays = async () => {
     const data = await getDays();
     setDays(data);
     setIsLoading(false);
+    setSelectedIds(new Set());
   };
 
   useEffect(() => {
@@ -71,6 +74,61 @@ const First100DaysCMS = () => {
   });
 
   const hasFilters = search || statusFilter;
+
+  // Selection helpers
+  const isAllSelected = filteredDays.length > 0 && filteredDays.every(d => selectedIds.has(d.id));
+  const isSomeSelected = selectedIds.size > 0;
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(filteredDays.map(d => d.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    const newSelected = new Set(selectedIds);
+    if (checked) {
+      newSelected.add(id);
+    } else {
+      newSelected.delete(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleBulkPublish = async () => {
+    if (!confirm(`Publish ${selectedIds.size} days?`)) return;
+    let successCount = 0;
+    for (const id of selectedIds) {
+      await updateDayEditorialState(id, 'published');
+      successCount++;
+    }
+    toast.success(`Published ${successCount} days`);
+    loadDays();
+  };
+
+  const handleBulkDraft = async () => {
+    if (!confirm(`Move ${selectedIds.size} days to draft?`)) return;
+    let successCount = 0;
+    for (const id of selectedIds) {
+      await updateDayEditorialState(id, 'draft');
+      successCount++;
+    }
+    toast.success(`Moved ${successCount} days to draft`);
+    loadDays();
+  };
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Delete ${selectedIds.size} days? This cannot be undone.`)) return;
+    let successCount = 0;
+    for (const id of selectedIds) {
+      await deleteDay(id);
+      successCount++;
+    }
+    toast.success(`Deleted ${successCount} days`);
+    loadDays();
+  };
 
   if (isLoading) {
     return (
@@ -132,6 +190,12 @@ const First100DaysCMS = () => {
           <table className="w-full">
             <thead>
               <tr className="cms-table-header border-b">
+                <th className="p-4 w-[50px]">
+                  <Checkbox 
+                    checked={isAllSelected}
+                    onCheckedChange={handleSelectAll}
+                  />
+                </th>
                 <th className="text-left p-4">Day</th>
                 <th className="text-left p-4">Date</th>
                 <th className="text-left p-4">State</th>
@@ -142,7 +206,7 @@ const First100DaysCMS = () => {
             <tbody>
               {filteredDays.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
                     {days.length === 0 
                       ? 'No days yet. Add the first day to get started.'
                       : 'No days match your filters.'}
@@ -154,6 +218,12 @@ const First100DaysCMS = () => {
                     key={day.id} 
                     className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                   >
+                    <td className="p-4">
+                      <Checkbox 
+                        checked={selectedIds.has(day.id)}
+                        onCheckedChange={(checked) => handleSelectOne(day.id, checked as boolean)}
+                      />
+                    </td>
                     <td className="p-4">
                       <Link 
                         to={`/rat-control/cms/first100days/${day.id}`}
@@ -226,6 +296,28 @@ const First100DaysCMS = () => {
           </table>
         </div>
       </div>
+
+      {isSomeSelected && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-background border rounded-lg shadow-lg p-4 flex items-center gap-4 z-50">
+          <span className="text-sm font-medium">{selectedIds.size} selected</span>
+          <div className="h-4 w-px bg-border" />
+          <Button size="sm" variant="outline" onClick={handleBulkPublish}>
+            <Eye className="mr-2 h-4 w-4" />
+            Publish All
+          </Button>
+          <Button size="sm" variant="outline" onClick={handleBulkDraft}>
+            <EyeOff className="mr-2 h-4 w-4" />
+            Draft All
+          </Button>
+          <Button size="sm" variant="destructive" onClick={handleBulkDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete All
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
