@@ -246,14 +246,6 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
     headerMap[h.trim()] = i;
   });
 
-  // Check required headers
-  const requiredHeaders = ['Section', 'Role', 'Appointee Name', 'Key Focus'];
-  const missingHeaders = requiredHeaders.filter(h => headerMap[h] === undefined);
-  if (missingHeaders.length > 0) {
-    report.errors.push({ row: 0, reason: `Missing required headers: ${missingHeaders.join(', ')}` });
-    return report;
-  }
-
   // Track sort order per section
   const sectionSortOrders: Record<string, number> = {};
 
@@ -277,17 +269,13 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
     const rowNum = i + 2; // 1-indexed, plus header row
 
     try {
-      const section = row[headerMap['Section']]?.trim() || '';
-      const role = row[headerMap['Role']]?.trim() || '';
-      const appointeeName = row[headerMap['Appointee Name']]?.trim() || '';
-      const formerRole = row[headerMap['Former Role']]?.trim() || '';
-      const keyFocus = row[headerMap['Key Focus']]?.trim() || '';
-      const url = row[headerMap['URL']]?.trim() || '';
-
-      if (!section || !role || !appointeeName || !keyFocus) {
-        report.errors.push({ row: rowNum, reason: 'Missing required field: Section, Role, Appointee Name, or Key Focus' });
-        continue;
-      }
+      // All fields are optional - use empty string if not provided
+      const section = headerMap['Section'] !== undefined ? (row[headerMap['Section']]?.trim() || '') : '';
+      const role = headerMap['Role'] !== undefined ? (row[headerMap['Role']]?.trim() || '') : '';
+      const appointeeName = headerMap['Appointee Name'] !== undefined ? (row[headerMap['Appointee Name']]?.trim() || '') : '';
+      const formerRole = headerMap['Former Role'] !== undefined ? (row[headerMap['Former Role']]?.trim() || '') : '';
+      const keyFocus = headerMap['Key Focus'] !== undefined ? (row[headerMap['Key Focus']]?.trim() || '') : '';
+      const url = headerMap['URL'] !== undefined ? (row[headerMap['URL']]?.trim() || '') : '';
 
       // Check if appointment already exists (by section + role + name)
       const { data: existing } = await supabase
