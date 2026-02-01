@@ -7,6 +7,7 @@ export interface Appointment {
   role: string;
   appointee_name: string;
   former_role: string;
+  key_focus: string;
   url: string;
   sort_order: number;
   editorial_state: 'draft' | 'published';
@@ -78,6 +79,7 @@ export async function saveAppointment(
         role: appointment.role,
         appointee_name: appointment.appointee_name,
         former_role: appointment.former_role,
+        key_focus: appointment.key_focus,
         url: appointment.url,
         sort_order: appointment.sort_order,
         editorial_state: appointment.editorial_state,
@@ -102,6 +104,7 @@ export async function saveAppointment(
         role: appointment.role || '',
         appointee_name: appointment.appointee_name || '',
         former_role: appointment.former_role || '',
+        key_focus: appointment.key_focus || '',
         url: appointment.url || '',
         sort_order: appointment.sort_order || 0,
         editorial_state: appointment.editorial_state || 'draft',
@@ -244,7 +247,7 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
   });
 
   // Check required headers
-  const requiredHeaders = ['Section', 'Role', 'Appointee Name'];
+  const requiredHeaders = ['Section', 'Role', 'Appointee Name', 'Key Focus'];
   const missingHeaders = requiredHeaders.filter(h => headerMap[h] === undefined);
   if (missingHeaders.length > 0) {
     report.errors.push({ row: 0, reason: `Missing required headers: ${missingHeaders.join(', ')}` });
@@ -278,10 +281,11 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
       const role = row[headerMap['Role']]?.trim() || '';
       const appointeeName = row[headerMap['Appointee Name']]?.trim() || '';
       const formerRole = row[headerMap['Former Role']]?.trim() || '';
+      const keyFocus = row[headerMap['Key Focus']]?.trim() || '';
       const url = row[headerMap['URL']]?.trim() || '';
 
-      if (!section || !role || !appointeeName) {
-        report.errors.push({ row: rowNum, reason: 'Missing required field: Section, Role, or Appointee Name' });
+      if (!section || !role || !appointeeName || !keyFocus) {
+        report.errors.push({ row: rowNum, reason: 'Missing required field: Section, Role, Appointee Name, or Key Focus' });
         continue;
       }
 
@@ -300,6 +304,7 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
           .from('appointments')
           .update({
             former_role: formerRole,
+            key_focus: keyFocus,
             url: url,
             updated_at: new Date().toISOString(),
           })
@@ -323,6 +328,7 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
             role,
             appointee_name: appointeeName,
             former_role: formerRole,
+            key_focus: keyFocus,
             url: url,
             sort_order: sortOrder,
             editorial_state: 'draft',
