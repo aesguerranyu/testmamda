@@ -31,6 +31,7 @@ const AppointmentEdit = () => {
     role: '',
     appointee_name: '',
     former_role: '',
+    key_focus: '',
     url: '',
     sort_order: 0,
     editorial_state: 'draft',
@@ -247,6 +248,21 @@ const AppointmentEdit = () => {
           />
           <p className="text-xs text-muted-foreground">
             Brief description of the appointee's previous or current position
+          </p>
+        </div>
+
+        {/* Key Focus */}
+        <div className="space-y-2">
+          <Label htmlFor="key_focus">Key Focus *</Label>
+          <Textarea
+            id="key_focus"
+            value={appointment.key_focus || ''}
+            onChange={(e) => setAppointment(prev => ({ ...prev, key_focus: e.target.value }))}
+            placeholder="e.g., Ensure effective and efficient delivery of city services."
+            rows={2}
+          />
+          <p className="text-xs text-muted-foreground">
+            The primary focus or mandate for this appointee
           </p>
         </div>
 

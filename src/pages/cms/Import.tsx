@@ -249,7 +249,7 @@ const Import = () => {
               : importType === 'indicators'
               ? 'Category, Promise, Headline, Description Paragraph, Target, Current, Current Description, Source'
               : importType === 'appointments'
-              ? 'Section, Role, Appointee Name, Former Role, URL'
+              ? 'Section, Role, Appointee Name, Former Role, Key Focus, URL'
               : 'Day, Date Display, Date ISO, Type, Headline, Description, Quote, Quote Attribution, Image URL, Image Caption, Full Text URL, Full Text Label, Embed URL, Sources Text, Source URL, Alt Source URL'}
           </p>
           {importType === 'first100days' && (

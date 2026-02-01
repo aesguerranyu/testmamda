@@ -95,6 +95,12 @@ export default function AppointmentTracker() {
                   }}>
                           Former / Current Role
                         </TableHead>
+                        <TableHead className="font-bold text-black uppercase tracking-wide hidden md:table-cell" style={{
+                    fontSize: "12px",
+                    letterSpacing: "0.05em"
+                  }}>
+                          Key Focus
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -120,6 +126,11 @@ export default function AppointmentTracker() {
                     fontSize: "14px"
                   }}>
                             {apt.former_role || "—"}
+                          </TableCell>
+                          <TableCell className="text-gray-600 py-4 hidden md:table-cell" style={{
+                    fontSize: "14px"
+                  }}>
+                            {apt.key_focus || "—"}
                           </TableCell>
                         </TableRow>)}
                     </TableBody>

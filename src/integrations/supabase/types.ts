@@ -21,6 +21,7 @@ export type Database = {
           editorial_state: string
           former_role: string
           id: string
+          key_focus: string
           role: string
           section: string
           sort_order: number
@@ -33,6 +34,7 @@ export type Database = {
           editorial_state?: string
           former_role?: string
           id?: string
+          key_focus?: string
           role?: string
           section?: string
           sort_order?: number
@@ -45,6 +47,7 @@ export type Database = {
           editorial_state?: string
           former_role?: string
           id?: string
+          key_focus?: string
           role?: string
           section?: string
           sort_order?: number
