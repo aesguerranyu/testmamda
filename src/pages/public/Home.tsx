@@ -272,15 +272,15 @@ export default function Home() {
             </p>
 
             <div className="flex items-center justify-center gap-3">
-              <button
-                onClick={scrollToPromises}
-                className="px-4 md:px-5 py-3 bg-[#0C2788] text-white font-bold uppercase tracking-wide text-sm transition-all hover:bg-[#1436B3] hover:scale-105 border-0 cursor-pointer"
+              <Link
+                to="/zohran-mamdani-first-100-days"
+                className="px-4 md:px-5 py-3 bg-[#0C2788] text-white font-bold uppercase tracking-wide text-sm transition-all hover:bg-[#1436B3] hover:scale-105 border-0 cursor-pointer no-underline"
                 style={{
                   letterSpacing: "0.15em",
                 }}
               >
-                Start Tracking
-              </button>
+                First 100 Days
+              </Link>
             </div>
           </div>
         </div>
