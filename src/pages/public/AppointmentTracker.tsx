@@ -93,7 +93,7 @@ export default function AppointmentTracker() {
                     fontSize: "12px",
                     letterSpacing: "0.05em"
                   }}>
-                          Former / Current Role
+                          Former Role
                         </TableHead>
                         <TableHead className="font-bold text-black uppercase tracking-wide hidden md:table-cell" style={{
                     fontSize: "12px",
