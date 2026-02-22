@@ -11,7 +11,7 @@ type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled" | "
 // FEATURE FLAG: Toggle dashboard visibility
 // Set to true to show the stats dashboard, false to hide
 // =====================================================
-const SHOW_STATS_DASHBOARD = true;
+const SHOW_STATS_DASHBOARD = false;
 
 // Status colors matching NYC Subway aesthetic
 const STATUS_COLORS: Record<PromiseStatus, string> = {
