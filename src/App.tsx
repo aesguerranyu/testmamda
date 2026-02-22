@@ -21,6 +21,7 @@ import PublicIndicators from "./pages/public/Indicators";
 import Actions from "./pages/public/Actions";
 import AppointmentTracker from "./pages/public/AppointmentTracker";
 import { BrandAssets } from "./pages/public/BrandAssets";
+import Budget from "./pages/public/Budget";
 
 // CMS Pages
 import CMSLogin from "./pages/cms/CMSLogin";
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/zohran-mamdani-appointment-tracker" element={<AppointmentTracker />} />
               <Route path="/appointments" element={<Navigate to="/zohran-mamdani-appointment-tracker" replace />} />
               <Route path="/brand-assets" element={<BrandAssets />} />
+              <Route path="/budget" element={<Budget />} />
             </Route>
             
             {/* CMS Routes */}
