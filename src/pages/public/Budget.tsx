@@ -210,29 +210,7 @@ export default function Budget() {
 
       {/* ── Row 2: Inherited Crisis + New Spending ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {/* Inherited Fiscal Crisis */}
-        <div className="border border-gray-300 p-4 md:p-6">
-          <SectionTitle badge={{ label: "Adams legacy", color: "#EE352E" }}>Inherited Fiscal Crisis</SectionTitle>
-          <div className="flex flex-col sm:flex-row gap-6 mb-5">
-            <div>
-              <p className="text-4xl font-bold leading-none mb-1" style={{ color: "#EE352E" }}>$12B+</p>
-              <p className="text-sm" style={{ color: "#374151" }}>True FY26–27 gap — 3× what Adams published. Independently estimated by Comptrollers Lander, Levine, and DiNapoli.</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold leading-none mb-1" style={{ color: "#EE352E" }}>6.8%</p>
-              <p className="text-sm" style={{ color: "#374151" }}>Gap as % of revenue — highest since 2009. Pre-COVID average was 3.5%.</p>
-            </div>
-          </div>
-          {inheritedItems.map((it) =>
-          <div key={it.label} className="flex justify-between items-baseline py-2 border-b border-gray-200 last:border-b-0 gap-3">
-              <span className="text-sm flex-1" style={{ color: "#374151" }}>{it.label}</span>
-              <span className="text-sm font-bold" style={{ color: "#0C2788" }}>{it.value}</span>
-            </div>
-          )}
-          <div className="border-l-4 border-[#EE352E] bg-red-50 p-3 mt-4 text-sm" style={{ color: "#374151" }}>
-            <strong className="text-black">$7.54B</strong> in unbudgeted spending inherited across six major categories including cash assistance, shelter, due process cases, and MTA subsidies.
-          </div>
-        </div>
+        {/* New Programmatic Spending + Gap Reduction (full width) */}
 
         {/* New Programmatic Spending + Gap Reduction */}
         <div className="border border-gray-300 p-4 md:p-6">
@@ -340,30 +318,6 @@ export default function Budget() {
             FY2028–2030 structural gaps of $6.7B–$7.1B remain unresolved. Closing them requires either new revenue authority (Mamdani's Path 1 — taxing high earners and corporations) or further property tax hikes and reserve drawdowns (Path 2).
           </div>
 
-          {/* Two Paths */}
-          <div className="mt-6">
-            <SectionTitle>Two Paths to Close the Gap</SectionTitle>
-            <div className="flex flex-col gap-4">
-              <div className="border-l-4 border-[#00933C] bg-green-50 p-3">
-                <div className="flex justify-between items-baseline mb-1">
-                  <span className="text-sm font-bold">Path 1 (Goal)</span>
-                  <span className="text-xs font-bold uppercase" style={{ color: "#00933C" }}>Tax authority</span>
-                </div>
-                <p className="text-sm" style={{ color: "#374151" }}>
-                  Income tax on earners &gt;$1M · corporate tax · fix NYC/NYS fiscal imbalance (NYC sends 54.5% of state revenue, gets 40.5% back)
-                </p>
-              </div>
-              <div className="border-l-4 border-[#EE352E] bg-red-50 p-3">
-                <div className="flex justify-between items-baseline mb-1">
-                  <span className="text-sm font-bold">Path 2 (Last resort)</span>
-                  <span className="text-xs font-bold uppercase" style={{ color: "#EE352E" }}>Austerity tools</span>
-                </div>
-                <p className="text-sm" style={{ color: "#374151" }}>
-                  Further property tax hikes · Rainy Day Fund · Retiree Health Trust drawdowns · affects 3M+ residential units
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
