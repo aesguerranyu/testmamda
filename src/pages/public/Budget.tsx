@@ -208,6 +208,32 @@ export default function Budget() {
         </div>
       </div>
 
+      {/* ── Row 2: Inherited Crisis + New Spending ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Inherited Fiscal Crisis */}
+        <div className="border border-gray-300 p-4 md:p-6">
+          <SectionTitle badge={{ label: "Adams legacy", color: "#EE352E" }}>Inherited Fiscal Crisis</SectionTitle>
+          <div className="flex flex-col sm:flex-row gap-6 mb-5">
+            <div>
+              <p className="text-4xl font-bold leading-none mb-1" style={{ color: "#EE352E" }}>$12B+</p>
+              <p className="text-sm" style={{ color: "#374151" }}>True FY26–27 gap — 3× what Adams published. Independently estimated by Comptrollers Lander, Levine, and DiNapoli.</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold leading-none mb-1" style={{ color: "#EE352E" }}>6.8%</p>
+              <p className="text-sm" style={{ color: "#374151" }}>Gap as % of revenue — highest since 2009. Pre-COVID average was 3.5%.</p>
+            </div>
+          </div>
+          {inheritedItems.map((it) =>
+          <div key={it.label} className="flex justify-between items-baseline py-2 border-b border-gray-200 last:border-b-0 gap-3">
+              <span className="text-sm flex-1" style={{ color: "#374151" }}>{it.label}</span>
+              <span className="text-sm font-bold" style={{ color: "#0C2788" }}>{it.value}</span>
+            </div>
+          )}
+          <div className="border-l-4 border-[#EE352E] bg-red-50 p-3 mt-4 text-sm" style={{ color: "#374151" }}>
+            <strong className="text-black">$7.54B</strong> in unbudgeted spending inherited across six major categories including cash assistance, shelter, due process cases, and MTA subsidies.
+          </div>
+        </div>
+
         {/* New Programmatic Spending + Gap Reduction */}
         <div className="border border-gray-300 p-4 md:p-6">
           <SectionTitle badge={{ label: "$576M", color: "#00933C" }}>New Programmatic Spending</SectionTitle>
