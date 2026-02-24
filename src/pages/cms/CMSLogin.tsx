@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,9 @@ const authSchema = z.object({
 
 const CMSLogin = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, isCmsUser, isLoading, signIn, signOut } = useAuth();
+  const returnTo = searchParams.get('returnTo');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,7 +25,12 @@ const CMSLogin = () => {
   // Redirect if already authenticated with CMS access
   useEffect(() => {
     if (!isLoading && user && isCmsUser) {
-      navigate('/rat-control/cms/dashboard');
+      // If returnTo is a /ratify URL, navigate there so the redirect component can resolve it
+      if (returnTo && returnTo.includes('/ratify')) {
+        navigate(decodeURIComponent(returnTo), { replace: true });
+      } else {
+        navigate('/rat-control/cms/dashboard', { replace: true });
+      }
     }
   }, [user, isCmsUser, isLoading, navigate]);
 
