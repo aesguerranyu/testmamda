@@ -49,13 +49,6 @@ const newSpending = [
 { label: "50 DOF auditors (+$100M/yr revenue)", amount: "~$12M" }];
 
 
-const gapReduction = [
-{ label: "Tax revenue upward revision", value: "+$7.3B", pos: true },
-{ label: "Agency savings (CSO program)", value: "+$1.77B", pos: true },
-{ label: "State aid (Hochul package)", value: "+$1.5B", pos: true },
-{ label: "Property tax hike (9.5%)", value: "$3.7B", pos: false },
-{ label: "Rainy Day Fund drawdown", value: "$980M", pos: false }];
-
 
 const capitalPlan = [
 { label: "Environmental Protection (DEP)", value: "$20.2B" },
@@ -224,18 +217,9 @@ export default function Budget() {
               </div>
             )}
           </div>
-          <div className="border-l-4 border-[#FCCC0A] bg-yellow-50 p-3 text-sm mb-6" style={{ color: "#374151" }}>
+          <div className="border-l-4 border-[#FCCC0A] bg-yellow-50 p-3 text-sm" style={{ color: "#374151" }}>
             96% of $14B in new city-funded spending went to filling gaps inherited from the Adams administration — not new programs.
           </div>
-
-          {/* Gap Reduction */}
-          <SectionTitle>Gap Reduction: How Mamdani Closed It</SectionTitle>
-          {gapReduction.map((g) =>
-          <div key={g.label} className="flex justify-between items-baseline py-2 border-b border-gray-200 last:border-b-0 gap-3">
-              <span className="text-sm flex-1" style={{ color: "#374151" }}>{g.label}</span>
-              <span className={`text-sm font-bold`} style={{ color: g.pos ? "#00933C" : "#EE352E" }}>{g.value}</span>
-            </div>
-          )}
         </div>
       </div>
 
