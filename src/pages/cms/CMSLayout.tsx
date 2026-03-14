@@ -224,13 +224,7 @@ const CMSLayout = () => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2">
-            {stats && stats.draftPromises > 0 && (
-              <span className="text-xs bg-status-draft text-status-draft-foreground px-2 py-1 rounded-full font-medium">
-                {stats.draftPromises} draft{stats.draftPromises !== 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
+          {/* Draft count temporarily hidden */}
         </header>
 
         {/* Page content */}
