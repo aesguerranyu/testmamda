@@ -466,16 +466,13 @@ export const importPromisesCSV = async (content: string): Promise<ImportReport> 
         continue;
       }
       
-      // Check if promise already exists by headline
+      // Check if promise already exists by headline — skip if it does to preserve CMS edits
       const existing = existingPromises.find(p => p.Headline === rowData['Headline']);
       
       if (existing) {
-        // Update existing
-        await savePromise({
-          id: existing.id,
-          ...rowData,
-        } as Partial<CMSPromise>);
-        recordsUpdated++;
+        // Skip existing — preserve any CMS edits
+        recordsUpdated++; // count as "skipped/already exists"
+        continue;
       } else {
         // Create new
         await savePromise(rowData as unknown as Partial<CMSPromise>);
