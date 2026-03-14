@@ -91,9 +91,7 @@ const Memberships = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Memberships</h1>
-          <p className="text-muted-foreground mt-1">
-            {filtered.length} of {memberships.length} submissions
-          </p>
+          {/* Count temporarily hidden */}
         </div>
         <Button
           variant="outline"

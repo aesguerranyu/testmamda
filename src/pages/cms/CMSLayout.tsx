@@ -145,16 +145,7 @@ const CMSLayout = () => {
               >
                 <item.icon className="w-4 h-4" />
                 <span>{item.label}</span>
-                {item.label === 'Promises' && stats && (
-                  <span className="ml-auto text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">
-                    {stats.totalPromises}
-                  </span>
-                )}
-                {item.label === 'Indicators' && stats && (
-                  <span className="ml-auto text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">
-                    {stats.totalIndicators}
-                  </span>
-                )}
+                {/* Sidebar counts temporarily hidden */}
               </Link>
             );
           })}
@@ -233,13 +224,7 @@ const CMSLayout = () => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2">
-            {stats && stats.draftPromises > 0 && (
-              <span className="text-xs bg-status-draft text-status-draft-foreground px-2 py-1 rounded-full font-medium">
-                {stats.draftPromises} draft{stats.draftPromises !== 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
+          {/* Draft count temporarily hidden */}
         </header>
 
         {/* Page content */}
