@@ -88,6 +88,48 @@ Deno.serve(async (req) => {
     <lastmod>${formatDate(mostRecentDate)}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/zohran-mamdani-appointment-tracker</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/about</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/membership</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/actions</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/budget</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/build-your-budget</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/brand-assets</loc>
+    <lastmod>${formatDate(mostRecentDate)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>`
 
     // Add individual promise pages
