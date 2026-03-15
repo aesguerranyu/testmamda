@@ -168,7 +168,9 @@ const Promises = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Promises</h1>
-          {/* Count temporarily hidden */}
+          <p className="text-muted-foreground mt-1">
+            {filteredPromises.length} of {promises.length} promises
+          </p>
         </div>
         <Link to="/rat-control/cms/promises/new">
           <Button className="gap-2">

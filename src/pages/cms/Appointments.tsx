@@ -185,7 +185,10 @@ export default function AppointmentsCMS() {
         )}
       </div>
 
-      {/* Count temporarily hidden */}
+      <div className="text-sm text-muted-foreground">
+        Showing {filteredAppointments.length} of {appointments.length} appointments
+        {isSomeSelected && ` • ${selectedIds.size} selected`}
+      </div>
 
       {filteredAppointments.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
