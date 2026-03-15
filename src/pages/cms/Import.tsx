@@ -25,6 +25,7 @@ const Import = () => {
   const [importHistory, setImportHistory] = useState<ImportReport[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importType, setImportType] = useState<'promises' | 'indicators' | 'first100days' | 'appointments'>('promises');
+  const [isDragging, setIsDragging] = useState(false);
 
   const loadHistory = async () => {
     const reports = await getImportReports();
@@ -202,8 +203,21 @@ const Import = () => {
         <div 
           className={cn(
             "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-            isImporting ? "border-primary/50 bg-primary/5" : "border-border hover:border-primary/30"
+            isImporting ? "border-primary/50 bg-primary/5" : isDragging ? "border-primary bg-primary/10" : "border-border hover:border-primary/30"
           )}
+          onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+          onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+          onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsDragging(false);
+            const file = e.dataTransfer.files?.[0];
+            if (file) {
+              const fakeEvent = { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>;
+              handleFileSelect(fakeEvent);
+            }
+          }}
         >
           <input
             ref={fileInputRef}
@@ -222,11 +236,11 @@ const Import = () => {
               {isImporting ? (
                 <RefreshCw className="w-10 h-10 text-primary animate-spin" />
               ) : (
-                <Upload className="w-10 h-10 text-muted-foreground" />
+                <Upload className={cn("w-10 h-10", isDragging ? "text-primary" : "text-muted-foreground")} />
               )}
               <div>
                 <p className="font-medium text-foreground">
-                  {isImporting ? 'Importing...' : 'Click to upload CSV'}
+                  {isImporting ? 'Importing...' : isDragging ? 'Drop CSV file here' : 'Drag & drop or click to upload CSV'}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
                   {importType === 'first100days' 
