@@ -25,6 +25,7 @@ const Import = () => {
   const [importHistory, setImportHistory] = useState<ImportReport[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importType, setImportType] = useState<'promises' | 'indicators' | 'first100days' | 'appointments'>('promises');
+  const [isDragging, setIsDragging] = useState(false);
 
   const loadHistory = async () => {
     const reports = await getImportReports();
