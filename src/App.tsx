@@ -21,7 +21,8 @@ import PublicIndicators from "./pages/public/Indicators";
 import Actions from "./pages/public/Actions";
 import AppointmentTracker from "./pages/public/AppointmentTracker";
 import { BrandAssets } from "./pages/public/BrandAssets";
-import Budget from "./pages/public/Budget";
+import BudgetLanding from "./pages/public/BudgetLanding";
+import BudgetFY2027 from "./pages/public/Budget";
 import BuildYourBudget from "./pages/public/BuildYourBudget";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
 
@@ -69,7 +70,8 @@ const App = () => (
               <Route path="/zohran-mamdani-appointment-tracker" element={<AppointmentTracker />} />
               <Route path="/appointments" element={<Navigate to="/zohran-mamdani-appointment-tracker" replace />} />
               <Route path="/brand-assets" element={<BrandAssets />} />
-              <Route path="/budget" element={<Budget />} />
+              <Route path="/budget" element={<BudgetLanding />} />
+              <Route path="/budget/FY2027" element={<BudgetFY2027 />} />
               <Route path="/build-your-budget" element={<BuildYourBudget />} />
               <Route path="/promises/:slug/ratify" element={<RatifyRedirect type="promise" />} />
               <Route path="/zohran-mamdani-first-100-days/:year/:month/:day/ratify" element={<RatifyRedirect type="first100day" />} />
