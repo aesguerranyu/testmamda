@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SEO } from "@/components/SEO";
 import {
   Table,
@@ -104,7 +105,58 @@ function SectionTitle({ children, badge }: {children: React.ReactNode;badge?: {l
 /* ── component ── */
 
 export default function Budget() {
+  const [unlocked, setUnlocked] = useState(false);
+  const [pw, setPw] = useState("");
+  const [pwError, setPwError] = useState(false);
   const segments = donutSegments(revenueSources);
+
+  if (!unlocked) {
+    return (
+      <>
+        <SEO
+          title="FY2027 Preliminary Budget · Mamdani Tracker"
+          description="Mayor Mamdani's first budget: $127 billion all-funds, $94 billion in agency spending."
+        />
+        <div className="min-h-[60vh] flex items-center justify-center px-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (pw === "MamdaniBudget") {
+                setUnlocked(true);
+                setPwError(false);
+              } else {
+                setPwError(true);
+              }
+            }}
+            className="w-full max-w-sm space-y-4"
+          >
+            <h1 className="text-2xl font-bold" style={{ color: "#0C2788" }}>
+              This page is password-protected
+            </h1>
+            <input
+              type="password"
+              value={pw}
+              onChange={(e) => { setPw(e.target.value); setPwError(false); }}
+              placeholder="Enter password"
+              className="w-full border-2 border-black px-3 py-2 text-sm focus:outline-none focus:border-[#0C2788]"
+            />
+            {pwError && (
+              <p className="text-sm font-semibold" style={{ color: "#EE352E" }}>
+                Incorrect password.
+              </p>
+            )}
+            <button
+              type="submit"
+              className="w-full py-2 text-sm font-bold text-white"
+              style={{ backgroundColor: "#0C2788" }}
+            >
+              Enter
+            </button>
+          </form>
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-5">
