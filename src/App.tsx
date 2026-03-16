@@ -21,7 +21,8 @@ import PublicIndicators from "./pages/public/Indicators";
 import Actions from "./pages/public/Actions";
 import AppointmentTracker from "./pages/public/AppointmentTracker";
 import { BrandAssets } from "./pages/public/BrandAssets";
-import Budget from "./pages/public/Budget";
+import BudgetLanding from "./pages/public/BudgetLanding";
+import BudgetFY2027 from "./pages/public/Budget";
 import BuildYourBudget from "./pages/public/BuildYourBudget";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
 
