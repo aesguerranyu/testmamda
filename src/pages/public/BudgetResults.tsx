@@ -30,7 +30,7 @@ export default function BudgetResults() {
 
   useEffect(() => {
     (async () => {
-      const { data: result, error } = await supabase.rpc("get_budget_aggregates");
+      const { data: result, error } = await supabase.rpc("get_budget_aggregates" as any);
       if (error) {
         console.error("Failed to load aggregates:", error);
       } else {

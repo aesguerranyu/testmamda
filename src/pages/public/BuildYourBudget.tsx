@@ -47,6 +47,16 @@ export default function BuildYourBudget() {
 
   const isBalanced = Math.abs(totalPct - 100) < 0.01;
 
+  // Build allocations for share card (must be before early return)
+  const currentAllocations = useMemo(() => {
+    const allocs: Record<string, { pct: number; amount: number }> = {};
+    AGENCIES.forEach((a) => {
+      const pct = parseFloat(percentages[a]) || 0;
+      allocs[a] = { pct, amount: (pct / 100) * TOTAL_BUDGET };
+    });
+    return allocs;
+  }, [percentages]);
+
   if (!unlocked) {
     return (
       <>
