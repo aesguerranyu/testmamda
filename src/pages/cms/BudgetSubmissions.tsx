@@ -36,7 +36,7 @@ const BudgetSubmissions = () => {
     setIsLoading(true);
     const { data, error } = await supabase
       .from("budget_submissions")
-      .select("id, name, email, allocations, created_at")
+      .select("id, name, email, allocations, is_balanced, wants_membership, share_id, created_at")
       .order("created_at", { ascending: false })
       .limit(1000);
 
