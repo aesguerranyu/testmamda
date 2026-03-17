@@ -97,12 +97,6 @@ export default function BuildYourBudget() {
     );
   }
 
-  const totalPct = useMemo(
-    () => AGENCIES.reduce((sum, a) => sum + (parseFloat(percentages[a]) || 0), 0),
-    [percentages]
-  );
-
-  const isBalanced = Math.abs(totalPct - 100) < 0.01;
 
   const handleChange = (agency: string, value: string) => {
     if (value === "" || (/^\d{0,3}(\.\d{0,2})?$/.test(value) && parseFloat(value) <= 100)) {
