@@ -78,11 +78,21 @@ export default function BuildYourBudget() {
       allocations,
     });
 
-    setSubmitting(false);
     if (error) {
+      setSubmitting(false);
       toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
       return;
     }
+
+    if (wantsMembership) {
+      await supabase.from("memberships").insert({
+        name: name.trim(),
+        email: email.trim(),
+        borough: "Unknown",
+      });
+    }
+
+    setSubmitting(false);
     setStep("submitted");
   };
 
