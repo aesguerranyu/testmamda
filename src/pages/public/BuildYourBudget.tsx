@@ -36,6 +36,7 @@ export default function BuildYourBudget() {
   const [step, setStep] = useState<Step>("allocate");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [wantsMembership, setWantsMembership] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const totalPct = useMemo(
@@ -77,11 +78,21 @@ export default function BuildYourBudget() {
       allocations,
     });
 
-    setSubmitting(false);
     if (error) {
+      setSubmitting(false);
       toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
       return;
     }
+
+    if (wantsMembership) {
+      await supabase.from("memberships").insert({
+        name: name.trim(),
+        email: email.trim(),
+        borough: "Unknown",
+      });
+    }
+
+    setSubmitting(false);
     setStep("submitted");
   };
 
@@ -259,6 +270,19 @@ export default function BuildYourBudget() {
                     className="w-full border-2 border-black px-3 py-2 text-sm focus:outline-none focus:border-[#0C2788]"
                   />
                 </div>
+                <div className="flex items-start gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="membership"
+                    checked={wantsMembership}
+                    onChange={(e) => setWantsMembership(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-[#0C2788]"
+                  />
+                  <label htmlFor="membership" className="text-sm" style={{ color: "#374151" }}>
+                    Become a member of Mamdani Tracker and receive regular updates from us.{" "}
+                    <span className="text-xs" style={{ color: "#6B7280" }}>No spam. No information selling. We promise.</span>
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -302,6 +326,7 @@ export default function BuildYourBudget() {
                 setPercentages(Object.fromEntries(AGENCIES.map((a) => [a, ""])));
                 setName("");
                 setEmail("");
+                setWantsMembership(false);
               }}
               className="px-6 py-2 text-sm font-bold border-2 border-black"
             >
