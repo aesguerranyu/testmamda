@@ -161,7 +161,7 @@ export default function BuildYourBudget() {
     setStep("submitted");
   };
 
-  const shareUrl = shareId ? `${window.location.origin}/budget/shared/${shareId}` : null;
+  const shareUrl = shareId ? `https://mamdanitracker.nyc/budget/shared/${shareId}` : null;
 
   const handleCopyLink = () => {
     if (shareUrl) {
