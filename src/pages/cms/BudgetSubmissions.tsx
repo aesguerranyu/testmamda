@@ -192,17 +192,24 @@ const BudgetSubmissions = () => {
                           {s.email}
                         </a>
                       </td>
-                      <td className="p-4 text-right hidden sm:table-cell align-top">
+                      <td className="p-4 text-center hidden sm:table-cell align-top">
                         <span
                           className={cn(
-                            "text-sm font-medium",
-                            Math.abs(totalPct - 100) < 0.01
-                              ? "text-primary"
-                              : "text-destructive"
+                            "text-xs font-medium px-2 py-0.5 rounded",
+                            s.is_balanced
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
                           )}
                         >
-                          {totalPct.toFixed(1)}%
+                          {s.is_balanced ? "Yes" : "No"}
                         </span>
+                      </td>
+                      <td className="p-4 text-center hidden sm:table-cell align-top">
+                        {s.wants_membership && (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded bg-blue-100 text-blue-700">
+                            ✓
+                          </span>
+                        )}
                       </td>
                       <td className="p-4 hidden md:table-cell align-top">
                         <span className="text-xs text-muted-foreground">
