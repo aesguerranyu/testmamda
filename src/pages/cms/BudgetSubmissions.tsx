@@ -143,7 +143,7 @@ const BudgetSubmissions = () => {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     {submissions.length === 0
                       ? "No budget submissions yet."
                       : "No submissions match your search."}
