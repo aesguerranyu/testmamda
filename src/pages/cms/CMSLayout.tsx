@@ -16,6 +16,7 @@ import {
   Key,
   UserCog,
   Briefcase,
+  DollarSign,
 } from "lucide-react";
 
 interface StatsData {
