@@ -42,6 +42,7 @@ import AppointmentsCMS from "./pages/cms/Appointments";
 import AppointmentEdit from "./pages/cms/AppointmentEdit";
 import Users from "./pages/cms/Users";
 import ChangePassword from "./pages/cms/ChangePassword";
+import BudgetSubmissions from "./pages/cms/BudgetSubmissions";
 
 const queryClient = new QueryClient();
 
