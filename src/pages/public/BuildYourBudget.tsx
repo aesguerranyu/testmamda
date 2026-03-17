@@ -52,6 +52,11 @@ export default function BuildYourBudget() {
   };
 
   const handleSubmit = async () => {
+    const missingAgencies = AGENCIES.filter((a) => !percentages[a] || percentages[a].trim() === "");
+    if (missingAgencies.length > 0) {
+      toast({ title: "Missing allocations", description: `Please enter a percentage for all agencies.`, variant: "destructive" });
+      return;
+    }
     if (!name.trim() || !email.trim()) return;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
@@ -174,15 +179,13 @@ export default function BuildYourBudget() {
               </div>
             )}
 
-            {totalPct > 0 && (
-              <button
-                onClick={() => setStep("preview")}
-                className="mt-6 w-full py-3 text-sm font-bold text-white"
-                style={{ backgroundColor: "#0C2788" }}
-              >
-                Review & Submit →
-              </button>
-            )}
+            <button
+              onClick={() => setStep("preview")}
+              className="mt-6 w-full py-3 text-sm font-bold text-white"
+              style={{ backgroundColor: "#0C2788" }}
+            >
+              Review & Submit →
+            </button>
           </>
         )}
 
