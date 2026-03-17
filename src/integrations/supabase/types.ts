@@ -62,21 +62,30 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          is_balanced: boolean
           name: string
+          share_id: string | null
+          wants_membership: boolean
         }
         Insert: {
           allocations?: Json
           created_at?: string
           email: string
           id?: string
+          is_balanced?: boolean
           name: string
+          share_id?: string | null
+          wants_membership?: boolean
         }
         Update: {
           allocations?: Json
           created_at?: string
           email?: string
           id?: string
+          is_balanced?: boolean
           name?: string
+          share_id?: string | null
+          wants_membership?: boolean
         }
         Relationships: []
       }
