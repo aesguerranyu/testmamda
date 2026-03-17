@@ -134,7 +134,8 @@ const BudgetSubmissions = () => {
                 <th className="text-left p-4 w-8" />
                 <th className="text-left p-4">Name</th>
                 <th className="text-left p-4">Email</th>
-                <th className="text-right p-4 hidden sm:table-cell">Total %</th>
+                <th className="text-center p-4 hidden sm:table-cell">Balanced</th>
+                <th className="text-center p-4 hidden sm:table-cell">Member</th>
                 <th className="text-left p-4 hidden md:table-cell">Submitted</th>
                 <th className="text-right p-4">Actions</th>
               </tr>
