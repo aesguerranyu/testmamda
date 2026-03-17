@@ -174,7 +174,7 @@ export default function BuildYourBudget() {
               </div>
             )}
 
-            {isBalanced && (
+            {totalPct > 0 && (
               <button
                 onClick={() => setStep("preview")}
                 className="mt-6 w-full py-3 text-sm font-bold text-white"
