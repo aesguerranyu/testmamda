@@ -326,6 +326,7 @@ export default function BuildYourBudget() {
                 setPercentages(Object.fromEntries(AGENCIES.map((a) => [a, ""])));
                 setName("");
                 setEmail("");
+                setWantsMembership(false);
               }}
               className="px-6 py-2 text-sm font-bold border-2 border-black"
             >
