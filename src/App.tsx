@@ -42,6 +42,7 @@ import AppointmentsCMS from "./pages/cms/Appointments";
 import AppointmentEdit from "./pages/cms/AppointmentEdit";
 import Users from "./pages/cms/Users";
 import ChangePassword from "./pages/cms/ChangePassword";
+import BudgetSubmissions from "./pages/cms/BudgetSubmissions";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,7 @@ const App = () => (
               <Route path="appointments" element={<AppointmentsCMS />} />
               <Route path="appointments/:id" element={<AppointmentEdit />} />
               <Route path="memberships" element={<Memberships />} />
+              <Route path="budget-submissions" element={<BudgetSubmissions />} />
               <Route path="import" element={<Import />} />
               <Route path="users" element={<Users />} />
               <Route path="change-password" element={<ChangePassword />} />
