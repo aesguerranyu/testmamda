@@ -13,6 +13,9 @@ type SubmissionRow = {
   name: string;
   email: string;
   allocations: Record<string, Allocation>;
+  is_balanced: boolean;
+  wants_membership: boolean;
+  share_id: string | null;
   created_at: string;
 };
 
