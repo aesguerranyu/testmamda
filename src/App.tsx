@@ -92,6 +92,7 @@ const App = () => (
               <Route path="appointments" element={<AppointmentsCMS />} />
               <Route path="appointments/:id" element={<AppointmentEdit />} />
               <Route path="memberships" element={<Memberships />} />
+              <Route path="budget-submissions" element={<BudgetSubmissions />} />
               <Route path="import" element={<Import />} />
               <Route path="users" element={<Users />} />
               <Route path="change-password" element={<ChangePassword />} />

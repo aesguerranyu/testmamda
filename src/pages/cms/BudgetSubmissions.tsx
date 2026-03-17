@@ -193,8 +193,8 @@ const BudgetSubmissions = () => {
                           className={cn(
                             "text-sm font-medium",
                             Math.abs(totalPct - 100) < 0.01
-                              ? "text-green-600"
-                              : "text-amber-600"
+                              ? "text-primary"
+                              : "text-destructive"
                           )}
                         >
                           {totalPct.toFixed(1)}%
