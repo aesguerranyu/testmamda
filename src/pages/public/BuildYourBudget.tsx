@@ -36,6 +36,7 @@ export default function BuildYourBudget() {
   const [step, setStep] = useState<Step>("allocate");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [wantsMembership, setWantsMembership] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const totalPct = useMemo(
