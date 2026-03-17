@@ -56,6 +56,30 @@ export type Database = {
         }
         Relationships: []
       }
+      budget_submissions: {
+        Row: {
+          allocations: Json
+          created_at: string
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          allocations?: Json
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+        }
+        Update: {
+          allocations?: Json
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       first100_activities: {
         Row: {
           created_at: string
