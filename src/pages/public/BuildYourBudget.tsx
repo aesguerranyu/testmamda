@@ -260,6 +260,19 @@ export default function BuildYourBudget() {
                     className="w-full border-2 border-black px-3 py-2 text-sm focus:outline-none focus:border-[#0C2788]"
                   />
                 </div>
+                <div className="flex items-start gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="membership"
+                    checked={wantsMembership}
+                    onChange={(e) => setWantsMembership(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-[#0C2788]"
+                  />
+                  <label htmlFor="membership" className="text-sm" style={{ color: "#374151" }}>
+                    Become a member of Mamdani Tracker and receive regular updates from us.{" "}
+                    <span className="text-xs" style={{ color: "#6B7280" }}>No spam. No information selling. We promise.</span>
+                  </label>
+                </div>
               </div>
             </div>
 
