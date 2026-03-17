@@ -42,6 +42,13 @@ export default function BuildYourBudget() {
   const [wantsMembership, setWantsMembership] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const totalPct = useMemo(
+    () => AGENCIES.reduce((sum, a) => sum + (parseFloat(percentages[a]) || 0), 0),
+    [percentages]
+  );
+
+  const isBalanced = Math.abs(totalPct - 100) < 0.01;
+
   if (!unlocked) {
     return (
       <>
