@@ -13,14 +13,37 @@ type SharedData = {
   share_id: string;
 };
 
+function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
+  const [pw, setPw] = useState("");
+  const [pwError, setPwError] = useState(false);
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center px-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (pw === "MamdaniBudget") { onUnlock(); setPwError(false); }
+          else setPwError(true);
+        }}
+        className="w-full max-w-sm space-y-4"
+      >
+        <h1 className="text-2xl font-bold" style={{ color: "#0C2788" }}>This page is password-protected</h1>
+        <input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setPwError(false); }} placeholder="Enter password" className="w-full border-2 border-black px-3 py-2 text-sm focus:outline-none focus:border-[#0C2788]" />
+        {pwError && <p className="text-sm font-semibold" style={{ color: "#EE352E" }}>Incorrect password.</p>}
+        <button type="submit" className="w-full py-2 text-sm font-bold text-white" style={{ backgroundColor: "#0C2788" }}>Enter</button>
+      </form>
+    </div>
+  );
+}
+
 export default function SharedBudget() {
   const { shareId } = useParams<{ shareId: string }>();
+  const [unlocked, setUnlocked] = useState(false);
   const [data, setData] = useState<SharedData | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!shareId) return;
+    if (!shareId || !unlocked) return;
     (async () => {
       const { data: result, error } = await supabase
         .from("budget_submissions")
@@ -34,7 +57,16 @@ export default function SharedBudget() {
       }
       setLoading(false);
     })();
-  }, [shareId]);
+  }, [shareId, unlocked]);
+
+  if (!unlocked) {
+    return (
+      <>
+        <SEO title="Shared Budget · Mamdani Tracker" description="View a shared NYC budget allocation." />
+        <PasswordGate onUnlock={() => setUnlocked(true)} />
+      </>
+    );
+  }
 
   if (loading) {
     return (
