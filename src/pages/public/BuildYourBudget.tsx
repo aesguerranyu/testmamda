@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { BudgetShareCard } from "@/components/public/BudgetShareCard";
 
 const TOTAL_BUDGET = 94_000_000_000;
 
@@ -18,12 +19,8 @@ const AGENCIES = [
 ];
 
 function formatDollars(amount: number): string {
-  if (amount >= 1_000_000_000) {
-    return `$${(amount / 1_000_000_000).toFixed(1)}B`;
-  }
-  if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`;
-  }
+  if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}B`;
+  if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`;
   return `$${amount.toLocaleString()}`;
 }
 
@@ -41,6 +38,7 @@ export default function BuildYourBudget() {
   const [email, setEmail] = useState("");
   const [wantsMembership, setWantsMembership] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [shareId, setShareId] = useState<string | null>(null);
 
   const totalPct = useMemo(
     () => AGENCIES.reduce((sum, a) => sum + (parseFloat(percentages[a]) || 0), 0),
@@ -48,6 +46,16 @@ export default function BuildYourBudget() {
   );
 
   const isBalanced = Math.abs(totalPct - 100) < 0.01;
+
+  // Build allocations for share card (must be before early return)
+  const currentAllocations = useMemo(() => {
+    const allocs: Record<string, { pct: number; amount: number }> = {};
+    AGENCIES.forEach((a) => {
+      const pct = parseFloat(percentages[a]) || 0;
+      allocs[a] = { pct, amount: (pct / 100) * TOTAL_BUDGET };
+    });
+    return allocs;
+  }, [percentages]);
 
   if (!unlocked) {
     return (
@@ -97,7 +105,6 @@ export default function BuildYourBudget() {
     );
   }
 
-
   const handleChange = (agency: string, value: string) => {
     if (value === "" || (/^\d{0,3}(\.\d{0,2})?$/.test(value) && parseFloat(value) <= 100)) {
       setPercentages((prev) => ({ ...prev, [agency]: value }));
@@ -107,7 +114,7 @@ export default function BuildYourBudget() {
   const handleSubmit = async () => {
     const missingAgencies = AGENCIES.filter((a) => !percentages[a] || percentages[a].trim() === "");
     if (missingAgencies.length > 0) {
-      toast({ title: "Missing allocations", description: `Please enter a percentage for all agencies.`, variant: "destructive" });
+      toast({ title: "Missing allocations", description: "Please enter a percentage for all agencies.", variant: "destructive" });
       return;
     }
     if (!name.trim() || !email.trim()) return;
@@ -124,16 +131,22 @@ export default function BuildYourBudget() {
       allocations[a] = { pct, amount: (pct / 100) * TOTAL_BUDGET };
     });
 
-    const { error } = await supabase.from("budget_submissions").insert({
+    const { data, error } = await supabase.from("budget_submissions").insert({
       name: name.trim(),
       email: email.trim(),
       allocations,
-    });
+      is_balanced: isBalanced,
+      wants_membership: wantsMembership,
+    }).select("share_id").single();
 
     if (error) {
       setSubmitting(false);
       toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
       return;
+    }
+
+    if (data?.share_id) {
+      setShareId(data.share_id);
     }
 
     if (wantsMembership) {
@@ -147,6 +160,27 @@ export default function BuildYourBudget() {
     setSubmitting(false);
     setStep("submitted");
   };
+
+  const shareUrl = shareId ? `${window.location.origin}/budget/shared/${shareId}` : null;
+
+  const handleCopyLink = () => {
+    if (shareUrl) {
+      navigator.clipboard.writeText(shareUrl);
+      toast({ title: "Link copied!", description: "Share it with friends." });
+    }
+  };
+
+  const handleShareTwitter = () => {
+    if (shareUrl) {
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent("I just built my own NYC budget on Mamdani Tracker!")}&url=${encodeURIComponent(shareUrl)}`,
+        "_blank"
+      );
+    }
+  };
+
+
+
 
   return (
     <>
@@ -166,7 +200,6 @@ export default function BuildYourBudget() {
         {step === "allocate" && (
           <>
             <div className="border-2 border-black">
-              {/* Header */}
               <div
                 className="grid grid-cols-[1fr_100px_120px] sm:grid-cols-[1fr_120px_140px] gap-2 px-4 py-3 font-bold text-sm"
                 style={{ backgroundColor: "#0C2788", color: "#FFFFFF" }}
@@ -176,7 +209,6 @@ export default function BuildYourBudget() {
                 <span className="text-right">Amount</span>
               </div>
 
-              {/* Rows */}
               {AGENCIES.map((agency) => {
                 const pct = parseFloat(percentages[agency]) || 0;
                 const amount = (pct / 100) * TOTAL_BUDGET;
@@ -205,7 +237,6 @@ export default function BuildYourBudget() {
                 );
               })}
 
-              {/* Totals */}
               <div
                 className="grid grid-cols-[1fr_100px_120px] sm:grid-cols-[1fr_120px_140px] gap-2 px-4 py-3 border-t-2 border-black font-bold text-sm"
                 style={{ backgroundColor: "#F5F5F5" }}
@@ -220,7 +251,6 @@ export default function BuildYourBudget() {
               </div>
             </div>
 
-            {/* Warning */}
             {!isBalanced && totalPct > 0 && (
               <div
                 className="mt-4 border-l-4 px-3 py-2 text-sm font-semibold"
@@ -292,7 +322,6 @@ export default function BuildYourBudget() {
               </div>
             </div>
 
-            {/* Name & Email */}
             <div className="border-2 border-black p-4 mb-4">
               <p className="text-sm font-bold mb-4" style={{ color: "#0C2788" }}>
                 Enter your details to submit
@@ -359,31 +388,61 @@ export default function BuildYourBudget() {
 
         {/* ── STEP: SUBMITTED ── */}
         {step === "submitted" && (
-          <div className="border-2 border-black p-8 text-center">
-            <div
-              className="text-4xl mb-3"
-              style={{ color: "#00933C" }}
-            >
-              ✓
+          <div className="space-y-6">
+            <div className="border-2 border-black p-8 text-center">
+              <div className="text-4xl mb-3" style={{ color: "#00933C" }}>✓</div>
+              <h2 className="text-xl font-bold mb-2" style={{ color: "#0C2788" }}>
+                Budget Submitted!
+              </h2>
+              <p className="text-sm mb-4" style={{ color: "#374151" }}>
+                Thanks, {name}. Your budget allocation has been recorded.
+              </p>
             </div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: "#0C2788" }}>
-              Budget Submitted!
-            </h2>
-            <p className="text-sm mb-6" style={{ color: "#374151" }}>
-              Thanks, {name}. Your budget allocation has been recorded.
-            </p>
-            <button
-              onClick={() => {
-                setStep("allocate");
-                setPercentages(Object.fromEntries(AGENCIES.map((a) => [a, ""])));
-                setName("");
-                setEmail("");
-                setWantsMembership(false);
-              }}
-              className="px-6 py-2 text-sm font-bold border-2 border-black"
-            >
-              Build Another Budget
-            </button>
+
+            {/* Shareable card */}
+            <div>
+              <p className="text-sm font-bold mb-3" style={{ color: "#0C2788" }}>
+                Share your budget
+              </p>
+              <BudgetShareCard
+                allocations={currentAllocations}
+                isBalanced={isBalanced}
+              />
+
+              {shareUrl && (
+                <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={handleCopyLink}
+                    className="flex-1 py-3 text-sm font-bold border-2 border-black"
+                  >
+                    📋 Copy Link
+                  </button>
+                  <button
+                    onClick={handleShareTwitter}
+                    className="flex-1 py-3 text-sm font-bold text-white"
+                    style={{ backgroundColor: "#1DA1F2" }}
+                  >
+                    𝕏 Share on X
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={() => {
+                  setStep("allocate");
+                  setPercentages(Object.fromEntries(AGENCIES.map((a) => [a, ""])));
+                  setName("");
+                  setEmail("");
+                  setWantsMembership(false);
+                  setShareId(null);
+                }}
+                className="px-6 py-2 text-sm font-bold border-2 border-black"
+              >
+                Build Another Budget
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -13,6 +13,9 @@ type SubmissionRow = {
   name: string;
   email: string;
   allocations: Record<string, Allocation>;
+  is_balanced: boolean;
+  wants_membership: boolean;
+  share_id: string | null;
   created_at: string;
 };
 
@@ -33,7 +36,7 @@ const BudgetSubmissions = () => {
     setIsLoading(true);
     const { data, error } = await supabase
       .from("budget_submissions")
-      .select("id, name, email, allocations, created_at")
+      .select("id, name, email, allocations, is_balanced, wants_membership, share_id, created_at")
       .order("created_at", { ascending: false })
       .limit(1000);
 
@@ -131,7 +134,8 @@ const BudgetSubmissions = () => {
                 <th className="text-left p-4 w-8" />
                 <th className="text-left p-4">Name</th>
                 <th className="text-left p-4">Email</th>
-                <th className="text-right p-4 hidden sm:table-cell">Total %</th>
+                <th className="text-center p-4 hidden sm:table-cell">Balanced</th>
+                <th className="text-center p-4 hidden sm:table-cell">Member</th>
                 <th className="text-left p-4 hidden md:table-cell">Submitted</th>
                 <th className="text-right p-4">Actions</th>
               </tr>
@@ -139,7 +143,7 @@ const BudgetSubmissions = () => {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     {submissions.length === 0
                       ? "No budget submissions yet."
                       : "No submissions match your search."}
@@ -188,17 +192,24 @@ const BudgetSubmissions = () => {
                           {s.email}
                         </a>
                       </td>
-                      <td className="p-4 text-right hidden sm:table-cell align-top">
+                      <td className="p-4 text-center hidden sm:table-cell align-top">
                         <span
                           className={cn(
-                            "text-sm font-medium",
-                            Math.abs(totalPct - 100) < 0.01
-                              ? "text-primary"
-                              : "text-destructive"
+                            "text-xs font-medium px-2 py-0.5 rounded",
+                            s.is_balanced
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
                           )}
                         >
-                          {totalPct.toFixed(1)}%
+                          {s.is_balanced ? "Yes" : "No"}
                         </span>
+                      </td>
+                      <td className="p-4 text-center hidden sm:table-cell align-top">
+                        {s.wants_membership && (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded bg-blue-100 text-blue-700">
+                            ✓
+                          </span>
+                        )}
                       </td>
                       <td className="p-4 hidden md:table-cell align-top">
                         <span className="text-xs text-muted-foreground">

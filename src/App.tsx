@@ -24,6 +24,8 @@ import { BrandAssets } from "./pages/public/BrandAssets";
 import BudgetLanding from "./pages/public/BudgetLanding";
 import BudgetFY2027 from "./pages/public/Budget";
 import BuildYourBudget from "./pages/public/BuildYourBudget";
+import SharedBudget from "./pages/public/SharedBudget";
+import BudgetResults from "./pages/public/BudgetResults";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
 
 // CMS Pages
@@ -74,6 +76,8 @@ const App = () => (
               <Route path="/budget" element={<BudgetLanding />} />
               <Route path="/budget/FY2027" element={<BudgetFY2027 />} />
               <Route path="/build-your-budget" element={<BuildYourBudget />} />
+              <Route path="/budget/shared/:shareId" element={<SharedBudget />} />
+              <Route path="/budget/results" element={<BudgetResults />} />
               <Route path="/promises/:slug/ratify" element={<RatifyRedirect type="promise" />} />
               <Route path="/zohran-mamdani-first-100-days/:year/:month/:day/ratify" element={<RatifyRedirect type="first100day" />} />
             </Route>
