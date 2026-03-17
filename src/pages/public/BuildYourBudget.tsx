@@ -179,15 +179,8 @@ export default function BuildYourBudget() {
     }
   };
 
-  // Build allocations for share card
-  const currentAllocations = useMemo(() => {
-    const allocs: Record<string, { pct: number; amount: number }> = {};
-    AGENCIES.forEach((a) => {
-      const pct = parseFloat(percentages[a]) || 0;
-      allocs[a] = { pct, amount: (pct / 100) * TOTAL_BUDGET };
-    });
-    return allocs;
-  }, [percentages]);
+
+
 
   return (
     <>
