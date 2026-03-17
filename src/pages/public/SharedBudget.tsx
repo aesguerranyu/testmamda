@@ -22,9 +22,11 @@ export default function SharedBudget() {
   useEffect(() => {
     if (!shareId) return;
     (async () => {
-      const { data: result, error } = await supabase.rpc("get_shared_budget" as any, {
-        p_share_id: shareId,
-      });
+      const { data: result, error } = await supabase
+        .from("budget_submissions")
+        .select("allocations, is_balanced, created_at, share_id")
+        .eq("share_id", shareId)
+        .single();
       if (error || !result) {
         setNotFound(true);
       } else {
