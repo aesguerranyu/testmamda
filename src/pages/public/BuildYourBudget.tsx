@@ -174,15 +174,13 @@ export default function BuildYourBudget() {
               </div>
             )}
 
-            {totalPct > 0 && (
-              <button
-                onClick={() => setStep("preview")}
-                className="mt-6 w-full py-3 text-sm font-bold text-white"
-                style={{ backgroundColor: "#0C2788" }}
-              >
-                Review & Submit →
-              </button>
-            )}
+            <button
+              onClick={() => setStep("preview")}
+              className="mt-6 w-full py-3 text-sm font-bold text-white"
+              style={{ backgroundColor: "#0C2788" }}
+            >
+              Review & Submit →
+            </button>
           </>
         )}
 
