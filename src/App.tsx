@@ -24,6 +24,8 @@ import { BrandAssets } from "./pages/public/BrandAssets";
 import BudgetLanding from "./pages/public/BudgetLanding";
 import BudgetFY2027 from "./pages/public/Budget";
 import BuildYourBudget from "./pages/public/BuildYourBudget";
+import SharedBudget from "./pages/public/SharedBudget";
+import BudgetResults from "./pages/public/BudgetResults";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
 
 // CMS Pages
