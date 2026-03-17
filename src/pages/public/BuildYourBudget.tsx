@@ -30,6 +30,9 @@ function formatDollars(amount: number): string {
 type Step = "allocate" | "preview" | "submitted";
 
 export default function BuildYourBudget() {
+  const [unlocked, setUnlocked] = useState(false);
+  const [pw, setPw] = useState("");
+  const [pwError, setPwError] = useState(false);
   const [percentages, setPercentages] = useState<Record<string, string>>(
     () => Object.fromEntries(AGENCIES.map((a) => [a, ""]))
   );
@@ -38,6 +41,54 @@ export default function BuildYourBudget() {
   const [email, setEmail] = useState("");
   const [wantsMembership, setWantsMembership] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  if (!unlocked) {
+    return (
+      <>
+        <SEO
+          title="Build Your Own Budget · Mamdani Tracker"
+          description="Allocate NYC's $94 billion agency budget yourself."
+        />
+        <div className="min-h-[60vh] flex items-center justify-center px-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (pw === "MamdaniBudget") {
+                setUnlocked(true);
+                setPwError(false);
+              } else {
+                setPwError(true);
+              }
+            }}
+            className="w-full max-w-sm space-y-4"
+          >
+            <h1 className="text-2xl font-bold" style={{ color: "#0C2788" }}>
+              This page is password-protected
+            </h1>
+            <input
+              type="password"
+              value={pw}
+              onChange={(e) => { setPw(e.target.value); setPwError(false); }}
+              placeholder="Enter password"
+              className="w-full border-2 border-black px-3 py-2 text-sm focus:outline-none focus:border-[#0C2788]"
+            />
+            {pwError && (
+              <p className="text-sm font-semibold" style={{ color: "#EE352E" }}>
+                Incorrect password.
+              </p>
+            )}
+            <button
+              type="submit"
+              className="w-full py-2 text-sm font-bold text-white"
+              style={{ backgroundColor: "#0C2788" }}
+            >
+              Enter
+            </button>
+          </form>
+        </div>
+      </>
+    );
+  }
 
   const totalPct = useMemo(
     () => AGENCIES.reduce((sum, a) => sum + (parseFloat(percentages[a]) || 0), 0),
