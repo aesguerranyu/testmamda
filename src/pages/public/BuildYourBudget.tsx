@@ -52,6 +52,11 @@ export default function BuildYourBudget() {
   };
 
   const handleSubmit = async () => {
+    const missingAgencies = AGENCIES.filter((a) => !percentages[a] || percentages[a].trim() === "");
+    if (missingAgencies.length > 0) {
+      toast({ title: "Missing allocations", description: `Please enter a percentage for all agencies.`, variant: "destructive" });
+      return;
+    }
     if (!name.trim() || !email.trim()) return;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
