@@ -156,21 +156,21 @@ export default function Budget() {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total Budget", num: "$127B", note: "All funds FY2027 · up from $124.6B in FY2026", color: "#0C2788", change: "+1.9%" },
-            { label: "Agency Spending", num: "$94B", note: "Operating agencies · $33B to pensions & debt service", color: "#00933C" },
-            { label: "New Investment", num: "$576M", note: "Only 4% of $14B in new spending was truly new", color: "#FF6319" },
-            { label: "FY2028 Gap", num: "$6.7B", note: "Grows to $7.1B by FY2030 · structural deficit", color: "#EE352E" },
+            { label: "Total Budget", num: "$127B", note: "All funds FY2027 · up from $124.6B in FY2026", change: "+1.9%" },
+            { label: "Agency Spending", num: "$94B", note: "Operating agencies · $33B to pensions & debt service" },
+            { label: "New Investment", num: "$576M", note: "Only 4% of $14B in new spending was truly new" },
+            { label: "FY2028 Gap", num: "$6.7B", note: "Grows to $7.1B by FY2030 · structural deficit" },
           ].map((kpi, i) => (
             <div
               key={i}
               className="bg-white p-5"
-              style={{ borderTop: `4px solid ${kpi.color}`, border: "1px solid #E5E7EB", borderTopWidth: "4px", borderTopColor: kpi.color }}
+              style={{ border: "1px solid #E5E7EB" }}
             >
               <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: "#6B7280" }}>
                 {kpi.label}
               </p>
               <div className="flex items-baseline gap-2">
-                <p className="text-4xl font-bold leading-none" style={{ color: kpi.color }}>
+                <p className="text-4xl font-bold leading-none" style={{ color: "#111827" }}>
                   {kpi.num}
                 </p>
                 {kpi.change && (
