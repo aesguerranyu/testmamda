@@ -137,25 +137,13 @@ export default function Budget() {
         keywords="Zohran Mamdani, NYC budget, FY2027, preliminary budget, NYC OMB, fiscal plan, agency spending"
       />
 
-      {/* Hero Section */}
-      <div style={{ backgroundColor: "#0C2788", padding: "48px 0", margin: 0 }}>
-        <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
-          <div className="flex items-center gap-3 mb-3">
-            <BanknotesIcon className="h-8 w-8" style={{ color: "#FCCC0A" }} />
-            <span
-              className="text-xs font-bold uppercase tracking-widest"
-              style={{ color: "rgba(255,255,255,0.7)" }}
-            >
-              Budget Analysis
-            </span>
-          </div>
-          <h1
-            className="font-bold tracking-tight mb-3"
-            style={{ color: "#FFFFFF", fontSize: "40px", lineHeight: 1.1 }}
-          >
+      {/* Hero Section — uniform header */}
+      <div style={{ borderTop: "6px solid #0C2788" }}>
+        <div className="container mx-auto max-w-7xl px-4 sm:px-5 lg:px-6 py-8">
+          <h1 className="font-bold tracking-tight text-3xl sm:text-4xl mb-2" style={{ color: "#111827" }}>
             FY 2027 Preliminary Budget
           </h1>
-          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "16px", maxWidth: "640px" }}>
+          <p className="text-sm sm:text-base" style={{ color: "#6B7280", maxWidth: "640px" }}>
             Mayor Mamdani's first budget: $127 billion all-funds, $94 billion in agency spending.
             96% of new dollars went to plugging inherited gaps.
           </p>
