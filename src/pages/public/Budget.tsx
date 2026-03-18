@@ -163,8 +163,7 @@ export default function Budget() {
           ].map((kpi, i) => (
             <div
               key={i}
-              className="bg-white p-5"
-              style={{ border: "1px solid #E5E7EB" }}
+              className="bg-white p-5 border border-gray-200 shadow-sm"
             >
               <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: "#6B7280" }}>
                 {kpi.label}
