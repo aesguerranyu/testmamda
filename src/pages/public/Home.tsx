@@ -158,12 +158,13 @@ export default function Home() {
       title: "Promise Tracker",
       description: "Track every commitment with clear status updates and verified sources.",
     },
-    {
-      to: "/first100days",
-      icon: ClockIcon,
-      title: "First 100 Days",
-      description: "Follow early priorities and actions as Mayor Mamdani reshapes New York City.",
-    },
+    // TEMPORARILY HIDDEN: First 100 Days card
+    // {
+    //   to: "/first100days",
+    //   icon: ClockIcon,
+    //   title: "First 100 Days",
+    //   description: "Follow early priorities and actions as Mayor Mamdani reshapes New York City.",
+    // },
     {
       to: "/indicators",
       icon: ChartBarIcon,
@@ -273,13 +274,13 @@ export default function Home() {
 
             <div className="flex items-center justify-center gap-3">
               <Link
-                to="/zohran-mamdani-first-100-days"
+                to="/promises"
                 className="px-4 md:px-5 py-3 bg-[#0C2788] text-white font-bold uppercase tracking-wide text-sm transition-all hover:bg-[#1436B3] hover:scale-105 border-0 cursor-pointer no-underline"
                 style={{
                   letterSpacing: "0.15em",
                 }}
               >
-                First 100 Days
+                Promises
               </Link>
             </div>
           </div>
