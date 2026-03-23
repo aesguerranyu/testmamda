@@ -158,12 +158,13 @@ export default function Home() {
       title: "Promise Tracker",
       description: "Track every commitment with clear status updates and verified sources.",
     },
-    {
-      to: "/first100days",
-      icon: ClockIcon,
-      title: "First 100 Days",
-      description: "Follow early priorities and actions as Mayor Mamdani reshapes New York City.",
-    },
+    // TEMPORARILY HIDDEN: First 100 Days card
+    // {
+    //   to: "/first100days",
+    //   icon: ClockIcon,
+    //   title: "First 100 Days",
+    //   description: "Follow early priorities and actions as Mayor Mamdani reshapes New York City.",
+    // },
     {
       to: "/indicators",
       icon: ChartBarIcon,
