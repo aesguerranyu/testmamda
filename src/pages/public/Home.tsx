@@ -280,7 +280,7 @@ export default function Home() {
                   letterSpacing: "0.15em",
                 }}
               >
-                Promises
+                Start Tracking
               </Link>
             </div>
           </div>
