@@ -579,9 +579,6 @@ export default function Budget() {
             ))}
           </div>
         </div>
-            ))}
-          </div>
-        </div>
 
         {/* Outyear Financial Plan */}
         <div className="bg-white border border-gray-200 p-5 mb-8">
