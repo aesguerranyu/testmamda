@@ -11,16 +11,50 @@ import {
 
 /* ── DATA (source of truth) ── */
 
+/* Agency groups from prelim26-expfp.xlsx — $ Millions */
 const agencies = [
-  { department: "Dept of Education (DOE)", amount: 31.2, percent: 33.2, color: "#0039A6" },
-  { department: "Health + Hospitals (H+H)", amount: 11.4, percent: 12.1, color: "#EE352E" },
-  { department: "Social Services (DSS/HRA)", amount: 10.8, percent: 11.5, color: "#FF6319" },
-  { department: "Police (NYPD)", amount: 5.8, percent: 6.2, color: "#B933AD" },
-  { department: "Correction (DOC)", amount: 2.8, percent: 3.0, color: "#A7A9AC" },
-  { department: "Fire (FDNY)", amount: 2.6, percent: 2.8, color: "#EE352E" },
-  { department: "Sanitation (DSNY)", amount: 2.1, percent: 2.2, color: "#00933C" },
-  { department: "Parks & Recreation", amount: 0.71, percent: 0.76, color: "#6CBE45" },
-  { department: "All Other Agencies", amount: 26.6, percent: 28.3, color: "#FCCC0A" },
+  { department: "Dept of Education (DOE)", amount: 38.0, percent: 40.4, color: "#0039A6" },
+  { department: "Social Services", amount: 24.3, percent: 25.8, color: "#FF6319" },
+  { department: "Uniformed Agencies", amount: 11.4, percent: 12.1, color: "#B933AD" },
+  { department: "Health", amount: 4.3, percent: 4.5, color: "#EE352E" },
+  { department: "Citywide Admin (DCAS)", amount: 1.7, percent: 1.8, color: "#A7A9AC" },
+  { department: "Environmental Prot. (DEP)", amount: 1.7, percent: 1.8, color: "#00933C" },
+  { department: "Transportation (DOT)", amount: 1.6, percent: 1.7, color: "#FCCC0A" },
+  { department: "Housing (HPD)", amount: 1.5, percent: 1.5, color: "#996633" },
+  { department: "All Other Agencies", amount: 9.5, percent: 10.4, color: "#6CBE45" },
+];
+
+/* Detailed agency breakdown — FY2027 Plan ($M) */
+const agencyDetails = [
+  { group: "Education", agency: "Dept Of Education", abbrev: "DOE", fy26: 36897.5, fy27: 38029.9, fy28: 39538.2, fy29: 39601.7, fy30: 40038.8, pct94: 40.4, yoyChg: 1132.4, yoyPct: 3.1 },
+  { group: "Social Services", agency: "Dept Of Social Services", abbrev: "DSS", fy26: 14204.5, fy27: 14628.3, fy28: 15205.9, fy29: 15723.9, fy30: 16254.1, pct94: 15.5, yoyChg: 423.8, yoyPct: 3.0 },
+  { group: "Social Services", agency: "Dept. Of Homeless Services", abbrev: "DHS", fy26: 4420.9, fy27: 4629.2, fy28: 3995.5, fy29: 4070.2, fy30: 4145.7, pct94: 4.9, yoyChg: 208.3, yoyPct: 4.7 },
+  { group: "Social Services", agency: "Admin. For Children Services", abbrev: "ACS", fy26: 3832.1, fy27: 3425.0, fy28: 3469.7, fy29: 3471.1, fy30: 3472.2, pct94: 3.6, yoyChg: -407.1, yoyPct: -10.6 },
+  { group: "Social Services", agency: "Youth & Community Dev.", abbrev: "DYCD", fy26: 1548.3, fy27: 1633.6, fy28: 1677.7, fy29: 1673.7, fy30: 1673.7, pct94: 1.7, yoyChg: 85.3, yoyPct: 5.5 },
+  { group: "Uniformed", agency: "Police Department", abbrev: "NYPD", fy26: 6893.3, fy27: 6697.3, fy28: 6758.7, fy29: 6749.1, fy30: 6749.1, pct94: 7.1, yoyChg: -196.0, yoyPct: -2.8 },
+  { group: "Uniformed", agency: "Fire Department", abbrev: "FDNY", fy26: 2821.6, fy27: 2645.8, fy28: 2624.0, fy29: 2618.7, fy30: 2621.2, pct94: 2.8, yoyChg: -175.8, yoyPct: -6.2 },
+  { group: "Uniformed", agency: "Dept Of Sanitation", abbrev: "DSNY", fy26: 2249.0, fy27: 2076.6, fy28: 2095.8, fy29: 2100.8, fy30: 2101.1, pct94: 2.2, yoyChg: -172.4, yoyPct: -7.7 },
+  { group: "Health", agency: "Dept Health & Mental Hygiene", abbrev: "DOHMH", fy26: 2907.9, fy27: 2512.4, fy28: 2520.3, fy29: 2535.2, fy30: 2551.1, pct94: 2.7, yoyChg: -395.5, yoyPct: -13.6 },
+  { group: "Health", agency: "Health And Hospitals Corp.", abbrev: "H+H", fy26: 2119.4, fy27: 1739.2, fy28: 1776.5, fy29: 1777.1, fy30: 1777.2, pct94: 1.8, yoyChg: -380.2, yoyPct: -17.9 },
+  { group: "Other", agency: "Citywide Admin Services", abbrev: "DCAS", fy26: 1845.9, fy27: 1693.5, fy28: 1691.2, fy29: 1691.7, fy30: 1691.8, pct94: 1.8, yoyChg: -152.4, yoyPct: -8.3 },
+  { group: "Other", agency: "Environmental Protection", abbrev: "DEP", fy26: 1890.3, fy27: 1686.8, fy28: 1679.8, fy29: 1678.0, fy30: 1680.2, pct94: 1.8, yoyChg: -203.5, yoyPct: -10.8 },
+  { group: "Other", agency: "Dept Of Transportation", abbrev: "DOT", fy26: 1569.6, fy27: 1556.8, fy28: 1552.7, fy29: 1560.7, fy30: 1560.9, pct94: 1.7, yoyChg: -12.8, yoyPct: -0.8 },
+  { group: "Other", agency: "City University", abbrev: "CUNY", fy26: 1627.8, fy27: 1550.3, fy28: 1572.7, fy29: 1591.2, fy30: 1608.9, pct94: 1.6, yoyChg: -77.5, yoyPct: -4.8 },
+  { group: "Other", agency: "Housing Preservation & Dev.", abbrev: "HPD", fy26: 2023.1, fy27: 1457.6, fy28: 1445.6, fy29: 1470.9, fy30: 1470.1, pct94: 1.5, yoyChg: -565.5, yoyPct: -28.0 },
+  { group: "Other", agency: "Dept Of Correction", abbrev: "DOC", fy26: 1400.5, fy27: 1263.7, fy28: 1386.1, fy29: 1385.1, fy30: 1383.7, pct94: 1.3, yoyChg: -136.8, yoyPct: -9.8 },
+  { group: "Other", agency: "Office Of Criminal Justice", abbrev: "OCJ", fy26: 1038.2, fy27: 889.6, fy28: 889.0, fy29: 891.5, fy30: 901.5, pct94: 0.9, yoyChg: -148.6, yoyPct: -14.3 },
+  { group: "Other", agency: "D.O.I.T.T.", abbrev: "DOITT", fy26: 967.2, fy27: 702.5, fy28: 702.2, fy29: 703.3, fy30: 703.6, pct94: 0.7, yoyChg: -264.7, yoyPct: -27.4 },
+  { group: "Other", agency: "Parks And Recreation", abbrev: "DPR", fy26: 709.9, fy27: 654.0, fy28: 653.7, fy29: 653.6, fy30: 653.6, pct94: 0.7, yoyChg: -55.9, yoyPct: -7.9 },
+  { group: "Other", agency: "Dept For The Aging", abbrev: "DFTA", fy26: 620.2, fy27: 573.5, fy28: 573.1, fy29: 572.6, fy30: 563.3, pct94: 0.6, yoyChg: -46.7, yoyPct: -7.5 },
+];
+
+/* Pensions & Debt Service */
+const pensionsDebt = [
+  { item: "Citywide Pension Contributions", fy27: 10533.1, yoyChg: 38.3, yoyPct: 0.4 },
+  { item: "Debt Service", fy27: 9289.5, yoyChg: 4335.5, yoyPct: 87.5 },
+  { item: "Miscellaneous", fy27: 15831.9, yoyChg: 1618.9, yoyPct: 11.4 },
+  { item: "General Reserve", fy27: 100.0, yoyChg: 50.0, yoyPct: 100.0 },
+  { item: "Citywide Savings Initiatives", fy27: -1060.0, yoyChg: -138.0, yoyPct: 15.0 },
 ];
 
 const revenueSources = [
@@ -41,8 +75,8 @@ const newSpending = [
 ];
 
 const outyearData = [
-  { item: "Total Revenue ($B)", fy26: "$91.2", fy27: "$97.6", fy28: "$99.2", fy29: "$100.9", fy30: "$103.6" },
-  { item: "Total Expenditure ($B)", fy26: "$91.2", fy27: "$97.6", fy28: "$105.9", fy29: "$107.7", fy30: "$110.7" },
+  { item: "Agency Subtotal ($B)", fy26: "$96.4", fy27: "$94.1", fy28: "$95.9", fy29: "$96.7", fy30: "$97.8" },
+  { item: "Grand Total ($B)", fy26: "$124.6", fy27: "$130.0", fy28: "$137.5", fy29: "$138.9", fy30: "$142.1" },
   { item: "Gap to Close ($B)", fy26: "$0", fy27: "$0", fy28: "–$6.7", fy29: "–$6.8", fy30: "–$7.1", isGap: true },
 ];
 
@@ -384,6 +418,116 @@ export default function Budget() {
             style={{ borderLeft: "4px solid #EE352E", backgroundColor: "#FEF2F2", color: "#374151" }}
           >
             Both Parks and Libraries fall short of their pledged funding levels. Parks gap widens to –$767M by FY2030.
+          </div>
+        </div>
+
+        {/* Detailed Agency Breakdown Table */}
+        <div className="bg-white border border-gray-200 p-5 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-lg" style={{ color: "#111827" }}>
+              Agency Budget by Group — FY2027 Plan
+            </h2>
+            <span className="text-xs font-mono" style={{ color: "#6B7280" }}>
+              $ Millions
+            </span>
+          </div>
+
+          <div className="overflow-auto">
+            <Table>
+              <TableHeader>
+                <TableRow style={{ borderBottom: "2px solid #0C2788", backgroundColor: "#F9FAFB" }}>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-left" style={{ color: "#6B7280" }}>Agency</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY26</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY27</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY28</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY29</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY30</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>% of $94B</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>YoY Chg</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {agencyDetails.map((row, i) => {
+                  const prevGroup = i > 0 ? agencyDetails[i - 1].group : null;
+                  const showGroupHeader = row.group !== prevGroup;
+                  return (
+                    <>
+                      {showGroupHeader && (
+                        <TableRow key={`group-${row.group}`} style={{ backgroundColor: "#F3F4F6" }}>
+                          <TableCell colSpan={8} className="text-xs font-bold uppercase tracking-wide py-2" style={{ color: "#0C2788" }}>
+                            {row.group}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      <TableRow key={row.abbrev} className="hover:bg-gray-50">
+                        <TableCell className="text-sm font-medium text-left">
+                          <span className="font-bold mr-1.5" style={{ color: "#0C2788" }}>[{row.abbrev}]</span>
+                          {row.agency}
+                        </TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy26.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono font-bold">{row.fy27.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy28.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy29.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy30.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.pct94.toFixed(1)}%</TableCell>
+                        <TableCell className="text-sm text-right font-mono font-bold" style={{ color: row.yoyChg >= 0 ? "#00933C" : "#EE352E" }}>
+                          {row.yoyChg >= 0 ? "+" : ""}{row.yoyChg.toLocaleString("en-US", { minimumFractionDigits: 1 })} ({row.yoyPct >= 0 ? "+" : ""}{row.yoyPct.toFixed(1)}%)
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  );
+                })}
+                {/* Totals */}
+                <TableRow style={{ borderTop: "2px solid #0C2788", backgroundColor: "#F9FAFB" }}>
+                  <TableCell className="text-sm font-bold text-left">Agency Budget Subtotal</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">96,354.8</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">94,086.5</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">95,900.4</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">96,661.4</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">97,795.9</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">100%</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold" style={{ color: "#EE352E" }}>
+                    –2,268.3 (–2.4%)
+                  </TableCell>
+                </TableRow>
+                <TableRow style={{ backgroundColor: "#F9FAFB" }}>
+                  <TableCell className="text-sm font-bold text-left">Grand Total — All Funds</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">124,644.6</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">130,006.9</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">137,532.7</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">138,888.5</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">142,062.5</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold"></TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold" style={{ color: "#00933C" }}>
+                    +5,362.3 (+4.3%)
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+
+          <p className="text-xs mt-3" style={{ color: "#6B7280" }}>
+            Source: prelim26-expfp.xlsx (NYC Expense Financial Plan, published 2026-02-17). FY26 = current year forecast. FY27 = preliminary plan. YoY = FY27 Plan vs FY26 Forecast.
+          </p>
+        </div>
+
+        {/* Pensions & Debt Service */}
+        <div className="bg-white border border-gray-200 p-5 mb-8">
+          <h2 className="font-bold text-lg mb-4" style={{ color: "#111827" }}>
+            Pensions & Debt Service — $33B
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {pensionsDebt.filter(p => p.fy27 > 0).map((item) => (
+              <div key={item.item} className="border border-gray-200 p-4">
+                <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "#6B7280" }}>{item.item}</p>
+                <p className="text-2xl font-bold" style={{ color: "#111827" }}>
+                  ${(item.fy27 / 1000).toFixed(1)}B
+                </p>
+                <p className="text-xs mt-1" style={{ color: item.yoyChg >= 0 ? "#00933C" : "#EE352E" }}>
+                  {item.yoyChg >= 0 ? "+" : ""}{item.yoyChg.toLocaleString("en-US", { minimumFractionDigits: 1 })}M ({item.yoyPct >= 0 ? "+" : ""}{item.yoyPct.toFixed(1)}%)
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
