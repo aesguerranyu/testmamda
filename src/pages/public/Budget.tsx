@@ -421,6 +421,116 @@ export default function Budget() {
           </div>
         </div>
 
+        {/* Detailed Agency Breakdown Table */}
+        <div className="bg-white border border-gray-200 p-5 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-lg" style={{ color: "#111827" }}>
+              Agency Budget by Group — FY2027 Plan
+            </h2>
+            <span className="text-xs font-mono" style={{ color: "#6B7280" }}>
+              $ Millions
+            </span>
+          </div>
+
+          <div className="overflow-auto">
+            <Table>
+              <TableHeader>
+                <TableRow style={{ borderBottom: "2px solid #0C2788", backgroundColor: "#F9FAFB" }}>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-left" style={{ color: "#6B7280" }}>Agency</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY26</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY27</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY28</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY29</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>FY30</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>% of $94B</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wide text-right" style={{ color: "#6B7280" }}>YoY Chg</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {agencyDetails.map((row, i) => {
+                  const prevGroup = i > 0 ? agencyDetails[i - 1].group : null;
+                  const showGroupHeader = row.group !== prevGroup;
+                  return (
+                    <>
+                      {showGroupHeader && (
+                        <TableRow key={`group-${row.group}`} style={{ backgroundColor: "#F3F4F6" }}>
+                          <TableCell colSpan={8} className="text-xs font-bold uppercase tracking-wide py-2" style={{ color: "#0C2788" }}>
+                            {row.group}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      <TableRow key={row.abbrev} className="hover:bg-gray-50">
+                        <TableCell className="text-sm font-medium text-left">
+                          <span className="font-bold mr-1.5" style={{ color: "#0C2788" }}>[{row.abbrev}]</span>
+                          {row.agency}
+                        </TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy26.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono font-bold">{row.fy27.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy28.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy29.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.fy30.toLocaleString("en-US", { minimumFractionDigits: 1 })}</TableCell>
+                        <TableCell className="text-sm text-right font-mono">{row.pct94.toFixed(1)}%</TableCell>
+                        <TableCell className="text-sm text-right font-mono font-bold" style={{ color: row.yoyChg >= 0 ? "#00933C" : "#EE352E" }}>
+                          {row.yoyChg >= 0 ? "+" : ""}{row.yoyChg.toLocaleString("en-US", { minimumFractionDigits: 1 })} ({row.yoyPct >= 0 ? "+" : ""}{row.yoyPct.toFixed(1)}%)
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  );
+                })}
+                {/* Totals */}
+                <TableRow style={{ borderTop: "2px solid #0C2788", backgroundColor: "#F9FAFB" }}>
+                  <TableCell className="text-sm font-bold text-left">Agency Budget Subtotal</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">96,354.8</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">94,086.5</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">95,900.4</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">96,661.4</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">97,795.9</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">100%</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold" style={{ color: "#EE352E" }}>
+                    –2,268.3 (–2.4%)
+                  </TableCell>
+                </TableRow>
+                <TableRow style={{ backgroundColor: "#F9FAFB" }}>
+                  <TableCell className="text-sm font-bold text-left">Grand Total — All Funds</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">124,644.6</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">130,006.9</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">137,532.7</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">138,888.5</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold">142,062.5</TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold"></TableCell>
+                  <TableCell className="text-sm text-right font-mono font-bold" style={{ color: "#00933C" }}>
+                    +5,362.3 (+4.3%)
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+
+          <p className="text-xs mt-3" style={{ color: "#6B7280" }}>
+            Source: prelim26-expfp.xlsx (NYC Expense Financial Plan, published 2026-02-17). FY26 = current year forecast. FY27 = preliminary plan. YoY = FY27 Plan vs FY26 Forecast.
+          </p>
+        </div>
+
+        {/* Pensions & Debt Service */}
+        <div className="bg-white border border-gray-200 p-5 mb-8">
+          <h2 className="font-bold text-lg mb-4" style={{ color: "#111827" }}>
+            Pensions & Debt Service — $33B
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {pensionsDebt.filter(p => p.fy27 > 0).map((item) => (
+              <div key={item.item} className="border border-gray-200 p-4">
+                <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "#6B7280" }}>{item.item}</p>
+                <p className="text-2xl font-bold" style={{ color: "#111827" }}>
+                  ${(item.fy27 / 1000).toFixed(1)}B
+                </p>
+                <p className="text-xs mt-1" style={{ color: item.yoyChg >= 0 ? "#00933C" : "#EE352E" }}>
+                  {item.yoyChg >= 0 ? "+" : ""}{item.yoyChg.toLocaleString("en-US", { minimumFractionDigits: 1 })}M ({item.yoyPct >= 0 ? "+" : ""}{item.yoyPct.toFixed(1)}%)
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Key Initiatives */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -466,6 +576,9 @@ export default function Budget() {
                   </span>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
             ))}
           </div>
         </div>
