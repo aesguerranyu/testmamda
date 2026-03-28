@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";

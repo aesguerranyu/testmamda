@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useState, useEffect, useMemo } from "react";
 import { SEO } from "@/components/SEO";
 import { getPublishedAppointments, Appointment } from "@/lib/appointments-store";

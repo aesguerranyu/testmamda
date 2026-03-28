@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 

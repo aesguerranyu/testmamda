@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";

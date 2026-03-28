@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
