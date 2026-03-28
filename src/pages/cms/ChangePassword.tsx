@@ -50,7 +50,7 @@ const ChangePassword = () => {
       setConfirmPassword('');
       toast.success('Password updated successfully');
     } catch (err: any) {
-      console.error('Error updating password:', err);
+      logError('Error updating password:', err);
       setError(err.message || 'Failed to update password');
     } finally {
       setIsSubmitting(false);

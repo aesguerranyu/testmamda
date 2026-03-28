@@ -11,7 +11,7 @@ export default function AppointmentTracker() {
         const data = await getPublishedAppointments();
         setAppointments(data);
       } catch (error) {
-        console.error("Failed to load appointments:", error);
+        logError("Failed to load appointments:", error);
       } finally {
         setIsLoading(false);
       }

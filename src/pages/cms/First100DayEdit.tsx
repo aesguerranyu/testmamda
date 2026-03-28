@@ -590,7 +590,7 @@ const First100DayEdit = () => {
       await handleUpdateActivity(activityId, { image_url: urlData.publicUrl });
       toast.success('Image uploaded');
     } catch (err: any) {
-      console.error('Upload error:', err);
+      logError('Upload error:', err);
       toast.error(err.message || 'Failed to upload image');
     } finally {
       setUploadingActivityId(null);

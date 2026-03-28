@@ -78,7 +78,7 @@ const Users = () => {
         await loadUsers();
       }
     } catch (err) {
-      console.error('Error checking admin status:', err);
+      logError('Error checking admin status:', err);
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +107,7 @@ const Users = () => {
 
       setUsers(usersWithEmails as CMSUserWithRole[]);
     } catch (err) {
-      console.error('Error loading users:', err);
+      logError('Error loading users:', err);
       toast.error('Failed to load users');
     }
   };
@@ -152,7 +152,7 @@ const Users = () => {
       toast.success('User created successfully');
       await loadUsers();
     } catch (err: any) {
-      console.error('Error creating user:', err);
+      logError('Error creating user:', err);
       toast.error(err.message || 'Failed to create user');
     } finally {
       setIsCreating(false);
@@ -184,7 +184,7 @@ const Users = () => {
       setDeleteUserId(null);
       await loadUsers();
     } catch (err: any) {
-      console.error('Error deleting user:', err);
+      logError('Error deleting user:', err);
       toast.error(err.message || 'Failed to delete user');
     } finally {
       setIsDeleting(false);

@@ -42,7 +42,7 @@ export function MembershipForm() {
       setSubmitted(true);
       toast.success("Welcome to Mamdani Tracker!");
     } catch (error: any) {
-      console.error("Membership error:", error);
+      logError("Membership error:", error);
       toast.error("Failed to submit. Please try again.");
     } finally {
       setIsSubmitting(false);

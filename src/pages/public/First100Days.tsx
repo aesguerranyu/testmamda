@@ -20,7 +20,7 @@ export default function First100Days() {
         const data = await getPublishedDays();
         setDays(data as DayWithActivities[]);
       } catch (error) {
-        console.error("Failed to load days:", error);
+        logError("Failed to load days:", error);
       } finally {
         setIsLoading(false);
       }
