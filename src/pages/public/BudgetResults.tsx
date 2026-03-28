@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
@@ -56,7 +57,7 @@ export default function BudgetResults() {
     (async () => {
       const { data: result, error } = await supabase.rpc("get_budget_aggregates" as any);
       if (error) {
-        console.error("Failed to load aggregates:", error);
+        logError("Failed to load aggregates:", error);
       } else {
         setData(result as unknown as AggregateData);
       }

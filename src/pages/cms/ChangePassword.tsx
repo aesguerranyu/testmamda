@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -50,7 +51,7 @@ const ChangePassword = () => {
       setConfirmPassword('');
       toast.success('Password updated successfully');
     } catch (err: any) {
-      console.error('Error updating password:', err);
+      logError('Error updating password:', err);
       setError(err.message || 'Failed to update password');
     } finally {
       setIsSubmitting(false);

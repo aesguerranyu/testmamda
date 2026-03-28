@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useState, useEffect, useMemo } from "react";
 import { SEO } from "@/components/SEO";
 import { getPublishedAppointments, Appointment } from "@/lib/appointments-store";
@@ -11,7 +12,7 @@ export default function AppointmentTracker() {
         const data = await getPublishedAppointments();
         setAppointments(data);
       } catch (error) {
-        console.error("Failed to load appointments:", error);
+        logError("Failed to load appointments:", error);
       } finally {
         setIsLoading(false);
       }

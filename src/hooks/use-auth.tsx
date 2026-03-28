@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logError } from '@/lib/logger';
 
 interface AuthContextType {
   user: User | null;
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsCmsUser(!!data);
       }
     } catch (err) {
-      console.error('Error checking CMS role:', err);
+      logError('Error checking CMS role:', err);
     } finally {
       setIsLoading(false);
     }

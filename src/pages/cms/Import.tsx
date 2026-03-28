@@ -17,6 +17,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { logError } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 
 const Import = () => {
@@ -71,7 +72,7 @@ const Import = () => {
       }
     } catch (err) {
       toast.error('Failed to import file');
-      console.error(err);
+      logError('Failed to import file:', err);
     } finally {
       setIsImporting(false);
       if (fileInputRef.current) {

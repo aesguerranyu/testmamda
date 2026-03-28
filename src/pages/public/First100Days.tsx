@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
@@ -20,7 +21,7 @@ export default function First100Days() {
         const data = await getPublishedDays();
         setDays(data as DayWithActivities[]);
       } catch (error) {
-        console.error("Failed to load days:", error);
+        logError("Failed to load days:", error);
       } finally {
         setIsLoading(false);
       }

@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,7 @@ const Memberships = () => {
       .limit(1000);
 
     if (error) {
-      console.error("Failed to load memberships:", error);
+      logError("Failed to load memberships:", error);
       toast.error("Could not load memberships.");
       setIsLoading(false);
       return;
@@ -67,7 +68,7 @@ const Memberships = () => {
     const { error } = await supabase.from("memberships").delete().eq("id", m.id);
 
     if (error) {
-      console.error("Failed to delete membership:", error);
+      logError("Failed to delete membership:", error);
       toast.error("Could not delete membership.");
       setIsProcessing(false);
       return;

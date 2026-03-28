@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getDay, saveDay, updateDayEditorialState, getActivities, saveActivity, deleteActivity } from '@/lib/first100days-store';
@@ -590,7 +591,7 @@ const First100DayEdit = () => {
       await handleUpdateActivity(activityId, { image_url: urlData.publicUrl });
       toast.success('Image uploaded');
     } catch (err: any) {
-      console.error('Upload error:', err);
+      logError('Upload error:', err);
       toast.error(err.message || 'Failed to upload image');
     } finally {
       setUploadingActivityId(null);

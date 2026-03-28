@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ const BudgetSubmissions = () => {
       .limit(1000);
 
     if (error) {
-      console.error("Failed to load budget submissions:", error);
+      logError("Failed to load budget submissions:", error);
       toast.error("Could not load budget submissions.");
       setIsLoading(false);
       return;
@@ -70,7 +71,7 @@ const BudgetSubmissions = () => {
     setIsProcessing(true);
     const { error } = await supabase.from("budget_submissions").delete().eq("id", s.id);
     if (error) {
-      console.error("Failed to delete submission:", error);
+      logError("Failed to delete submission:", error);
       toast.error("Could not delete submission.");
       setIsProcessing(false);
       return;
