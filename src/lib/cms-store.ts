@@ -1,5 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Promise as CMSPromise, Indicator, ImportReport, EditorialState, PROMISE_CSV_HEADERS, INDICATOR_CSV_HEADERS, ImportError } from '@/types/cms';
+import { logError } from '@/lib/logger';
+import { sanitizeField, validateRowCount } from '@/lib/csv-sanitize';
 
 // Type definitions for database rows
 interface DbPromise {
@@ -122,7 +124,7 @@ export const getPromises = async (): Promise<CMSPromise[]> => {
     .order('created_at', { ascending: false });
   
   if (error) {
-    console.error('Error fetching promises:', error);
+    logError('Error fetching promises:', error);
     return [];
   }
   
@@ -137,7 +139,7 @@ export const getPromise = async (id: string): Promise<CMSPromise | undefined> =>
     .maybeSingle();
   
   if (error || !data) {
-    console.error('Error fetching promise:', error);
+    logError('Error fetching promise:', error);
     return undefined;
   }
   
@@ -148,7 +150,6 @@ export const savePromise = async (promise: Partial<CMSPromise> & { id?: string }
   const dbData = mapPromiseToDb(promise);
   
   if (promise.id) {
-    // Update existing
     const { data, error } = await supabase
       .from('promises')
       .update(dbData)
@@ -157,14 +158,13 @@ export const savePromise = async (promise: Partial<CMSPromise> & { id?: string }
       .single();
     
     if (error) {
-      console.error('Error updating promise:', error);
+      logError('Error updating promise:', error);
       return undefined;
     }
     
     return mapDbToPromise(data as DbPromise);
   }
   
-  // Create new
   const { data, error } = await supabase
     .from('promises')
     .insert(dbData)
@@ -172,7 +172,7 @@ export const savePromise = async (promise: Partial<CMSPromise> & { id?: string }
     .single();
   
   if (error) {
-    console.error('Error creating promise:', error);
+    logError('Error creating promise:', error);
     return undefined;
   }
   
@@ -186,7 +186,7 @@ export const deletePromise = async (id: string): Promise<boolean> => {
     .eq('id', id);
   
   if (error) {
-    console.error('Error deleting promise:', error);
+    logError('Error deleting promise:', error);
     return false;
   }
   
@@ -202,7 +202,7 @@ export const updatePromiseEditorialState = async (id: string, state: EditorialSt
     .single();
   
   if (error) {
-    console.error('Error updating promise state:', error);
+    logError('Error updating promise state:', error);
     return undefined;
   }
   
@@ -217,7 +217,7 @@ export const batchUpdatePromiseEditorialState = async (ids: string[], state: Edi
     .in('id', ids);
   
   if (error) {
-    console.error('Error batch updating promise states:', error);
+    logError('Error batch updating promise states:', error);
     return 0;
   }
   
@@ -231,7 +231,7 @@ export const batchDeletePromises = async (ids: string[]): Promise<number> => {
     .in('id', ids);
   
   if (error) {
-    console.error('Error batch deleting promises:', error);
+    logError('Error batch deleting promises:', error);
     return 0;
   }
   
@@ -246,7 +246,7 @@ export const getIndicators = async (): Promise<Indicator[]> => {
     .order('created_at', { ascending: false });
   
   if (error) {
-    console.error('Error fetching indicators:', error);
+    logError('Error fetching indicators:', error);
     return [];
   }
   
@@ -261,7 +261,7 @@ export const getIndicator = async (id: string): Promise<Indicator | undefined> =
     .maybeSingle();
   
   if (error || !data) {
-    console.error('Error fetching indicator:', error);
+    logError('Error fetching indicator:', error);
     return undefined;
   }
   
@@ -269,7 +269,6 @@ export const getIndicator = async (id: string): Promise<Indicator | undefined> =
 };
 
 export const saveIndicator = async (indicator: Partial<Indicator> & { id?: string }): Promise<Indicator | undefined> => {
-  // Check if Promise reference exists (only mark unresolved if a value is provided but doesn't match)
   const promises = await getPromises();
   const promiseReferenceUnresolved = indicator.Promise && indicator.Promise.trim() !== ''
     ? !promises.some(p => p.Headline === indicator.Promise)
@@ -278,7 +277,6 @@ export const saveIndicator = async (indicator: Partial<Indicator> & { id?: strin
   const dbData = mapIndicatorToDb(indicator, promiseReferenceUnresolved);
   
   if (indicator.id) {
-    // Update existing
     const { data, error } = await supabase
       .from('indicators')
       .update(dbData)
@@ -287,14 +285,13 @@ export const saveIndicator = async (indicator: Partial<Indicator> & { id?: strin
       .single();
     
     if (error) {
-      console.error('Error updating indicator:', error);
+      logError('Error updating indicator:', error);
       return undefined;
     }
     
     return mapDbToIndicator(data as DbIndicator);
   }
   
-  // Create new
   const { data, error } = await supabase
     .from('indicators')
     .insert(dbData)
@@ -302,7 +299,7 @@ export const saveIndicator = async (indicator: Partial<Indicator> & { id?: strin
     .single();
   
   if (error) {
-    console.error('Error creating indicator:', error);
+    logError('Error creating indicator:', error);
     return undefined;
   }
   
@@ -316,7 +313,7 @@ export const deleteIndicator = async (id: string): Promise<boolean> => {
     .eq('id', id);
   
   if (error) {
-    console.error('Error deleting indicator:', error);
+    logError('Error deleting indicator:', error);
     return false;
   }
   
@@ -332,7 +329,7 @@ export const updateIndicatorEditorialState = async (id: string, state: Editorial
     .single();
   
   if (error) {
-    console.error('Error updating indicator state:', error);
+    logError('Error updating indicator state:', error);
     return undefined;
   }
   
@@ -347,7 +344,7 @@ export const batchUpdateIndicatorEditorialState = async (ids: string[], state: E
     .in('id', ids);
   
   if (error) {
-    console.error('Error batch updating indicator states:', error);
+    logError('Error batch updating indicator states:', error);
     return 0;
   }
   
@@ -361,7 +358,7 @@ export const batchDeleteIndicators = async (ids: string[]): Promise<number> => {
     .in('id', ids);
   
   if (error) {
-    console.error('Error batch deleting indicators:', error);
+    logError('Error batch deleting indicators:', error);
     return 0;
   }
   
@@ -439,6 +436,20 @@ export const importPromisesCSV = async (content: string): Promise<ImportReport> 
   const errors: ImportError[] = [];
   let recordsCreated = 0;
   let recordsUpdated = 0;
+
+  // Validate row count
+  const rowCountError = validateRowCount(rows.length);
+  if (rowCountError) {
+    return {
+      id: crypto.randomUUID(),
+      type: 'promises',
+      timestamp: new Date().toISOString(),
+      rowsProcessed: 0,
+      recordsCreated: 0,
+      recordsUpdated: 0,
+      errors: [{ row: 0, reason: rowCountError }],
+    };
+  }
   
   // Validate headers
   const requiredHeaders = PROMISE_CSV_HEADERS;
@@ -458,7 +469,7 @@ export const importPromisesCSV = async (content: string): Promise<ImportReport> 
     try {
       const rowData: Record<string, string> = {};
       headers.forEach((header, i) => {
-        rowData[header] = row[i] || '';
+        rowData[header] = sanitizeField(row[i] || '');
       });
       
       // Skip empty rows
@@ -470,14 +481,12 @@ export const importPromisesCSV = async (content: string): Promise<ImportReport> 
       const existing = existingPromises.find(p => p.Headline === rowData['Headline']);
       
       if (existing) {
-        // Update existing
         await savePromise({
           id: existing.id,
           ...rowData,
         } as Partial<CMSPromise>);
         recordsUpdated++;
       } else {
-        // Create new
         await savePromise(rowData as unknown as Partial<CMSPromise>);
         recordsCreated++;
       }
@@ -508,6 +517,20 @@ export const importIndicatorsCSV = async (content: string): Promise<ImportReport
   const errors: ImportError[] = [];
   let recordsCreated = 0;
   let recordsUpdated = 0;
+
+  // Validate row count
+  const rowCountError = validateRowCount(rows.length);
+  if (rowCountError) {
+    return {
+      id: crypto.randomUUID(),
+      type: 'indicators',
+      timestamp: new Date().toISOString(),
+      rowsProcessed: 0,
+      recordsCreated: 0,
+      recordsUpdated: 0,
+      errors: [{ row: 0, reason: rowCountError }],
+    };
+  }
   
   // Validate headers
   const requiredHeaders = INDICATOR_CSV_HEADERS;
@@ -527,7 +550,7 @@ export const importIndicatorsCSV = async (content: string): Promise<ImportReport
     try {
       const rowData: Record<string, string> = {};
       headers.forEach((header, i) => {
-        rowData[header] = row[i] || '';
+        rowData[header] = sanitizeField(row[i] || '');
       });
       
       // Skip empty rows
@@ -539,14 +562,12 @@ export const importIndicatorsCSV = async (content: string): Promise<ImportReport
       const existing = existingIndicators.find(i => i.Headline === rowData['Headline']);
       
       if (existing) {
-        // Update existing
         await saveIndicator({
           id: existing.id,
           ...rowData,
         } as Partial<Indicator>);
         recordsUpdated++;
       } else {
-        // Create new
         await saveIndicator(rowData as unknown as Partial<Indicator>);
         recordsCreated++;
       }
@@ -581,7 +602,7 @@ export const getImportReports = async (): Promise<ImportReport[]> => {
     .limit(50);
   
   if (error) {
-    console.error('Error fetching import reports:', error);
+    logError('Error fetching import reports:', error);
     return [];
   }
   
@@ -608,7 +629,7 @@ export const saveImportReport = async (report: ImportReport): Promise<void> => {
     }]);
   
   if (error) {
-    console.error('Error saving import report:', error);
+    logError('Error saving import report:', error);
   }
 };
 

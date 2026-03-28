@@ -1,6 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { First100Day, First100Activity, ActivitySource, ActivityType, ACTIVITY_TYPES } from '@/types/first100days';
 import { ImportReport, ImportError } from '@/types/cms';
+import { logError } from '@/lib/logger';
+import { sanitizeField, validateRowCount } from '@/lib/csv-sanitize';
 
 // Fetch all days with their activities (for CMS)
 export async function getDays(): Promise<First100Day[]> {
@@ -10,7 +12,7 @@ export async function getDays(): Promise<First100Day[]> {
     .order('day', { ascending: false });
 
   if (error) {
-    console.error('Error fetching days:', error);
+    logError('Error fetching days:', error);
     return [];
   }
 
@@ -26,7 +28,7 @@ export async function getDay(id: string): Promise<First100Day | null> {
     .maybeSingle();
 
   if (error) {
-    console.error('Error fetching day:', error);
+    logError('Error fetching day:', error);
     return null;
   }
 
@@ -42,7 +44,7 @@ export async function getDayByNumber(dayNumber: number): Promise<First100Day | n
     .maybeSingle();
 
   if (error) {
-    console.error('Error fetching day by number:', error);
+    logError('Error fetching day by number:', error);
     return null;
   }
 
@@ -52,7 +54,6 @@ export async function getDayByNumber(dayNumber: number): Promise<First100Day | n
 // Save a day (create or update)
 export async function saveDay(day: Partial<First100Day> & { id?: string }): Promise<First100Day | null> {
   if (day.id) {
-    // Update existing
     const { data, error } = await supabase
       .from('first100_days')
       .update({
@@ -67,13 +68,12 @@ export async function saveDay(day: Partial<First100Day> & { id?: string }): Prom
       .single();
 
     if (error) {
-      console.error('Error updating day:', error);
+      logError('Error updating day:', error);
       throw error;
     }
 
     return data as First100Day;
   } else {
-    // Create new
     const { data, error } = await supabase
       .from('first100_days')
       .insert({
@@ -87,7 +87,7 @@ export async function saveDay(day: Partial<First100Day> & { id?: string }): Prom
       .single();
 
     if (error) {
-      console.error('Error creating day:', error);
+      logError('Error creating day:', error);
       throw error;
     }
 
@@ -103,7 +103,7 @@ export async function deleteDay(id: string): Promise<boolean> {
     .eq('id', id);
 
   if (error) {
-    console.error('Error deleting day:', error);
+    logError('Error deleting day:', error);
     return false;
   }
 
@@ -120,7 +120,7 @@ export async function updateDayEditorialState(id: string, state: 'draft' | 'publ
     .single();
 
   if (error) {
-    console.error('Error updating day state:', error);
+    logError('Error updating day state:', error);
     return null;
   }
 
@@ -138,7 +138,7 @@ export async function getActivities(dayId: string): Promise<First100Activity[]> 
     .order('sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching activities:', error);
+    logError('Error fetching activities:', error);
     return [];
   }
 
@@ -157,7 +157,7 @@ export async function getActivity(id: string): Promise<First100Activity | null> 
     .maybeSingle();
 
   if (error) {
-    console.error('Error fetching activity:', error);
+    logError('Error fetching activity:', error);
     return null;
   }
 
@@ -196,7 +196,7 @@ export async function saveActivity(activity: Partial<First100Activity> & { id?: 
       .single();
 
     if (error) {
-      console.error('Error updating activity:', error);
+      logError('Error updating activity:', error);
       throw error;
     }
 
@@ -212,7 +212,7 @@ export async function saveActivity(activity: Partial<First100Activity> & { id?: 
       .single();
 
     if (error) {
-      console.error('Error creating activity:', error);
+      logError('Error creating activity:', error);
       throw error;
     }
 
@@ -231,7 +231,7 @@ export async function deleteActivity(id: string): Promise<boolean> {
     .eq('id', id);
 
   if (error) {
-    console.error('Error deleting activity:', error);
+    logError('Error deleting activity:', error);
     return false;
   }
 
@@ -249,13 +249,12 @@ export async function getPublishedDays(): Promise<(First100Day & { activities: F
     .order('day', { ascending: false });
 
   if (daysError) {
-    console.error('Error fetching published days:', daysError);
+    logError('Error fetching published days:', daysError);
     return [];
   }
 
   if (!days || days.length === 0) return [];
 
-  // Fetch activities for all days
   const dayIds = days.map(d => d.id);
   const { data: activities, error: activitiesError } = await supabase
     .from('first100_activities')
@@ -264,7 +263,7 @@ export async function getPublishedDays(): Promise<(First100Day & { activities: F
     .order('sort_order', { ascending: true });
 
   if (activitiesError) {
-    console.error('Error fetching activities:', activitiesError);
+    logError('Error fetching activities:', activitiesError);
   }
 
   const activitiesMap = new Map<string, First100Activity[]>();
@@ -293,7 +292,7 @@ export async function getPublishedDayByNumber(dayNumber: number): Promise<(First
     .maybeSingle();
 
   if (dayError) {
-    console.error('Error fetching published day:', dayError);
+    logError('Error fetching published day:', dayError);
     return null;
   }
 
@@ -306,7 +305,7 @@ export async function getPublishedDayByNumber(dayNumber: number): Promise<(First
     .order('sort_order', { ascending: true });
 
   if (activitiesError) {
-    console.error('Error fetching activities:', activitiesError);
+    logError('Error fetching activities:', activitiesError);
   }
 
   return {
@@ -328,7 +327,7 @@ export async function getPublishedDayByDate(dateIso: string): Promise<(First100D
     .maybeSingle();
 
   if (dayError) {
-    console.error('Error fetching published day by date:', dayError);
+    logError('Error fetching published day by date:', dayError);
     return null;
   }
 
@@ -341,7 +340,7 @@ export async function getPublishedDayByDate(dateIso: string): Promise<(First100D
     .order('sort_order', { ascending: true });
 
   if (activitiesError) {
-    console.error('Error fetching activities:', activitiesError);
+    logError('Error fetching activities:', activitiesError);
   }
 
   return {
@@ -402,6 +401,14 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
     errors: [],
   };
 
+  // Validate row count
+  const rowCountError = validateRowCount(rows.length);
+  if (rowCountError) {
+    report.rowsProcessed = 0;
+    report.errors.push({ row: 0, reason: rowCountError });
+    return report;
+  }
+
   // Expected headers for days with activities - support both Title and Headline
   const expectedHeaders = ['Day', 'Date Display', 'Date ISO', 'Type', 'Title', 'Headline', 'Description', 'Quote', 'Quote Attribution', 'Image URL', 'Image Caption', 'Full Text URL', 'Full Text Label', 'Embed URL', 'Sources', 'Sources Text', 'Source URL', 'Alt Source URL'];
   
@@ -447,7 +454,7 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
 
       let dayId: string;
       const firstRow = dayRows[0].row;
-      const dateDisplay = firstRow[headerMap['Date Display']]?.trim() || '';
+      const dateDisplay = sanitizeField(firstRow[headerMap['Date Display']]?.trim() || '');
       const dateIso = firstRow[headerMap['Date ISO']]?.trim() || null;
 
       if (!dateDisplay) {
@@ -456,7 +463,6 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
       }
 
       if (existingDay) {
-        // Update existing day
         const { data: updated, error } = await supabase
           .from('first100_days')
           .update({
@@ -474,7 +480,6 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
         dayId = updated.id;
         report.recordsUpdated++;
       } else {
-        // Create new day
         const { data: created, error } = await supabase
           .from('first100_days')
           .insert({
@@ -505,24 +510,19 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
       for (let i = 0; i < dayRows.length; i++) {
         const { row, rowNum } = dayRows[i];
         
-        const typeStr = row[headerMap['Type']]?.trim() || null;
+        const typeStr = sanitizeField(row[headerMap['Type']]?.trim() || '');
         const type = typeStr && ACTIVITY_TYPES.includes(typeStr as ActivityType) ? typeStr as ActivityType : null;
         
-        // Support both Title and Headline columns (Headline takes precedence for CSV imports)
-        const title = row[headerMap['Headline']]?.trim() || row[headerMap['Title']]?.trim() || null;
-        const description = row[headerMap['Description']]?.trim() || null;
-        const quote = row[headerMap['Quote']]?.trim() || null;
-        const quoteAttribution = row[headerMap['Quote Attribution']]?.trim() || null;
-        const imageUrl = row[headerMap['Image URL']]?.trim() || null;
-        const imageCaption = row[headerMap['Image Caption']]?.trim() || null;
-        const fullTextUrl = row[headerMap['Full Text URL']]?.trim() || null;
-        const fullTextLabel = row[headerMap['Full Text Label']]?.trim() || null;
-        const embedUrl = row[headerMap['Embed URL']]?.trim() || null;
+        const title = sanitizeField(row[headerMap['Headline']]?.trim() || row[headerMap['Title']]?.trim() || '') || null;
+        const description = sanitizeField(row[headerMap['Description']]?.trim() || '') || null;
+        const quote = sanitizeField(row[headerMap['Quote']]?.trim() || '') || null;
+        const quoteAttribution = sanitizeField(row[headerMap['Quote Attribution']]?.trim() || '') || null;
+        const imageUrl = sanitizeField(row[headerMap['Image URL']]?.trim() || '') || null;
+        const imageCaption = sanitizeField(row[headerMap['Image Caption']]?.trim() || '') || null;
+        const fullTextUrl = sanitizeField(row[headerMap['Full Text URL']]?.trim() || '') || null;
+        const fullTextLabel = sanitizeField(row[headerMap['Full Text Label']]?.trim() || '') || null;
+        const embedUrl = sanitizeField(row[headerMap['Embed URL']]?.trim() || '') || null;
         
-        // Handle sources - support multiple formats:
-        // 1. Combined "Sources" column with "Title1|URL1;Title2|URL2" format
-        // 2. Separate "Sources Text", "Source URL", "Alt Source URL" columns
-        // 3. Combined format in "Sources Text" column (Title|URL)
         let sources: ActivitySource[] = [];
         
         const sourcesStr = row[headerMap['Sources']]?.trim() || '';
@@ -531,41 +531,34 @@ export async function importFirst100DaysCSV(content: string): Promise<ImportRepo
         const altSourceUrlStr = row[headerMap['Alt Source URL']]?.trim() || '';
         
         if (sourcesStr) {
-          // Original format: "Title1|URL1;Title2|URL2"
           sources = sourcesStr.split(';').map(s => {
             const [t, u] = s.split('|');
-            return { title: t?.trim() || '', url: u?.trim() || '' };
+            return { title: sanitizeField(t?.trim() || ''), url: sanitizeField(u?.trim() || '') };
           }).filter(s => s.title || s.url);
         } else if (sourcesTextStr) {
-          // Check if Sources Text contains combined format (Title|URL)
           if (sourcesTextStr.includes('|')) {
-            // Combined format in Sources Text: "Title|URL" or "Title1|URL1;Title2|URL2"
             sources = sourcesTextStr.split(';').map(s => {
               const parts = s.split('|');
-              const t = parts[0]?.trim() || '';
-              const u = parts[1]?.trim() || '';
+              const t = sanitizeField(parts[0]?.trim() || '');
+              const u = sanitizeField(parts[1]?.trim() || '');
               return { title: t, url: u };
             }).filter(s => s.title || s.url);
           } else {
-            // Separate columns: Sources Text as title, Source URL as URL
             if (sourceUrlStr) {
-              sources.push({ title: sourcesTextStr, url: sourceUrlStr });
+              sources.push({ title: sanitizeField(sourcesTextStr), url: sanitizeField(sourceUrlStr) });
             }
           }
           
-          // Add Alt Source URL if present (use Sources Text as title if no other title)
           if (altSourceUrlStr) {
-            sources.push({ title: sourcesTextStr || 'Source', url: altSourceUrlStr });
+            sources.push({ title: sanitizeField(sourcesTextStr || 'Source'), url: sanitizeField(altSourceUrlStr) });
           }
         } else if (sourceUrlStr) {
-          // Only Source URL present, no title
-          sources.push({ title: 'Source', url: sourceUrlStr });
+          sources.push({ title: 'Source', url: sanitizeField(sourceUrlStr) });
           if (altSourceUrlStr) {
-            sources.push({ title: 'Source', url: altSourceUrlStr });
+            sources.push({ title: 'Source', url: sanitizeField(altSourceUrlStr) });
           }
         }
 
-        // Only create activity if there's meaningful content
         if (type || title || description || quote) {
           const { error: actError } = await supabase
             .from('first100_activities')

@@ -1,5 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { ImportReport, ImportError } from "@/types/cms";
+import { logError } from "@/lib/logger";
+import { sanitizeField, validateRowCount } from "@/lib/csv-sanitize";
 
 export interface Appointment {
   id: string;
@@ -24,7 +26,7 @@ export async function getAppointments(): Promise<Appointment[]> {
     .order('sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching appointments:', error);
+    logError('Error fetching appointments:', error);
     return [];
   }
 
@@ -41,7 +43,7 @@ export async function getPublishedAppointments(): Promise<Appointment[]> {
     .order('sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching published appointments:', error);
+    logError('Error fetching published appointments:', error);
     return [];
   }
 
@@ -57,7 +59,7 @@ export async function getAppointment(id: string): Promise<Appointment | null> {
     .single();
 
   if (error) {
-    console.error('Error fetching appointment:', error);
+    logError('Error fetching appointment:', error);
     return null;
   }
 
@@ -71,7 +73,6 @@ export async function saveAppointment(
   const now = new Date().toISOString();
 
   if (appointment.id && appointment.id !== 'new') {
-    // Update existing
     const { data, error } = await supabase
       .from('appointments')
       .update({
@@ -90,13 +91,12 @@ export async function saveAppointment(
       .single();
 
     if (error) {
-      console.error('Error updating appointment:', error);
+      logError('Error updating appointment:', error);
       return null;
     }
 
     return data as Appointment;
   } else {
-    // Create new
     const { data, error } = await supabase
       .from('appointments')
       .insert({
@@ -115,7 +115,7 @@ export async function saveAppointment(
       .single();
 
     if (error) {
-      console.error('Error creating appointment:', error);
+      logError('Error creating appointment:', error);
       return null;
     }
 
@@ -131,7 +131,7 @@ export async function deleteAppointment(id: string): Promise<boolean> {
     .eq('id', id);
 
   if (error) {
-    console.error('Error deleting appointment:', error);
+    logError('Error deleting appointment:', error);
     return false;
   }
 
@@ -149,7 +149,7 @@ export async function updateAppointmentEditorialState(
     .eq('id', id);
 
   if (error) {
-    console.error('Error updating appointment state:', error);
+    logError('Error updating appointment state:', error);
     return false;
   }
 
@@ -167,7 +167,7 @@ export async function updateAppointmentsSortOrder(
       .eq('id', update.id);
 
     if (error) {
-      console.error('Error updating sort order:', error);
+      logError('Error updating sort order:', error);
       return false;
     }
   }
@@ -183,7 +183,7 @@ export async function getAppointmentSections(): Promise<string[]> {
     .order('section', { ascending: true });
 
   if (error) {
-    console.error('Error fetching sections:', error);
+    logError('Error fetching sections:', error);
     return [];
   }
 
@@ -240,6 +240,14 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
     errors: [],
   };
 
+  // Validate row count
+  const rowCountError = validateRowCount(rows.length);
+  if (rowCountError) {
+    report.rowsProcessed = 0;
+    report.errors.push({ row: 0, reason: rowCountError });
+    return report;
+  }
+
   // Build header map
   const headerMap: Record<string, number> = {};
   headers.forEach((h, i) => {
@@ -249,7 +257,6 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
   // Track sort order per section
   const sectionSortOrders: Record<string, number> = {};
 
-  // Get existing appointments to determine sort orders
   const { data: existingAppointments } = await supabase
     .from('appointments')
     .select('section, sort_order')
@@ -263,21 +270,18 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
     });
   }
 
-  // Process each row
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-    const rowNum = i + 2; // 1-indexed, plus header row
+    const rowNum = i + 2;
 
     try {
-      // All fields are optional - use empty string if not provided
-      const section = headerMap['Section'] !== undefined ? (row[headerMap['Section']]?.trim() || '') : '';
-      const role = headerMap['Role'] !== undefined ? (row[headerMap['Role']]?.trim() || '') : '';
-      const appointeeName = headerMap['Appointee Name'] !== undefined ? (row[headerMap['Appointee Name']]?.trim() || '') : '';
-      const formerRole = headerMap['Former Role'] !== undefined ? (row[headerMap['Former Role']]?.trim() || '') : '';
-      const keyFocus = headerMap['Key Focus'] !== undefined ? (row[headerMap['Key Focus']]?.trim() || '') : '';
-      const url = headerMap['URL'] !== undefined ? (row[headerMap['URL']]?.trim() || '') : '';
+      const section = sanitizeField(headerMap['Section'] !== undefined ? (row[headerMap['Section']]?.trim() || '') : '');
+      const role = sanitizeField(headerMap['Role'] !== undefined ? (row[headerMap['Role']]?.trim() || '') : '');
+      const appointeeName = sanitizeField(headerMap['Appointee Name'] !== undefined ? (row[headerMap['Appointee Name']]?.trim() || '') : '');
+      const formerRole = sanitizeField(headerMap['Former Role'] !== undefined ? (row[headerMap['Former Role']]?.trim() || '') : '');
+      const keyFocus = sanitizeField(headerMap['Key Focus'] !== undefined ? (row[headerMap['Key Focus']]?.trim() || '') : '');
+      const url = sanitizeField(headerMap['URL'] !== undefined ? (row[headerMap['URL']]?.trim() || '') : '');
 
-      // Check if appointment already exists (by section + role + name)
       const { data: existing } = await supabase
         .from('appointments')
         .select('*')
@@ -287,7 +291,6 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
         .maybeSingle();
 
       if (existing) {
-        // Update existing
         const { error } = await supabase
           .from('appointments')
           .update({
@@ -304,11 +307,9 @@ export async function importAppointmentsCSV(content: string): Promise<ImportRepo
           report.recordsUpdated++;
         }
       } else {
-        // Get next sort order for this section
         const sortOrder = sectionSortOrders[section] || 0;
         sectionSortOrders[section] = sortOrder + 1;
 
-        // Create new
         const { error } = await supabase
           .from('appointments')
           .insert({
