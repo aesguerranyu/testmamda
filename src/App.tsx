@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +8,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { AnalyticsListener } from "@/components/AnalyticsListener";
 import NotFound from "./pages/NotFound";
 
-// Public Pages
+// Public Pages (eagerly loaded)
 import { PublicLayout } from "./components/public/PublicLayout";
 import PublicHome from "./pages/public/Home";
 import PromiseTracker from "./pages/public/PromiseTracker";
@@ -28,25 +29,31 @@ import SharedBudget from "./pages/public/SharedBudget";
 import BudgetResults from "./pages/public/BudgetResults";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
 
-// CMS Pages
-import CMSLogin from "./pages/cms/CMSLogin";
-import CMSLayout from "./pages/cms/CMSLayout";
-import Dashboard from "./pages/cms/Dashboard";
-import Promises from "./pages/cms/Promises";
-import PromiseEdit from "./pages/cms/PromiseEdit";
-import Indicators from "./pages/cms/Indicators";
-import IndicatorEdit from "./pages/cms/IndicatorEdit";
-import Import from "./pages/cms/Import";
-import Memberships from "./pages/cms/Memberships";
-import First100DaysCMS from "./pages/cms/First100Days";
-import First100DayEdit from "./pages/cms/First100DayEdit";
-import AppointmentsCMS from "./pages/cms/Appointments";
-import AppointmentEdit from "./pages/cms/AppointmentEdit";
-import Users from "./pages/cms/Users";
-import ChangePassword from "./pages/cms/ChangePassword";
-import BudgetSubmissions from "./pages/cms/BudgetSubmissions";
+// CMS Pages — lazy-loaded to avoid exposing CMS code in public bundles
+const CMSLogin = lazy(() => import("./pages/cms/CMSLogin"));
+const CMSLayout = lazy(() => import("./pages/cms/CMSLayout"));
+const Dashboard = lazy(() => import("./pages/cms/Dashboard"));
+const Promises = lazy(() => import("./pages/cms/Promises"));
+const PromiseEdit = lazy(() => import("./pages/cms/PromiseEdit"));
+const Indicators = lazy(() => import("./pages/cms/Indicators"));
+const IndicatorEdit = lazy(() => import("./pages/cms/IndicatorEdit"));
+const Import = lazy(() => import("./pages/cms/Import"));
+const Memberships = lazy(() => import("./pages/cms/Memberships"));
+const First100DaysCMS = lazy(() => import("./pages/cms/First100Days"));
+const First100DayEdit = lazy(() => import("./pages/cms/First100DayEdit"));
+const AppointmentsCMS = lazy(() => import("./pages/cms/Appointments"));
+const AppointmentEdit = lazy(() => import("./pages/cms/AppointmentEdit"));
+const Users = lazy(() => import("./pages/cms/Users"));
+const ChangePassword = lazy(() => import("./pages/cms/ChangePassword"));
+const BudgetSubmissions = lazy(() => import("./pages/cms/BudgetSubmissions"));
 
 const queryClient = new QueryClient();
+
+const CMSLoadingFallback = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -82,24 +89,60 @@ const App = () => (
               <Route path="/zohran-mamdani-first-100-days/:year/:month/:day/ratify" element={<RatifyRedirect type="first100day" />} />
             </Route>
             
-            {/* CMS Routes */}
-            <Route path="/rat-control/cms/admin" element={<CMSLogin />} />
-            <Route path="/rat-control/cms/*" element={<CMSLayout />}>
+            {/* CMS Routes — lazy-loaded and auth-gated */}
+            <Route path="/rat-control/cms/admin" element={
+              <Suspense fallback={<CMSLoadingFallback />}>
+                <CMSLogin />
+              </Suspense>
+            } />
+            <Route path="/rat-control/cms/*" element={
+              <Suspense fallback={<CMSLoadingFallback />}>
+                <CMSLayout />
+              </Suspense>
+            }>
               <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="promises" element={<Promises />} />
-              <Route path="promises/:id" element={<PromiseEdit />} />
-              <Route path="indicators" element={<Indicators />} />
-              <Route path="indicators/:id" element={<IndicatorEdit />} />
-              <Route path="first100days" element={<First100DaysCMS />} />
-              <Route path="first100days/:id" element={<First100DayEdit />} />
-              <Route path="appointments" element={<AppointmentsCMS />} />
-              <Route path="appointments/:id" element={<AppointmentEdit />} />
-              <Route path="memberships" element={<Memberships />} />
-              <Route path="budget-submissions" element={<BudgetSubmissions />} />
-              <Route path="import" element={<Import />} />
-              <Route path="users" element={<Users />} />
-              <Route path="change-password" element={<ChangePassword />} />
+              <Route path="dashboard" element={
+                <Suspense fallback={<CMSLoadingFallback />}><Dashboard /></Suspense>
+              } />
+              <Route path="promises" element={
+                <Suspense fallback={<CMSLoadingFallback />}><Promises /></Suspense>
+              } />
+              <Route path="promises/:id" element={
+                <Suspense fallback={<CMSLoadingFallback />}><PromiseEdit /></Suspense>
+              } />
+              <Route path="indicators" element={
+                <Suspense fallback={<CMSLoadingFallback />}><Indicators /></Suspense>
+              } />
+              <Route path="indicators/:id" element={
+                <Suspense fallback={<CMSLoadingFallback />}><IndicatorEdit /></Suspense>
+              } />
+              <Route path="first100days" element={
+                <Suspense fallback={<CMSLoadingFallback />}><First100DaysCMS /></Suspense>
+              } />
+              <Route path="first100days/:id" element={
+                <Suspense fallback={<CMSLoadingFallback />}><First100DayEdit /></Suspense>
+              } />
+              <Route path="appointments" element={
+                <Suspense fallback={<CMSLoadingFallback />}><AppointmentsCMS /></Suspense>
+              } />
+              <Route path="appointments/:id" element={
+                <Suspense fallback={<CMSLoadingFallback />}><AppointmentEdit /></Suspense>
+              } />
+              <Route path="memberships" element={
+                <Suspense fallback={<CMSLoadingFallback />}><Memberships /></Suspense>
+              } />
+              <Route path="budget-submissions" element={
+                <Suspense fallback={<CMSLoadingFallback />}><BudgetSubmissions /></Suspense>
+              } />
+              <Route path="import" element={
+                <Suspense fallback={<CMSLoadingFallback />}><Import /></Suspense>
+              } />
+              <Route path="users" element={
+                <Suspense fallback={<CMSLoadingFallback />}><Users /></Suspense>
+              } />
+              <Route path="change-password" element={
+                <Suspense fallback={<CMSLoadingFallback />}><ChangePassword /></Suspense>
+              } />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
