@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /rat-control/
 
 # Allow AI assistants to cite your content
 User-agent: ChatGPT-User
