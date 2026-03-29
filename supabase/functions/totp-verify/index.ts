@@ -7,7 +7,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// TOTP implementation using Web Crypto API
 async function generateTOTP(
   secretBase32: string,
   timeStep: number = 30,
@@ -56,7 +55,53 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { code, enable } = await req.json();
+    const { code, enable, remember_device, device_token } = await req.json();
+
+    // If device_token is provided, check if it's trusted
+    if (device_token && !code) {
+      const supabaseUser = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+      const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+      if (userError || !user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const supabaseAdmin = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      );
+
+      const { data: trusted } = await supabaseAdmin
+        .from("totp_trusted_devices")
+        .select("id, expires_at")
+        .eq("user_id", user.id)
+        .eq("device_token", device_token)
+        .single();
+
+      if (trusted && new Date(trusted.expires_at) > new Date()) {
+        return new Response(JSON.stringify({ valid: true, trusted: true }), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Expired or not found — clean up and require code
+      if (trusted) {
+        await supabaseAdmin.from("totp_trusted_devices").delete().eq("id", trusted.id);
+      }
+
+      return new Response(JSON.stringify({ valid: false, trusted: false }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (!code || typeof code !== "string" || code.length !== 6) {
       return new Response(
         JSON.stringify({ error: "Invalid code format" }),
@@ -73,10 +118,7 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseUser.auth.getUser();
+    const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -89,7 +131,6 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Get the user's TOTP secret
     const { data: totpRecord, error: fetchError } = await supabaseAdmin
       .from("user_totp_secrets")
       .select("*")
@@ -106,15 +147,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check current and adjacent time windows (±1) for clock drift
     let valid = false;
     for (const offset of [-1, 0, 1]) {
-      const expected = await generateTOTP(
-        totpRecord.encrypted_secret,
-        30,
-        6,
-        offset
-      );
+      const expected = await generateTOTP(totpRecord.encrypted_secret, 30, 6, offset);
       if (expected === code) {
         valid = true;
         break;
@@ -131,21 +166,49 @@ Deno.serve(async (req) => {
       );
     }
 
-    // If this is the setup verification, enable TOTP
+    // Enable TOTP if this is setup verification
     if (enable) {
       await supabaseAdmin
         .from("user_totp_secrets")
-        .update({
-          is_enabled: true,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ is_enabled: true, updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
     }
 
-    return new Response(JSON.stringify({ valid: true }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    // If remember_device is requested, create a trusted device token
+    let newDeviceToken: string | null = null;
+    if (remember_device) {
+      newDeviceToken = crypto.randomUUID() + "-" + crypto.randomUUID();
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30);
+
+      // Clean up old tokens for this user (max 5 devices)
+      const { data: existing } = await supabaseAdmin
+        .from("totp_trusted_devices")
+        .select("id, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true });
+
+      if (existing && existing.length >= 5) {
+        const toDelete = existing.slice(0, existing.length - 4);
+        for (const d of toDelete) {
+          await supabaseAdmin.from("totp_trusted_devices").delete().eq("id", d.id);
+        }
+      }
+
+      await supabaseAdmin.from("totp_trusted_devices").insert({
+        user_id: user.id,
+        device_token: newDeviceToken,
+        expires_at: expiresAt.toISOString(),
+      });
+    }
+
+    return new Response(
+      JSON.stringify({ valid: true, device_token: newDeviceToken }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   } catch (err) {
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
