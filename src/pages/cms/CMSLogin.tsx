@@ -4,11 +4,14 @@ import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { AlertCircle, Lock, ShieldCheck, Copy, Check } from 'lucide-react';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { QRCodeSVG } from 'qrcode.react';
 import { logError } from '@/lib/logger';
+
+const DEVICE_TOKEN_KEY = 'cms_totp_device_token';
 
 const authSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -26,7 +29,7 @@ const CMSLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // 2FA state
   const [step, setStep] = useState<LoginStep>('credentials');
   const [totpCode, setTotpCode] = useState('');
@@ -34,8 +37,9 @@ const CMSLogin = () => {
   const [otpauthUri, setOtpauthUri] = useState('');
   const [secretCopied, setSecretCopied] = useState(false);
   const [totpVerified, setTotpVerified] = useState(false);
+  const [rememberDevice, setRememberDevice] = useState(true);
 
-  // After successful password auth + 2FA verification, redirect
+  // Redirect after full auth (password + 2FA)
   useEffect(() => {
     if (!isLoading && user && isCmsUser && totpVerified) {
       if (returnTo && returnTo.includes('/ratify')) {
@@ -46,11 +50,46 @@ const CMSLogin = () => {
     }
   }, [user, isCmsUser, isLoading, totpVerified, navigate, returnTo]);
 
-  // After password login succeeds, check TOTP status
+  const redirectOrSetVerified = (deviceToken?: string | null) => {
+    if (deviceToken) {
+      localStorage.setItem(DEVICE_TOKEN_KEY, deviceToken);
+    }
+    setTotpVerified(true);
+  };
+
+  const checkTrustedDevice = async (accessToken: string): Promise<boolean> => {
+    const storedToken = localStorage.getItem(DEVICE_TOKEN_KEY);
+    if (!storedToken) return false;
+
+    try {
+      const res = await supabase.functions.invoke('totp-verify', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: { device_token: storedToken },
+      });
+
+      if (res.data?.valid && res.data?.trusted) {
+        return true;
+      }
+
+      // Token expired or invalid — remove it
+      localStorage.removeItem(DEVICE_TOKEN_KEY);
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
   const checkTotpStatus = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
+
+      // First check if this device is trusted
+      const trusted = await checkTrustedDevice(session.access_token);
+      if (trusted) {
+        redirectOrSetVerified();
+        return;
+      }
 
       const res = await supabase.functions.invoke('totp-status', {
         headers: { Authorization: `Bearer ${session.access_token}` },
@@ -58,7 +97,6 @@ const CMSLogin = () => {
 
       if (res.error) {
         logError('TOTP status check failed', res.error);
-        // If TOTP check fails, sign out and show error
         await signOut();
         setError('Failed to verify 2FA status. Please try again.');
         setStep('credentials');
@@ -69,7 +107,6 @@ const CMSLogin = () => {
       if (has_totp && is_enabled) {
         setStep('totp-verify');
       } else {
-        // User needs to set up TOTP
         await setupTotp(session.access_token);
       }
     } catch (err) {
@@ -128,7 +165,6 @@ const CMSLogin = () => {
         return;
       }
 
-      // Password auth succeeded, now check TOTP
       await checkTotpStatus();
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
@@ -153,7 +189,11 @@ const CMSLogin = () => {
 
       const res = await supabase.functions.invoke('totp-verify', {
         headers: { Authorization: `Bearer ${session.access_token}` },
-        body: { code: totpCode, enable: step === 'totp-setup' },
+        body: {
+          code: totpCode,
+          enable: step === 'totp-setup',
+          remember_device: rememberDevice,
+        },
       });
 
       if (res.error) {
@@ -163,8 +203,7 @@ const CMSLogin = () => {
       }
 
       if (res.data?.valid) {
-        setTotpVerified(true);
-        // Redirect will happen via useEffect
+        redirectOrSetVerified(res.data.device_token);
       } else {
         setError('Invalid code. Please try again.');
         setTotpCode('');
@@ -182,7 +221,6 @@ const CMSLogin = () => {
     setTimeout(() => setSecretCopied(false), 2000);
   };
 
-  // Show loading while checking auth state
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -191,7 +229,6 @@ const CMSLogin = () => {
     );
   }
 
-  // Show access denied if logged in but not a CMS user (and not in a 2FA flow)
   if (user && !isCmsUser && step === 'credentials') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -221,7 +258,6 @@ const CMSLogin = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md animate-fade-in">
-        {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary/10 mb-4">
             {step === 'credentials' ? (
@@ -238,7 +274,6 @@ const CMSLogin = () => {
           </p>
         </div>
 
-        {/* Login Card */}
         <div className="cms-card p-6">
           {step === 'credentials' && (
             <form onSubmit={handleCredentialsSubmit} className="space-y-4">
@@ -326,6 +361,17 @@ const CMSLogin = () => {
                   />
                 </div>
 
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember-setup"
+                    checked={rememberDevice}
+                    onCheckedChange={(checked) => setRememberDevice(checked === true)}
+                  />
+                  <Label htmlFor="remember-setup" className="text-sm text-muted-foreground cursor-pointer">
+                    Remember this device for 30 days
+                  </Label>
+                </div>
+
                 {error && (
                   <div className="flex items-center gap-2 text-destructive text-sm p-3 bg-destructive/10 rounded-md">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -371,6 +417,17 @@ const CMSLogin = () => {
                   autoFocus
                   required
                 />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="remember-verify"
+                  checked={rememberDevice}
+                  onCheckedChange={(checked) => setRememberDevice(checked === true)}
+                />
+                <Label htmlFor="remember-verify" className="text-sm text-muted-foreground cursor-pointer">
+                  Remember this device for 30 days
+                </Label>
               </div>
 
               {error && (
