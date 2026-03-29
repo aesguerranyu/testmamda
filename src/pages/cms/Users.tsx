@@ -30,7 +30,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, AlertCircle, Shield, Copy, Check } from 'lucide-react';
+import { UserPlus, Trash2, AlertCircle, Shield, Copy, Check, KeyRound } from 'lucide-react';
 
 interface CMSUserWithRole {
   user_id: string;
