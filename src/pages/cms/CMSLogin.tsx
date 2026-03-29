@@ -9,7 +9,7 @@ import { AlertCircle, Lock, ShieldCheck, Copy, Check } from 'lucide-react';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { QRCodeSVG } from 'qrcode.react';
-import { logError } from '@/lib/logger';
+import { logError, logSecurityEvent } from '@/lib/logger';
 
 const DEVICE_TOKEN_KEY = 'cms_totp_device_token';
 
@@ -156,6 +156,7 @@ const CMSLogin = () => {
     try {
       const { error: signInError } = await signIn(email, password);
       if (signInError) {
+        logSecurityEvent('cms_login_failed', { email, reason: signInError.message });
         if (signInError.message.includes('Invalid login credentials')) {
           setError('Invalid email or password');
         } else {
