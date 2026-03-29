@@ -30,7 +30,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, AlertCircle, Shield, Copy, Check } from 'lucide-react';
+import { UserPlus, Trash2, AlertCircle, Shield, Copy, Check, KeyRound } from 'lucide-react';
 
 interface CMSUserWithRole {
   user_id: string;
@@ -335,36 +335,62 @@ const Users = () => {
                   {new Date(u.created_at).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Dialog open={deleteUserId === u.user_id} onOpenChange={(open) => !open && setDeleteUserId(null)}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={u.user_id === user?.id}
-                        onClick={() => setDeleteUserId(u.user_id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Delete User</DialogTitle>
-                        <DialogDescription>
-                          Are you sure you want to delete {u.email}? This action cannot be undone.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteUserId(null)}>Cancel</Button>
-                        <Button 
-                          variant="destructive" 
-                          onClick={() => handleDeleteUser(u.user_id)}
-                          disabled={isDeleting}
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Reset 2FA"
+                      disabled={u.user_id === user?.id}
+                      onClick={async () => {
+                        if (!confirm(`Reset 2FA for ${u.email}? They will need to set up a new authenticator.`)) return;
+                        try {
+                          const { data: { session } } = await supabase.auth.getSession();
+                          if (!session) return;
+                          const res = await supabase.functions.invoke('totp-reset', {
+                            headers: { Authorization: `Bearer ${session.access_token}` },
+                            body: { user_id: u.user_id },
+                          });
+                          if (res.error) throw res.error;
+                          toast.success(`2FA reset for ${u.email}`);
+                        } catch (err) {
+                          logError('2FA reset error', err);
+                          toast.error('Failed to reset 2FA');
+                        }
+                      }}
+                    >
+                      <KeyRound className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                    <Dialog open={deleteUserId === u.user_id} onOpenChange={(open) => !open && setDeleteUserId(null)}>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={u.user_id === user?.id}
+                          onClick={() => setDeleteUserId(u.user_id)}
                         >
-                          {isDeleting ? 'Deleting...' : 'Delete'}
+                          <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Delete User</DialogTitle>
+                          <DialogDescription>
+                            Are you sure you want to delete {u.email}? This action cannot be undone.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setDeleteUserId(null)}>Cancel</Button>
+                          <Button 
+                            variant="destructive" 
+                            onClick={() => handleDeleteUser(u.user_id)}
+                            disabled={isDeleting}
+                          >
+                            {isDeleting ? 'Deleting...' : 'Delete'}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
