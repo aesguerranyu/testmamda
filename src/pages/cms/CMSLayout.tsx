@@ -49,6 +49,15 @@ const CMSLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState<StatsData | null>(null);
 
+  // Block search engine indexing of CMS pages
+  useEffect(() => {
+    const meta = document.createElement('meta');
+    meta.name = 'robots';
+    meta.content = 'noindex, nofollow';
+    document.head.appendChild(meta);
+    return () => { document.head.removeChild(meta); };
+  }, []);
+
   useEffect(() => {
     // Redirect to login if not authenticated or not a CMS user
     if (!isLoading && (!user || !isCmsUser)) {
