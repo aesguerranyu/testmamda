@@ -7,6 +7,22 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// In-memory rate limiting (per-instance, resets on cold start)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 10; // max 10 attempts per minute per user
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
 async function generateTOTP(
   secretBase32: string,
   timeStep: number = 30,
@@ -49,6 +65,10 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      console.warn("[SECURITY] totp-verify: Request without auth header", {
+        ip: req.headers.get("x-forwarded-for") || "unknown",
+        timestamp: new Date().toISOString(),
+      });
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -120,10 +140,29 @@ Deno.serve(async (req) => {
 
     const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
     if (userError || !user) {
+      console.warn("[SECURITY] totp-verify: Invalid auth token", {
+        ip: req.headers.get("x-forwarded-for") || "unknown",
+        timestamp: new Date().toISOString(),
+      });
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Rate limit by user ID
+    if (isRateLimited(user.id)) {
+      console.warn("[SECURITY] totp-verify: Rate limited", {
+        userId: user.id,
+        timestamp: new Date().toISOString(),
+      });
+      return new Response(
+        JSON.stringify({ error: "Too many attempts. Please wait and try again." }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" },
+        }
+      );
     }
 
     const supabaseAdmin = createClient(
@@ -157,6 +196,11 @@ Deno.serve(async (req) => {
     }
 
     if (!valid) {
+      console.warn("[SECURITY] totp-verify: Failed TOTP attempt", {
+        userId: user.id,
+        email: user.email,
+        timestamp: new Date().toISOString(),
+      });
       return new Response(
         JSON.stringify({ error: "Invalid code", valid: false }),
         {
@@ -201,6 +245,11 @@ Deno.serve(async (req) => {
         expires_at: expiresAt.toISOString(),
       });
     }
+
+    console.log("[AUTH] totp-verify: Successful verification", {
+      userId: user.id,
+      timestamp: new Date().toISOString(),
+    });
 
     return new Response(
       JSON.stringify({ valid: true, device_token: newDeviceToken }),

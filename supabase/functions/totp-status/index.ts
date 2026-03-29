@@ -14,6 +14,10 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      console.warn("[SECURITY] totp-status: Request without auth header", {
+        ip: req.headers.get("x-forwarded-for") || "unknown",
+        timestamp: new Date().toISOString(),
+      });
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -31,8 +35,27 @@ Deno.serve(async (req) => {
       error: userError,
     } = await supabaseUser.auth.getUser();
     if (userError || !user) {
+      console.warn("[SECURITY] totp-status: Invalid auth token", {
+        ip: req.headers.get("x-forwarded-for") || "unknown",
+        timestamp: new Date().toISOString(),
+      });
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Verify user is a CMS user before revealing TOTP status
+    const { data: isCms } = await supabaseUser.rpc("is_cms_user", {
+      _user_id: user.id,
+    });
+    if (!isCms) {
+      console.warn("[SECURITY] totp-status: Non-CMS user attempted access", {
+        userId: user.id,
+        timestamp: new Date().toISOString(),
+      });
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
