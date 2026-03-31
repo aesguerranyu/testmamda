@@ -32,9 +32,8 @@ export default function AppointmentTracker() {
     });
     return groups;
   }, [appointments]);
-  const sectionOrder = ["Deputy Mayor", "City Hall", "Commissions", "Courts"];
-  const rank = new Map(sectionOrder.map((s, i) => [s, i]));
-  const sections = Object.keys(groupedAppointments).sort((a, b) => ((rank.get(a.trim()) ?? 1e9) - (rank.get(b.trim()) ?? 1e9)) || a.localeCompare(b));
+  const sectionRank: Record<string, number> = { "deputy mayors": 0, "city hall": 1, "commissions": 2, "courts": 3 };
+  const sections = [...new Set(appointments.map(a => a.section?.trim()).filter(Boolean))].sort((a, b) => (sectionRank[a!.toLowerCase()] ?? 999) - (sectionRank[b!.toLowerCase()] ?? 999) || a!.localeCompare(b!));
   return <>
       <SEO title="Mamdani Administration Tracker | NYC Mayor Appointments" description="Track key appointments made by Mayor Zohran Mamdani as they are announced. See who's been appointed to cabinet positions, agency heads, and key administration roles." keywords="Zohran Mamdani appointments, NYC mayor cabinet, mayoral appointments, NYC administration, deputy mayors, city hall appointments" canonical="https://mamdanitracker.nyc/zohran-mamdani-appointment-tracker" ogType="article" />
 
