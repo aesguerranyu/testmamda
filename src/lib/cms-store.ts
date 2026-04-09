@@ -476,6 +476,21 @@ export const importPromisesCSV = async (content: string): Promise<ImportReport> 
       if (!rowData['Headline']?.trim()) {
         continue;
       }
+
+      // Auto-generate URL slug from headline if not provided
+      if (!rowData['URL Slugs']?.trim()) {
+        rowData['URL Slugs'] = rowData['Headline']
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '');
+      }
+
+      // Auto-set last updated if not provided
+      if (!rowData['Last updated']?.trim()) {
+        rowData['Last updated'] = new Date().toISOString().split('T')[0];
+      }
       
       // Check if promise already exists by headline
       const existing = existingPromises.find(p => p.Headline === rowData['Headline']);
