@@ -92,8 +92,7 @@ export function PromiseTracker() {
     return stats;
   }, [promises]);
 
-  // Force total to 99 for now
-  const totalPromises = 99;
+  const totalPromises = promises.length;
 
   // Map database fields to PromiseCard expected format
   const mappedPromises = filteredPromises.map((p) => ({
