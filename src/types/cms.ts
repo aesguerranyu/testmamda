@@ -91,8 +91,6 @@ export const PROMISE_CSV_HEADERS = [
   'Updates',
   'Source Text',
   'Source URL',
-  'Last updated',
-  'URL Slugs',
 ] as const;
 
 export const INDICATOR_CSV_HEADERS = [

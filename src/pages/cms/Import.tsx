@@ -260,7 +260,7 @@ const Import = () => {
           </p>
           <p className="text-xs text-muted-foreground font-mono">
             {importType === 'promises'
-              ? 'Category, Headline, Owner agency, Date Promised, Status, Requires state action or cooperation, Targets, Short description, Description, SEO tags, Updates, Source Text, Source URL, Last updated, URL Slugs'
+              ? 'Category, Headline, Owner agency, Date Promised, Status, Requires state action or cooperation, Targets, Short description, Description, SEO tags, Updates, Source Text, Source URL'
               : importType === 'indicators'
               ? 'Category, Promise, Headline, Description Paragraph, Target, Current, Current Description, Source'
               : importType === 'appointments'
