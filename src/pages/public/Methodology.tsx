@@ -167,9 +167,9 @@ His background includes working on complex systems that require close attention 
               color: "#FCCC0A",
               desc: "Progress has paused because of legal, political, or practical obstacles."
             }, {
-              status: "Not delivered",
+              status: "Broken",
               color: "#EE352E",
-              desc: "The promise has not been fulfilled or appears to have been abandoned."
+              desc: "The promise has not been fulfilled. This could occur because of inaction by the mayor, lack of support from the city council or state legislature, or active reversal of the campaign commitment."
             }].map(item => <div key={item.status}>
                   <div className="flex items-start gap-4">
                     <span className="px-4 py-2 text-white font-bold uppercase tracking-wide text-sm shrink-0" style={{

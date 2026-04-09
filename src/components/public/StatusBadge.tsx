@@ -1,4 +1,4 @@
-type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled";
+type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled" | "Broken";
 
 interface StatusBadgeProps {
   status: PromiseStatus;
