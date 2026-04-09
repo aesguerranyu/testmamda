@@ -8,6 +8,7 @@ import {
   ClipboardCheck,
   BarChart3,
   Upload,
+  Download,
   Users,
   LogOut,
   Menu,
@@ -40,6 +41,7 @@ const navItems = [
   { path: "/rat-control/cms/memberships", label: "Memberships", icon: Users },
   { path: "/rat-control/cms/budget-submissions", label: "Budget Submissions", icon: DollarSign },
   { path: "/rat-control/cms/import", label: "Import CSV", icon: Upload },
+  { path: "/rat-control/cms/export", label: "Export CSV", icon: Download },
 ];
 
 const CMSLayout = () => {
