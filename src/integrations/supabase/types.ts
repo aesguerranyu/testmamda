@@ -439,6 +439,7 @@ export type Database = {
     }
     Functions: {
       get_budget_aggregates: { Args: never; Returns: Json }
+      get_budget_by_share_id: { Args: { _share_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

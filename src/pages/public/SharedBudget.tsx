@@ -46,14 +46,12 @@ export default function SharedBudget() {
     if (!shareId || !unlocked) return;
     (async () => {
       const { data: result, error } = await supabase
-        .from("budget_submissions")
-        .select("allocations, is_balanced, created_at, share_id")
-        .eq("share_id", shareId)
-        .single();
+        .rpc("get_budget_by_share_id", { _share_id: shareId });
       if (error || !result) {
         setNotFound(true);
       } else {
-        setData(result as unknown as SharedData);
+        const r = result as unknown as { allocations: Record<string, Allocation>; is_balanced: boolean; created_at: string };
+        setData({ ...r, share_id: shareId });
       }
       setLoading(false);
     })();
