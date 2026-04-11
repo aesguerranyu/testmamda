@@ -191,13 +191,14 @@ export function PromiseTracker() {
               return (
                 <div
                   key={status}
-                  className="h-full flex items-center justify-center"
+                  className="h-full flex items-center justify-center relative"
                   style={{
                     backgroundColor: STATUS_COLORS[status],
                     width: `${percentage}%`,
+                    minWidth: "48px",
                   }}
                 >
-                  <span className="text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap">
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap px-1">
                     {percentage}%
                   </span>
                 </div>
