@@ -174,34 +174,34 @@ export function PromiseTracker() {
                   );
                 })}
               </div>
-            </div>
-          </div>
 
-          {/* Progress Bar - separate, full width */}
-          <div className="h-16 flex border-2 border-black overflow-hidden mb-6">
-            {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map((status) => {
-              const count = statusStats[status];
-              const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
-              if (percentage === 0) return null;
-              return (
-                <div
-                  key={status}
-                  className="h-full flex items-center justify-center relative"
-                  style={{
-                    backgroundColor: STATUS_COLORS[status],
-                    width: `${percentage}%`,
-                    minWidth: "48px",
-                  }}
-                >
-                  <span 
-                    className="text-xs sm:text-sm font-bold uppercase tracking-wide whitespace-nowrap px-1"
-                    style={{ color: status === "Stalled" ? "#000" : "#fff" }}
+            {/* Progress Bar - inside the bounding box */}
+            <div className="h-12 flex border-2 border-black overflow-hidden mt-6">
+              {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map((status) => {
+                const count = statusStats[status];
+                const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
+                if (percentage === 0) return null;
+                return (
+                  <div
+                    key={status}
+                    className="h-full flex items-center justify-center relative"
+                    style={{
+                      backgroundColor: STATUS_COLORS[status],
+                      width: `${percentage}%`,
+                      minWidth: "48px",
+                    }}
                   >
-                    {percentage}%
-                  </span>
-                </div>
-              );
-            })}
+                    <span 
+                      className="text-xs sm:text-sm font-bold uppercase tracking-wide whitespace-nowrap px-1"
+                      style={{ color: status === "Stalled" ? "#000" : "#fff" }}
+                    >
+                      {percentage}%
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            </div>
           </div>
 
           {/* Thick black divider line */}
