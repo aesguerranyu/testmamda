@@ -17,11 +17,11 @@ const SHOW_STATS_DASHBOARD = true;
 const STATUS_COLORS: Record<PromiseStatus, string> = {
   Completed: "#00933C", // Green (4/5/6)
   "In progress": "#0039A6", // Blue (A/C/E)
-  Stalled: "#FCCC0A", // Yellow (N/Q/R/W)
-  "Not started": "#808183", // Gray
-  Broken: "#EE352E", // Red (1/2/3)
+  Stalled: "#EE352E", // Red (1/2/3)
+  "Not started": "#A7A9AC", // Gray (L/S)
+  Broken: "#996633", // Brown (J/Z)
 };
-type PromiseCategory = string;
+type PromiseCategory = "Affordability" | "Childcare" | "Climate" | "Education" | "Housing" | "Transportation";
 interface PromiseData {
   id: string;
   headline: string;
@@ -52,10 +52,15 @@ export function PromiseTracker() {
     fetchPromises();
   }, []);
   const statuses: (PromiseStatus | "All")[] = ["All", "Not started", "In progress", "Completed", "Stalled", "Broken"];
-  const categories: (PromiseCategory | "All")[] = useMemo(() => {
-    const unique = [...new Set(promises.map((p) => p.category).filter(Boolean))].sort();
-    return ["All", ...unique];
-  }, [promises]);
+  const categories: (PromiseCategory | "All")[] = [
+    "All",
+    "Affordability",
+    "Childcare",
+    "Climate",
+    "Education",
+    "Housing",
+    "Transportation",
+  ];
 
   const filteredPromises = promises.filter((promise) => {
     const matchesStatus = selectedStatus === "All" || promise.status === selectedStatus;
@@ -164,7 +169,7 @@ export function PromiseTracker() {
                         className="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center mx-auto"
                         style={{ backgroundColor: STATUS_COLORS[status] }}
                       >
-                        <span className="text-2xl md:text-5xl font-bold" style={{ color: status === "Stalled" ? "#000" : "#fff" }}>{count}</span>
+                        <span className="text-2xl md:text-5xl font-bold text-white">{count}</span>
                       </div>
                       <p className="text-xs font-bold uppercase tracking-wide mt-2 text-black">{status}</p>
                       <p className="text-sm md:text-lg font-bold" style={{ color: STATUS_COLORS[status] }}>
@@ -175,33 +180,29 @@ export function PromiseTracker() {
                 })}
               </div>
             </div>
+          </div>
 
-            {/* Progress Bar - below the figures and squares */}
-            <div className="h-16 flex overflow-hidden mt-11">
-              {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map((status) => {
-                const count = statusStats[status];
-                const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
-                if (percentage === 0) return null;
-                return (
-                  <div
-                    key={status}
-                    className="h-full flex items-center justify-center relative"
-                    style={{
-                      backgroundColor: STATUS_COLORS[status],
-                      width: `${percentage}%`,
-                      minWidth: "48px",
-                    }}
-                  >
-                    <span 
-                      className="text-xs sm:text-sm font-bold uppercase tracking-wide whitespace-nowrap px-1"
-                      style={{ color: status === "Stalled" ? "#000" : "#fff" }}
-                    >
-                      {percentage}%
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+          {/* Progress Bar - separate, full width */}
+          <div className="h-14 flex border-2 border-black overflow-hidden mb-6">
+            {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map((status) => {
+              const count = statusStats[status];
+              const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
+              if (percentage === 0) return null;
+              return (
+                <div
+                  key={status}
+                  className="h-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: STATUS_COLORS[status],
+                    width: `${percentage}%`,
+                  }}
+                >
+                  <span className="text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap">
+                    {percentage}%
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Thick black divider line */}
