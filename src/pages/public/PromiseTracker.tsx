@@ -17,9 +17,9 @@ const SHOW_STATS_DASHBOARD = true;
 const STATUS_COLORS: Record<PromiseStatus, string> = {
   Completed: "#00933C", // Green (4/5/6)
   "In progress": "#0039A6", // Blue (A/C/E)
-  Stalled: "#EE352E", // Red (1/2/3)
-  "Not started": "#A7A9AC", // Gray (L/S)
-  Broken: "#996633", // Brown (J/Z)
+  Stalled: "#FCCC0A", // Yellow (N/Q/R/W)
+  "Not started": "#808183", // Gray
+  Broken: "#EE352E", // Red (1/2/3)
 };
 type PromiseCategory = "Affordability" | "Childcare" | "Climate" | "Education" | "Housing" | "Transportation";
 interface PromiseData {

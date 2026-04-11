@@ -24,12 +24,13 @@ interface PromiseDetail {
 }
 const getStatusColor = (status: string): string => {
   const colorMap: Record<string, string> = {
-    "Not started": "#A7A9AC",
+    "Not started": "#808183",
     "In progress": "#0039A6",
     Completed: "#00933C",
-    Stalled: "#EE352E"
+    Stalled: "#FCCC0A",
+    Broken: "#EE352E",
   };
-  return colorMap[status] || "#6B7280";
+  return colorMap[status] || "#808183";
 };
 const formatDate = (dateString: string) => {
   if (!dateString) return "Not specified";
