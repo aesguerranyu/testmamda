@@ -119,8 +119,9 @@ export default function PromiseDetail() {
         <header className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
           {/* Status badge at top right */}
           <div className="flex justify-end mb-4">
-            <span className="px-4 py-2 text-white font-bold uppercase tracking-wide text-xs" style={{
-            backgroundColor: getStatusColor(promise.status)
+            <span className="px-4 py-2 font-bold uppercase tracking-wide text-xs" style={{
+            backgroundColor: getStatusColor(promise.status),
+            color: promise.status === "Stalled" ? "#000" : "#fff"
           }}>
               {promise.status}
             </span>
