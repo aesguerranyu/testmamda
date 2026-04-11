@@ -21,7 +21,7 @@ const STATUS_COLORS: Record<PromiseStatus, string> = {
   "Not started": "#808183", // Gray
   Broken: "#EE352E", // Red (1/2/3)
 };
-type PromiseCategory = "Affordability" | "Childcare" | "Climate" | "Education" | "Housing" | "Transportation";
+type PromiseCategory = string;
 interface PromiseData {
   id: string;
   headline: string;
@@ -52,15 +52,10 @@ export function PromiseTracker() {
     fetchPromises();
   }, []);
   const statuses: (PromiseStatus | "All")[] = ["All", "Not started", "In progress", "Completed", "Stalled", "Broken"];
-  const categories: (PromiseCategory | "All")[] = [
-    "All",
-    "Affordability",
-    "Childcare",
-    "Climate",
-    "Education",
-    "Housing",
-    "Transportation",
-  ];
+  const categories: (PromiseCategory | "All")[] = useMemo(() => {
+    const unique = [...new Set(promises.map((p) => p.category).filter(Boolean))].sort();
+    return ["All", ...unique];
+  }, [promises]);
 
   const filteredPromises = promises.filter((promise) => {
     const matchesStatus = selectedStatus === "All" || promise.status === selectedStatus;
