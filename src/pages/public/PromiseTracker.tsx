@@ -174,8 +174,9 @@ export function PromiseTracker() {
                   );
                 })}
               </div>
+            </div>
 
-            {/* Progress Bar - inside the bounding box */}
+            {/* Progress Bar - below the figures and squares */}
             <div className="h-12 flex border-2 border-black overflow-hidden mt-6">
               {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map((status) => {
                 const count = statusStats[status];
@@ -200,7 +201,6 @@ export function PromiseTracker() {
                   </div>
                 );
               })}
-            </div>
             </div>
           </div>
 
