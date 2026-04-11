@@ -159,10 +159,10 @@ export function PromiseTracker() {
                   const count = statusStats[status];
                   const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
                   return (
-                <button
-                  key={status}
-                  className={`text-center cursor-pointer transition-transform hover:scale-105 p-2 rounded ${selectedStatus === status ? "bg-gray-100" : ""}`}
-                  onClick={() => setSelectedStatus(selectedStatus === status ? "All" : status)}
+                    <button
+                      key={status}
+                      className={`text-center cursor-pointer transition-transform hover:scale-105 ${selectedStatus === status ? "ring-2 ring-offset-2 ring-black" : ""}`}
+                      onClick={() => setSelectedStatus(selectedStatus === status ? "All" : status)}
                     >
                       <div
                         className="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center mx-auto"
