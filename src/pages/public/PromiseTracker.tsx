@@ -169,7 +169,7 @@ export function PromiseTracker() {
                         className="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center mx-auto"
                         style={{ backgroundColor: STATUS_COLORS[status] }}
                       >
-                        <span className="text-2xl md:text-5xl font-bold text-white">{count}</span>
+                        <span className="text-2xl md:text-5xl font-bold" style={{ color: status === "Stalled" ? "#000" : "#fff" }}>{count}</span>
                       </div>
                       <p className="text-xs font-bold uppercase tracking-wide mt-2 text-black">{status}</p>
                       <p className="text-sm md:text-lg font-bold" style={{ color: STATUS_COLORS[status] }}>
