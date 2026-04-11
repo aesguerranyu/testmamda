@@ -198,7 +198,10 @@ export function PromiseTracker() {
                     minWidth: "48px",
                   }}
                 >
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap px-1">
+                  <span 
+                    className="text-xs sm:text-sm font-bold uppercase tracking-wide whitespace-nowrap px-1"
+                    style={{ color: status === "Stalled" ? "#000" : "#fff" }}
+                  >
                     {percentage}%
                   </span>
                 </div>
