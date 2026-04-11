@@ -177,7 +177,7 @@ export function PromiseTracker() {
             </div>
 
             {/* Progress Bar - below the figures and squares */}
-            <div className="h-16 flex overflow-hidden mt-13">
+            <div className="h-16 flex overflow-hidden mt-20">
               {(["Completed", "In progress", "Stalled", "Broken", "Not started"] as PromiseStatus[]).map((status) => {
                 const count = statusStats[status];
                 const percentage = totalPromises > 0 ? Math.round((count / totalPromises) * 100) : 0;
