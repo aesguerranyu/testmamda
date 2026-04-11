@@ -9,15 +9,17 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusStyle = (status: PromiseStatus): { bg: string; text: string; line: string } => {
     switch (status) {
       case "Not started":
-        return { bg: "#A7A9AC", text: "#FFFFFF", line: "NS" }; // Gray line (like L/S)
+        return { bg: "#808183", text: "#FFFFFF", line: "NS" };
       case "In progress":
-        return { bg: "#0039A6", text: "#FFFFFF", line: "IP" }; // Blue line (like A/C/E)
+        return { bg: "#0039A6", text: "#FFFFFF", line: "IP" };
       case "Completed":
-        return { bg: "#00933C", text: "#FFFFFF", line: "C" }; // Green line (like 4/5/6)
+        return { bg: "#00933C", text: "#FFFFFF", line: "C" };
       case "Stalled":
-        return { bg: "#EE352E", text: "#FFFFFF", line: "S" }; // Red line (like 1/2/3)
+        return { bg: "#FCCC0A", text: "#000000", line: "S" };
+      case "Broken":
+        return { bg: "#EE352E", text: "#FFFFFF", line: "B" };
       default:
-        return { bg: "#A7A9AC", text: "#FFFFFF", line: "?" };
+        return { bg: "#808183", text: "#FFFFFF", line: "?" };
     }
   };
 

@@ -17,9 +17,9 @@ const SHOW_STATS_DASHBOARD = true;
 const STATUS_COLORS: Record<PromiseStatus, string> = {
   Completed: "#00933C", // Green (4/5/6)
   "In progress": "#0039A6", // Blue (A/C/E)
-  Stalled: "#EE352E", // Red (1/2/3)
-  "Not started": "#A7A9AC", // Gray (L/S)
-  Broken: "#996633", // Brown (J/Z)
+  Stalled: "#FCCC0A", // Yellow (N/Q/R/W)
+  "Not started": "#808183", // Gray
+  Broken: "#EE352E", // Red (1/2/3)
 };
 type PromiseCategory = "Affordability" | "Childcare" | "Climate" | "Education" | "Housing" | "Transportation";
 interface PromiseData {
@@ -169,7 +169,7 @@ export function PromiseTracker() {
                         className="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center mx-auto"
                         style={{ backgroundColor: STATUS_COLORS[status] }}
                       >
-                        <span className="text-2xl md:text-5xl font-bold text-white">{count}</span>
+                        <span className="text-2xl md:text-5xl font-bold" style={{ color: status === "Stalled" ? "#000" : "#fff" }}>{count}</span>
                       </div>
                       <p className="text-xs font-bold uppercase tracking-wide mt-2 text-black">{status}</p>
                       <p className="text-sm md:text-lg font-bold" style={{ color: STATUS_COLORS[status] }}>
@@ -198,7 +198,10 @@ export function PromiseTracker() {
                     minWidth: "48px",
                   }}
                 >
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wide text-white whitespace-nowrap px-1">
+                  <span 
+                    className="text-xs sm:text-sm font-bold uppercase tracking-wide whitespace-nowrap px-1"
+                    style={{ color: status === "Stalled" ? "#000" : "#fff" }}
+                  >
                     {percentage}%
                   </span>
                 </div>

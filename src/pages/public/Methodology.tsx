@@ -152,7 +152,7 @@ His background includes working on complex systems that require close attention 
             <div className="flex flex-col gap-4">
               {[{
               status: "Not started",
-              color: "#6B7280",
+              color: "#808183",
               desc: "No public action has been taken toward implementation."
             }, {
               status: "In progress",
