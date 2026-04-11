@@ -161,7 +161,7 @@ export function PromiseTracker() {
                   return (
                     <button
                       key={status}
-                      className={`text-center cursor-pointer transition-transform hover:scale-105 ${selectedStatus === status ? "ring-2 ring-offset-2 ring-black" : ""}`}
+                      className="text-center cursor-pointer transition-transform hover:scale-105"
                       onClick={() => setSelectedStatus(selectedStatus === status ? "All" : status)}
                     >
                       <div
