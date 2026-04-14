@@ -28,6 +28,7 @@ import BuildYourBudget from "./pages/public/BuildYourBudget";
 import SharedBudget from "./pages/public/SharedBudget";
 import BudgetResults from "./pages/public/BudgetResults";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
+import HundredDayReport from "./pages/public/HundredDayReport";
 
 // CMS Pages — lazy-loaded to avoid exposing CMS code in public bundles
 const CMSLogin = lazy(() => import("./pages/cms/CMSLogin"));
@@ -86,6 +87,7 @@ const App = () => (
               <Route path="/build-your-budget" element={<BuildYourBudget />} />
               <Route path="/budget/shared/:shareId" element={<SharedBudget />} />
               <Route path="/budget/results" element={<BudgetResults />} />
+              <Route path="/100-day-report" element={<HundredDayReport />} />
               <Route path="/promises/:slug/ratify" element={<RatifyRedirect type="promise" />} />
               <Route path="/zohran-mamdani-first-100-days/:year/:month/:day/ratify" element={<RatifyRedirect type="first100day" />} />
             </Route>
