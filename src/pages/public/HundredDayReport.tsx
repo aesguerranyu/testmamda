@@ -148,7 +148,54 @@ function Callout({ children, color = "#EE352E" }: { children: React.ReactNode; c
 /* ══════════════════════════════════════════════════════════════
    MAIN PAGE
    ══════════════════════════════════════════════════════════════ */
+/* ── Password Gate ── */
+function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
+  const [pw, setPw] = useState("");
+  const [pwError, setPwError] = useState(false);
+
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center px-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (pw === "Mamda100") {
+            onUnlock();
+            setPwError(false);
+          } else {
+            setPwError(true);
+          }
+        }}
+        className="w-full max-w-sm space-y-4"
+      >
+        <h1 className="text-2xl font-bold" style={{ color: "#0C2788" }}>
+          This page is password-protected
+        </h1>
+        <input
+          type="password"
+          value={pw}
+          onChange={(e) => { setPw(e.target.value); setPwError(false); }}
+          placeholder="Enter password"
+          className="w-full border-2 border-black px-3 py-2 text-sm focus:outline-none focus:border-[#0C2788]"
+        />
+        {pwError && (
+          <p className="text-sm font-semibold" style={{ color: "#EE352E" }}>
+            Incorrect password.
+          </p>
+        )}
+        <button
+          type="submit"
+          className="w-full py-2 text-sm font-bold text-white"
+          style={{ backgroundColor: "#0C2788" }}
+        >
+          Enter
+        </button>
+      </form>
+    </div>
+  );
+}
+
 export default function HundredDayReport() {
+  const [unlocked, setUnlocked] = useState(false);
   const [counts, setCounts] = useState<Record<PromiseStatus, number>>({
     "In progress": 0, Completed: 0, Broken: 0, Stalled: 0, "Not started": 0,
   });
