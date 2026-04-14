@@ -28,6 +28,7 @@ import BuildYourBudget from "./pages/public/BuildYourBudget";
 import SharedBudget from "./pages/public/SharedBudget";
 import BudgetResults from "./pages/public/BudgetResults";
 import RatifyRedirect from "./pages/public/RatifyRedirect";
+import HundredDayReport from "./pages/public/HundredDayReport";
 
 // CMS Pages — lazy-loaded to avoid exposing CMS code in public bundles
 const CMSLogin = lazy(() => import("./pages/cms/CMSLogin"));
