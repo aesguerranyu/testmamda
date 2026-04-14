@@ -87,6 +87,7 @@ const App = () => (
               <Route path="/build-your-budget" element={<BuildYourBudget />} />
               <Route path="/budget/shared/:shareId" element={<SharedBudget />} />
               <Route path="/budget/results" element={<BudgetResults />} />
+              <Route path="/100-day-report" element={<HundredDayReport />} />
               <Route path="/promises/:slug/ratify" element={<RatifyRedirect type="promise" />} />
               <Route path="/zohran-mamdani-first-100-days/:year/:month/:day/ratify" element={<RatifyRedirect type="first100day" />} />
             </Route>
