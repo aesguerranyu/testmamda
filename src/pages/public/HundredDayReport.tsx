@@ -226,6 +226,10 @@ export default function HundredDayReport() {
     return () => { clearTimeout(t); clearInterval(i); };
   }, []);
 
+  if (!unlocked) {
+    return <PasswordGate onUnlock={() => setUnlocked(true)} />;
+  }
+
   return (
     <>
       <SEO
