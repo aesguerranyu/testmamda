@@ -72,8 +72,10 @@ const App = () => (
             <Route element={<PublicLayout />}>
               <Route path="/" element={<PublicHome />} />
               <Route path="/promises" element={<PromiseTracker />} />
+              <Route path="/promises/rankings" element={<PromiseRankings />} />
               <Route path="/promises/tag/:tag" element={<PromisesByTag />} />
               <Route path="/promises/:slug" element={<PromiseDetail />} />
+              <Route path="/auth" element={<AuthPage />} />
               <Route path="/membership" element={<Membership />} />
               <Route path="/about" element={<Methodology />} />
               <Route path="/zohran-mamdani-first-100-days" element={<First100Days />} />
