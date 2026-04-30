@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn, LogOut, User as UserIcon } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const navItems = [
   { path: "/promises", label: "Promises" },
+  { path: "/promises/rankings", label: "Rankings" },
   // TEMPORARILY HIDDEN: { path: "/zohran-mamdani-first-100-days", label: "First 100 Days" },
   { path: "/zohran-mamdani-appointment-tracker", label: "Appointments" },
   { path: "/indicators", label: "Key Performance Indicators" },
@@ -14,6 +16,7 @@ const navItems = [
 export function PublicHeader() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -48,6 +51,28 @@ export function PublicHeader() {
                 {item.label}
               </Link>
             ))}
+
+            {/* Auth */}
+            <div className="ml-2 pl-2 border-l border-white/20 flex items-center gap-1">
+              {user ? (
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 transition-all"
+                  title="Sign out"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 transition-all"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Sign in
+                </Link>
+              )}
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -84,6 +109,26 @@ export function PublicHeader() {
                   {item.label}
                 </Link>
               ))}
+              <div className="border-t border-white/20 mt-2 pt-2">
+                {user ? (
+                  <button
+                    onClick={() => { signOut(); setMobileMenuOpen(false); }}
+                    className="w-full text-left flex items-center gap-2 py-3 px-4 font-semibold tracking-wide text-sm text-white/90 hover:text-white hover:bg-white/10"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign out
+                  </button>
+                ) : (
+                  <Link
+                    to="/auth"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 py-3 px-4 font-semibold tracking-wide text-sm text-white/90 hover:text-white hover:bg-white/10"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Sign in
+                  </Link>
+                )}
+              </div>
             </div>
           </nav>
         )}
