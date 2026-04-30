@@ -295,6 +295,71 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          borough: string
+          created_at: string
+          display_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          borough?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          borough?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      promise_signals: {
+        Row: {
+          created_at: string
+          doability: string | null
+          id: string
+          is_priority: boolean
+          promise_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          doability?: string | null
+          id?: string
+          is_priority?: boolean
+          promise_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          doability?: string | null
+          id?: string
+          is_priority?: boolean
+          promise_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promise_signals_promise_id_fkey"
+            columns: ["promise_id"]
+            isOneToOne: false
+            referencedRelation: "promises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       promises: {
         Row: {
           category: string
@@ -435,7 +500,26 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      promise_signal_stats: {
+        Row: {
+          doability_total: number | null
+          doable_count: number | null
+          priority_count: number | null
+          priority_count_week: number | null
+          promise_id: string | null
+          unrealistic_count: number | null
+          unsure_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promise_signals_promise_id_fkey"
+            columns: ["promise_id"]
+            isOneToOne: false
+            referencedRelation: "promises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_budget_aggregates: { Args: never; Returns: Json }

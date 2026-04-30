@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Building2, Clock, ChevronDown, ChevronUp } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 import { SEO } from "@/components/SEO";
+import { PromiseSignals } from "@/components/public/PromiseSignals";
 interface PromiseDetail {
   id: string;
   headline: string;
@@ -195,6 +196,9 @@ export default function PromiseDetail() {
             <span>Last updated: {formatDate(promise.updated_at)}</span>
           </div>
         </header>
+
+        {/* Reader Signals */}
+        <PromiseSignals promiseId={promise.id} promiseSlug={promise.url_slugs} />
 
         {/* Description */}
         {descriptionPoints.length > 0 && <section className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">

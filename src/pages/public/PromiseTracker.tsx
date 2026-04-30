@@ -32,21 +32,32 @@ interface PromiseData {
 }
 export function PromiseTracker() {
   const [promises, setPromises] = useState<PromiseData[]>([]);
+  const [weeklyRank, setWeeklyRank] = useState<Map<string, number>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<PromiseStatus | "All">("All");
   const [selectedCategory, setSelectedCategory] = useState<PromiseCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     const fetchPromises = async () => {
-      const { data, error } = await supabase
-        .from("promises")
-        .select("id, headline, short_description, category, status, url_slugs")
-        .eq("editorial_state", "published");
+      const [{ data, error }, statsRes] = await Promise.all([
+        supabase
+          .from("promises")
+          .select("id, headline, short_description, category, status, url_slugs")
+          .eq("editorial_state", "published"),
+        (supabase as any).from("promise_signal_stats").select("promise_id, priority_count_week"),
+      ]);
       if (!error && data) {
-        // Shuffle promises randomly for variety on each visit
         const shuffled = [...data].sort(() => Math.random() - 0.5);
         setPromises(shuffled);
       }
+      const stats = (statsRes?.data || []) as Array<{ promise_id: string; priority_count_week: number }>;
+      const ranked = stats
+        .filter((s) => Number(s.priority_count_week) > 0)
+        .sort((a, b) => Number(b.priority_count_week) - Number(a.priority_count_week))
+        .slice(0, 10);
+      const map = new Map<string, number>();
+      ranked.forEach((s, i) => map.set(s.promise_id, i + 1));
+      setWeeklyRank(map);
       setIsLoading(false);
     };
     fetchPromises();
@@ -97,6 +108,7 @@ export function PromiseTracker() {
     category: p.category,
     status: p.status,
     slug: p.url_slugs,
+    weeklyRank: weeklyRank.get(p.id),
   }));
   if (isLoading) {
     return (
@@ -135,6 +147,13 @@ export function PromiseTracker() {
           Here is what Mayor Zohran Mamdani and his team have said they will do, organized by policy area. Each entry
           notes the responsible city agency and whether state action or cooperation is required.
         </p>
+        <Link
+          to="/promises/rankings"
+          className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-[#FCCC0A] text-black font-bold uppercase tracking-wide text-xs hover:bg-[#FCCC0A]/80 transition-colors"
+        >
+          ★ See reader rankings
+          <ArrowRightIcon className="w-3 h-3" />
+        </Link>
       </div>
 
       {/* Stats Dashboard - Toggle with SHOW_STATS_DASHBOARD flag */}
@@ -303,7 +322,7 @@ export function PromiseTracker() {
       {/* Promise Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {mappedPromises.map((promise) => (
-          <PromiseCard key={promise.id} promise={promise} />
+          <PromiseCard key={promise.id} promise={promise} weeklyRank={promise.weeklyRank} />
         ))}
       </div>
 
