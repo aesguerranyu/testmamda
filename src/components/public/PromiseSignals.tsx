@@ -37,8 +37,8 @@ export function PromiseSignals({ promiseId, promiseSlug }: PromiseSignalsProps) 
   const [busy, setBusy] = useState(false);
 
   const loadStats = async () => {
-    const { data } = await supabase
-      .from("promise_signal_stats" as any)
+    const { data } = await (supabase as any)
+      .from("promise_signal_stats")
       .select("*")
       .eq("promise_id", promiseId)
       .maybeSingle();
