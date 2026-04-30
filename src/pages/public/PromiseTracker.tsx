@@ -315,7 +315,7 @@ export function PromiseTracker() {
       {/* Promise Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {mappedPromises.map((promise) => (
-          <PromiseCard key={promise.id} promise={promise} />
+          <PromiseCard key={promise.id} promise={promise} weeklyRank={promise.weeklyRank} />
         ))}
       </div>
 
