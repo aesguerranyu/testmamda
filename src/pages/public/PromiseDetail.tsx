@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Building2, Clock, ChevronDown, ChevronUp } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 import { SEO } from "@/components/SEO";
+import { PromiseSignals } from "@/components/public/PromiseSignals";
 interface PromiseDetail {
   id: string;
   headline: string;
