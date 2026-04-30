@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import { Star } from "lucide-react";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 interface PromiseCardProps {
   promise?: {
@@ -16,6 +17,7 @@ interface PromiseCardProps {
   category?: string;
   status?: string;
   slug?: string;
+  weeklyRank?: number;
 }
 export function PromiseCard(props: PromiseCardProps) {
   // Support both passing a promise object or individual props
@@ -27,6 +29,7 @@ export function PromiseCard(props: PromiseCardProps) {
     status: props.status || "",
     slug: props.slug
   };
+  const weeklyRank = props.weeklyRank;
   return <Link to={`/promises/${promise.slug || promise.id}`} aria-label={`View details for promise: ${promise.headline}`} onClick={() => window.scrollTo(0, 0)} className="group flex flex-col h-full bg-white transition-all no-underline border border-[#071c5f]/[0.42] hover:shadow-lg" style={{
     minHeight: "380px"
   }}>
