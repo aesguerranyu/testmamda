@@ -32,21 +32,32 @@ interface PromiseData {
 }
 export function PromiseTracker() {
   const [promises, setPromises] = useState<PromiseData[]>([]);
+  const [weeklyRank, setWeeklyRank] = useState<Map<string, number>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<PromiseStatus | "All">("All");
   const [selectedCategory, setSelectedCategory] = useState<PromiseCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     const fetchPromises = async () => {
-      const { data, error } = await supabase
-        .from("promises")
-        .select("id, headline, short_description, category, status, url_slugs")
-        .eq("editorial_state", "published");
+      const [{ data, error }, statsRes] = await Promise.all([
+        supabase
+          .from("promises")
+          .select("id, headline, short_description, category, status, url_slugs")
+          .eq("editorial_state", "published"),
+        (supabase as any).from("promise_signal_stats").select("promise_id, priority_count_week"),
+      ]);
       if (!error && data) {
-        // Shuffle promises randomly for variety on each visit
         const shuffled = [...data].sort(() => Math.random() - 0.5);
         setPromises(shuffled);
       }
+      const stats = (statsRes?.data || []) as Array<{ promise_id: string; priority_count_week: number }>;
+      const ranked = stats
+        .filter((s) => Number(s.priority_count_week) > 0)
+        .sort((a, b) => Number(b.priority_count_week) - Number(a.priority_count_week))
+        .slice(0, 10);
+      const map = new Map<string, number>();
+      ranked.forEach((s, i) => map.set(s.promise_id, i + 1));
+      setWeeklyRank(map);
       setIsLoading(false);
     };
     fetchPromises();
