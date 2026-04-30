@@ -197,6 +197,9 @@ export default function PromiseDetail() {
           </div>
         </header>
 
+        {/* Reader Signals */}
+        <PromiseSignals promiseId={promise.id} promiseSlug={promise.url_slugs} />
+
         {/* Description */}
         {descriptionPoints.length > 0 && <section className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
             <h2 className="text-xl font-bold text-subway-dark mb-4">Overview</h2>
