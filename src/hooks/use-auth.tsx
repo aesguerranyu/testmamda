@@ -9,7 +9,7 @@ interface AuthContextType {
   isLoading: boolean;
   isCmsUser: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, metadata?: { display_name?: string; borough?: string }) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
