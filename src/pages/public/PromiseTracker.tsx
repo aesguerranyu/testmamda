@@ -108,6 +108,7 @@ export function PromiseTracker() {
     category: p.category,
     status: p.status,
     slug: p.url_slugs,
+    weeklyRank: weeklyRank.get(p.id),
   }));
   if (isLoading) {
     return (
