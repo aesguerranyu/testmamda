@@ -4,6 +4,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { SEO } from "../../components/SEO";
 import { PromiseCard } from "../../components/public/PromiseCard";
 import { supabase } from "@/integrations/supabase/client";
+import { useFeatureFlag, FEATURE_READER_SIGNALS } from "@/hooks/use-feature-flag";
 
 type PromiseStatus = "Not started" | "In progress" | "Completed" | "Stalled" | "Broken";
 
@@ -31,6 +32,7 @@ interface PromiseData {
   url_slugs: string;
 }
 export function PromiseTracker() {
+  const { enabled: signalsEnabled } = useFeatureFlag(FEATURE_READER_SIGNALS);
   const [promises, setPromises] = useState<PromiseData[]>([]);
   const [weeklyRank, setWeeklyRank] = useState<Map<string, number>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +46,9 @@ export function PromiseTracker() {
           .from("promises")
           .select("id, headline, short_description, category, status, url_slugs")
           .eq("editorial_state", "published"),
-        (supabase as any).from("promise_signal_stats").select("promise_id, priority_count_week"),
+        signalsEnabled
+          ? (supabase as any).from("promise_signal_stats").select("promise_id, priority_count_week")
+          : Promise.resolve({ data: [] }),
       ]);
       if (!error && data) {
         const shuffled = [...data].sort(() => Math.random() - 0.5);
@@ -61,7 +65,7 @@ export function PromiseTracker() {
       setIsLoading(false);
     };
     fetchPromises();
-  }, []);
+  }, [signalsEnabled]);
   const statuses: (PromiseStatus | "All")[] = ["All", "Not started", "In progress", "Completed", "Stalled", "Broken"];
   const categories: (PromiseCategory | "All")[] = useMemo(() => {
     const unique = [...new Set(promises.map((p) => p.category).filter(Boolean))].sort();
@@ -147,13 +151,13 @@ export function PromiseTracker() {
           Here is what Mayor Zohran Mamdani and his team have said they will do, organized by policy area. Each entry
           notes the responsible city agency and whether state action or cooperation is required.
         </p>
-        <Link
+        {signalsEnabled && <Link
           to="/promises/rankings"
           className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-[#FCCC0A] text-black font-bold uppercase tracking-wide text-xs hover:bg-[#FCCC0A]/80 transition-colors"
         >
           ★ See reader rankings
           <ArrowRightIcon className="w-3 h-3" />
-        </Link>
+        </Link>}
       </div>
 
       {/* Stats Dashboard - Toggle with SHOW_STATS_DASHBOARD flag */}

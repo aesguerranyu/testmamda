@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Key,
   UserCog,
+  Settings,
   Briefcase,
   DollarSign,
 } from "lucide-react";
@@ -42,6 +43,7 @@ const navItems = [
   { path: "/rat-control/cms/budget-submissions", label: "Budget Submissions", icon: DollarSign },
   { path: "/rat-control/cms/import", label: "Import CSV", icon: Upload },
   { path: "/rat-control/cms/export", label: "Export CSV", icon: Download },
+  { path: "/rat-control/cms/settings", label: "Feature Settings", icon: Settings },
 ];
 
 const CMSLayout = () => {

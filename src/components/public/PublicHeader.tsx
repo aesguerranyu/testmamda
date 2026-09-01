@@ -2,10 +2,10 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X, LogIn, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useFeatureFlag, FEATURE_READER_SIGNALS } from "@/hooks/use-feature-flag";
 
-const navItems = [
+const baseNavItems = [
   { path: "/promises", label: "Promises" },
-  { path: "/promises/rankings", label: "Rankings" },
   // TEMPORARILY HIDDEN: { path: "/zohran-mamdani-first-100-days", label: "First 100 Days" },
   { path: "/zohran-mamdani-appointment-tracker", label: "Appointments" },
   { path: "/indicators", label: "Key Performance Indicators" },
@@ -17,6 +17,10 @@ export function PublicHeader() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const { enabled: signalsEnabled } = useFeatureFlag(FEATURE_READER_SIGNALS);
+  const navItems = signalsEnabled
+    ? [baseNavItems[0], { path: "/promises/rankings", label: "Rankings" }, ...baseNavItems.slice(1)]
+    : baseNavItems;
 
   const isActive = (path: string) => location.pathname === path;
 

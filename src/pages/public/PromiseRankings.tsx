@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { Star, ThumbsUp, ThumbsDown, Scale } from "lucide-react";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
+import { useFeatureFlag, FEATURE_READER_SIGNALS } from "@/hooks/use-feature-flag";
+import { Navigate } from "react-router-dom";
 
 interface RankedPromise {
   id: string;
@@ -29,6 +31,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export default function PromiseRankings() {
+  const { enabled: signalsEnabled, isLoading: flagLoading } = useFeatureFlag(FEATURE_READER_SIGNALS);
   const [promises, setPromises] = useState<RankedPromise[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"priority" | "doable" | "unrealistic" | "contested">("priority");
@@ -98,7 +101,11 @@ export default function PromiseRankings() {
     { id: "contested" as const, label: "Most contested", icon: Scale },
   ];
 
+  if (flagLoading) return null;
+  if (!signalsEnabled) return <Navigate to="/promises" replace />;
+
   return (
+
     <div className="min-h-screen bg-white">
       <SEO
         title="Reader Rankings | Mamdani Tracker"
