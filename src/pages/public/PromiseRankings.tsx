@@ -101,7 +101,11 @@ export default function PromiseRankings() {
     { id: "contested" as const, label: "Most contested", icon: Scale },
   ];
 
+  if (flagLoading) return null;
+  if (!signalsEnabled) return <Navigate to="/promises" replace />;
+
   return (
+
     <div className="min-h-screen bg-white">
       <SEO
         title="Reader Rankings | Mamdani Tracker"
