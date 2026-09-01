@@ -50,6 +50,7 @@ const Users = lazy(() => import("./pages/cms/Users"));
 const ChangePassword = lazy(() => import("./pages/cms/ChangePassword"));
 const BudgetSubmissions = lazy(() => import("./pages/cms/BudgetSubmissions"));
 const ExportCMS = lazy(() => import("./pages/cms/Export"));
+const SettingsCMS = lazy(() => import("./pages/cms/Settings"));
 
 const queryClient = new QueryClient();
 
@@ -146,6 +147,9 @@ const App = () => (
               } />
               <Route path="export" element={
                 <Suspense fallback={<CMSLoadingFallback />}><ExportCMS /></Suspense>
+              } />
+              <Route path="settings" element={
+                <Suspense fallback={<CMSLoadingFallback />}><SettingsCMS /></Suspense>
               } />
               <Route path="users" element={
                 <Suspense fallback={<CMSLoadingFallback />}><Users /></Suspense>

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getCategoryColor, getCategoryTextColor } from "@/lib/category-colors";
 import { SEO } from "@/components/SEO";
 import { PromiseSignals } from "@/components/public/PromiseSignals";
+import { useFeatureFlag, FEATURE_READER_SIGNALS } from "@/hooks/use-feature-flag";
 interface PromiseDetail {
   id: string;
   headline: string;
@@ -198,7 +199,7 @@ export default function PromiseDetail() {
         </header>
 
         {/* Reader Signals */}
-        <PromiseSignals promiseId={promise.id} promiseSlug={promise.url_slugs} />
+        {signalsEnabled && <PromiseSignals promiseId={promise.id} promiseSlug={promise.url_slugs} />}
 
         {/* Description */}
         {descriptionPoints.length > 0 && <section className="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
