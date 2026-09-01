@@ -44,6 +44,7 @@ const formatDate = (dateString: string) => {
   });
 };
 export default function PromiseDetail() {
+  const { enabled: signalsEnabled } = useFeatureFlag(FEATURE_READER_SIGNALS);
   const {
     slug
   } = useParams<{
