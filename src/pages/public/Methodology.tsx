@@ -49,7 +49,7 @@ export function Methodology() {
           <div className="flex flex-col gap-8 max-w-4xl pl-4 md:pl-6">
             {/* Anthony Esguerra */}
             <div>
-              <h3 className="font-bold text-black text-lg mb-1">Anthony Esguerra</h3>
+              <h3 className="font-bold text-black text-lg mb-1"><a href="https://anthesguerra.com" target="_blank" rel="noopener noreferrer" className="no-underline hover:underline text-black">Anthony Esguerra</a></h3>
               <p className="text-gray-600 font-medium uppercase tracking-wide text-xs mb-3">Founder and Executive Editor</p>
               <p className="text-lg text-gray-600 leading-relaxed mb-3">
                 Anthony is a journalist and newsroom leader specializing in audience engagement, content strategy, and innovation. Most recently, he served as Head of Audience Engagement at BenarNews, part of Radio Free Asia, where he led audience strategy across Malaysia, Indonesia, Thailand, the Philippines, Bangladesh, and the Pacific region. As a multimedia journalist, he has reported on some of Southeast Asia's defining political and social issues, including as a reporter for VICE World News, and previously reported on TV at GMA News and as a multimedia reporter and social media editor at INQUIRER.net.
